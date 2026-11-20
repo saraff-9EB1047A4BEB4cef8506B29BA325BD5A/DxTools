@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3C · Screensaver</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3D · Hardening</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -226,4 +226,8 @@
   <data name="AudioDefault" xml:space="preserve"><value>Default</value></data>
   <data name="AudioDefaultSet" xml:space="preserve"><value>Default audio device changed.</value></data>
   <data name="AudioDefaultFailed" xml:space="preserve"><value>Could not change the default audio device.</value></data>
+  <data name="HotkeyDesktopPrevious" xml:space="preserve"><value>Switch to previous virtual desktop</value></data>
+  <data name="HotkeyDesktopNext" xml:space="preserve"><value>Switch to next virtual desktop</value></data>
+  <data name="HotkeyMoveWindowPreviousDesktop" xml:space="preserve"><value>Move window to previous virtual desktop</value></data>
+  <data name="HotkeyMoveWindowNextDesktop" xml:space="preserve"><value>Move window to next virtual desktop</value></data>
 </root>

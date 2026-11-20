@@ -226,6 +226,10 @@ public static class Strings
     public static string AudioDefault => Get(nameof(AudioDefault));
     public static string AudioDefaultSet => Get(nameof(AudioDefaultSet));
     public static string AudioDefaultFailed => Get(nameof(AudioDefaultFailed));
+    public static string HotkeyDesktopPrevious => Get(nameof(HotkeyDesktopPrevious));
+    public static string HotkeyDesktopNext => Get(nameof(HotkeyDesktopNext));
+    public static string HotkeyMoveWindowPreviousDesktop => Get(nameof(HotkeyMoveWindowPreviousDesktop));
+    public static string HotkeyMoveWindowNextDesktop => Get(nameof(HotkeyMoveWindowNextDesktop));
 }
 
 

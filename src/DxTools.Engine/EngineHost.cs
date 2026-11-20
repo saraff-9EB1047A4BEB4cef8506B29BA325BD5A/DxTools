@@ -26,6 +26,7 @@ public sealed class EngineHost
         WindowPlacements = new WindowPlacementService(Display);
         DesktopIcons = new DesktopIconManager();
         Audio = new AudioService(safeMode);
+        VirtualDesktops = new VirtualDesktopService();
         Triggers = new TriggerService(Display, Profiles, WindowPlacements, Wallpaper, settings);
     }
 
@@ -44,6 +45,8 @@ public sealed class EngineHost
     public DesktopIconManager DesktopIcons { get; }
 
     public AudioService Audio { get; }
+
+    public VirtualDesktopService VirtualDesktops { get; }
 
     public TriggerService Triggers { get; }
 

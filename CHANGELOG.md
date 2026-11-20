@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [0.17.0-alpha.1] - 2026-11-20
+
+### Added
+
+- hotkeys навигации и переноса окон между виртуальными рабочими столами;
+- `VirtualDesktopService` через системные сочетания и `SendInput`;
+- `SECURITY.md`;
+- `build/sign.ps1` для Authenticode-подписи;
+- 27 unit-тестов.
+
+### Changed
+
+- версия приложения 0.17.0-alpha.1; native DLL 0.6.0, API v4;
+- MSI 0.17.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 3D.
+
 ## [0.16.0-alpha.1] - 2026-11-20
 
 ### Added

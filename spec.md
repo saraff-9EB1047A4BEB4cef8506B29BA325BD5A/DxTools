@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 3C (ядро) завершён, ожидает подтверждения
+Статус: Phase 3D (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -420,11 +420,23 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - `.scr` публикуется single-file и входит в MSI;
 - 27 unit-тестов; MSI 0.16.0.
 
-Перенесено в Phase 3D/1.0:
+### Phase 3D — VD hotkeys и hardening 0.17 (ядро завершено)
 
-- виртуальные десктопы, shell context menu;
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-3d.md`.
+
+Реализовано:
+
+- hotkeys навигации и переноса окон между виртуальными рабочими столами
+  через системные сочетания;
+- `SECURITY.md` и `build/sign.ps1` (Authenticode по thumbprint);
+- 27 unit-тестов; MSI 0.17.0.
+
+Перенесено в 1.0:
+
+- shell context menu;
 - UIAccess/elevated helper, ARM64, HDR, accessibility;
-- подпись кода, security review, финальный RC → 1.0.
+- подпись кода сертификатом, security review, финальный RC → 1.0.
 
 ## 5. Матрица функций
 
@@ -448,13 +460,13 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |
 | C#-скрипты | Roslyn Scripting | 2E (готово) |
-| Виртуальные десктопы | C++ undocumented | 3D |
+| Виртуальные десктопы | OS hotkeys через SendInput | 3D (hotkeys) |
 | Screensaver | C# WPF .scr | 3C (готово) |
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
-| Shell extension | C++ | 3D |
-| UIAccess | C++/manifest | 3D |
-| ARM64 | publish + native | 3D |
+| Shell extension | C++ | 1.0 |
+| UIAccess | C++/manifest | 1.0 |
+| ARM64 | publish + native | 1.0 |
 
 ## 6. Критические спайки
 

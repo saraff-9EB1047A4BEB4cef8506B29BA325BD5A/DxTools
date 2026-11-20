@@ -372,6 +372,18 @@ public partial class App : System.Windows.Application
             case HotkeyAction.SnapToSplit4:
                 _ = _engine.Windows.SnapForegroundWindowToSplit(4, _settings?.SplitRows ?? 2, _settings?.SplitColumns ?? 2);
                 break;
+            case HotkeyAction.DesktopPrevious:
+                _ = _engine.VirtualDesktops.Previous();
+                break;
+            case HotkeyAction.DesktopNext:
+                _ = _engine.VirtualDesktops.Next();
+                break;
+            case HotkeyAction.MoveWindowToPreviousDesktop:
+                _ = _engine.VirtualDesktops.MoveWindowPrevious();
+                break;
+            case HotkeyAction.MoveWindowToNextDesktop:
+                _ = _engine.VirtualDesktops.MoveWindowNext();
+                break;
         }
     }
 

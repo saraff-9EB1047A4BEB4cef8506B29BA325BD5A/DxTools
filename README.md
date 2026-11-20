@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 3C (ядро) завершён, ожидает подтверждения
+- Статус: Phase 3D (ядро) завершён, ожидает подтверждения
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.16.0-alpha)
+## Возможности текущей версии (0.17.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -39,6 +39,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - профили иконок рабочего стола (save/apply/delete);
 - переключение аудиоустройства по умолчанию;
 - multi-monitor screensaver `DxTools.scr` с изображениями из папки слайдшоу;
+- hotkeys навигации и переноса окон между виртуальными рабочими столами;
+- SECURITY.md и скрипт подписи `build/sign.ps1`;
 - обои на каждый монитор: композитное полотно, режимы Fill/Fit/Stretch/
   Center/Tile;
 - слайдшоу обоев из папки с настраиваемым интервалом;
@@ -53,8 +55,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Phase 3D/1.0: виртуальные десктопы, shell extension, UIAccess, ARM64 и
-подпись. Подробный план: [spec.md](spec.md).
+Phase 1.0: shell extension, UIAccess, ARM64, подпись и security review.
+Подробный план: [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md).
 
 ## Требования для сборки
 
@@ -74,7 +76,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.16.0-x64.msi`.
+`artifacts/DxTools-0.17.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -111,7 +113,9 @@ build/                 сборочные скрипты
 - [docs/reports/phase-3a.md](docs/reports/phase-3a.md) — отчёт Phase 3A;
 - [docs/reports/phase-3b.md](docs/reports/phase-3b.md) — отчёт Phase 3B;
 - [docs/reports/phase-3c.md](docs/reports/phase-3c.md) — отчёт Phase 3C;
+- [docs/reports/phase-3d.md](docs/reports/phase-3d.md) — отчёт Phase 3D;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
+- [SECURITY.md](SECURITY.md) — политика безопасности;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.
 

@@ -123,6 +123,10 @@ public sealed class HotkeyService : IDisposable
         HotkeyAction.SnapToSplit2 => Strings.HotkeySnap2,
         HotkeyAction.SnapToSplit3 => Strings.HotkeySnap3,
         HotkeyAction.SnapToSplit4 => Strings.HotkeySnap4,
+        HotkeyAction.DesktopPrevious => Strings.HotkeyDesktopPrevious,
+        HotkeyAction.DesktopNext => Strings.HotkeyDesktopNext,
+        HotkeyAction.MoveWindowToPreviousDesktop => Strings.HotkeyMoveWindowPreviousDesktop,
+        HotkeyAction.MoveWindowToNextDesktop => Strings.HotkeyMoveWindowNextDesktop,
         _ => action.ToString(),
     };
 

@@ -1,7 +1,7 @@
 param(
     [string]$Configuration = "Release",
     [string]$Runtime = "win-x64",
-    [string]$ProductVersion = "0.16.0",
+    [string]$ProductVersion = "0.17.0",
     [string]$ZigPath = "",
     [switch]$SkipTests,
     [switch]$SkipNative

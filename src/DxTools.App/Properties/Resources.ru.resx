@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3C · Скринсейвер</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3D · Hardening</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -226,4 +226,8 @@
   <data name="AudioDefault" xml:space="preserve"><value>По умолчанию</value></data>
   <data name="AudioDefaultSet" xml:space="preserve"><value>Аудиоустройство по умолчанию изменено.</value></data>
   <data name="AudioDefaultFailed" xml:space="preserve"><value>Не удалось изменить аудиоустройство по умолчанию.</value></data>
+  <data name="HotkeyDesktopPrevious" xml:space="preserve"><value>Переключиться на предыдущий виртуальный рабочий стол</value></data>
+  <data name="HotkeyDesktopNext" xml:space="preserve"><value>Переключиться на следующий виртуальный рабочий стол</value></data>
+  <data name="HotkeyMoveWindowPreviousDesktop" xml:space="preserve"><value>Переместить окно на предыдущий рабочий стол</value></data>
+  <data name="HotkeyMoveWindowNextDesktop" xml:space="preserve"><value>Переместить окно на следующий рабочий стол</value></data>
 </root>
