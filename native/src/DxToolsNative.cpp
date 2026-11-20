@@ -72,8 +72,13 @@ void CopyWide(wchar_t* destination, size_t capacity, const wchar_t* source)
         return;
     }
 
-    wcsncpy(destination, source, capacity - 1);
-    destination[capacity - 1] = L'\0';
+    size_t index = 0;
+    for (; index < capacity - 1 && source[index] != L'\0'; ++index)
+    {
+        destination[index] = source[index];
+    }
+
+    destination[index] = L'\0';
 }
 
 LONG QueryActiveConfig(std::vector<DISPLAYCONFIG_PATH_INFO>& paths, std::vector<DISPLAYCONFIG_MODE_INFO>& modes)
@@ -480,14 +485,14 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_ApplyState(
         };
 
         LONG lastError = ERROR_INVALID_PARAMETER;
-        for (const UINT32 flags : combinations)
+        for (const UINT32 combinationFlags : combinations)
         {
             const LONG result = SetDisplayConfig(
                 header.pathCount,
                 paths.data(),
                 header.modeCount,
                 modes.data(),
-                flags);
+                combinationFlags);
 
             if (result == ERROR_SUCCESS)
             {
