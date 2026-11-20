@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 1 · Мониторы и окна</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2 · Панель задач и автоматизация</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -68,7 +68,7 @@
   <data name="FirstRunText" xml:space="preserve"><value>DxTools работает в области уведомлений. Двойной щелчок по значку открывает настройки.</value></data>
   <data name="CrashTitle" xml:space="preserve"><value>В DxTools произошла ошибка</value></data>
   <data name="CrashText" xml:space="preserve"><value>Ошибка записана в лог. Можно продолжить работу, но часть функций может быть недоступна.</value></data>
-  <data name="HelpText" xml:space="preserve"><value>Использование: DxTools.exe [--autostart] [--safe-mode] [--show] [--version] [--help] [--settings &lt;path&gt;]</value></data>
+  <data name="HelpText" xml:space="preserve"><value>Использование: DxTools.exe [--autostart] [--safe-mode] [--show] [--exit] [--version] [--help] [--settings &lt;path&gt;]</value></data>
   <data name="CloseToTray" xml:space="preserve"><value>Закрытие окна оставляет DxTools в области уведомлений.</value></data>
   <data name="NativePath" xml:space="preserve"><value>Путь</value></data>
   <data name="Status" xml:space="preserve"><value>Состояние</value></data>
@@ -124,7 +124,7 @@
   <data name="WallpaperApplied" xml:space="preserve"><value>Обои применены.</value></data>
   <data name="WallpaperFailed" xml:space="preserve"><value>Не удалось применить обои.</value></data>
   <data name="NoImage" xml:space="preserve"><value>Нет изображения</value></data>
-  <data name="WallpaperNote" xml:space="preserve"><value>В Phase 1 — статические обои на каждый монитор. Слайдшоу из папки — следующий шаг.</value></data>
+  <data name="WallpaperNote" xml:space="preserve"><value>Используйте изображения для каждого монитора или слайдшоу из папки с настраиваемым интервалом.</value></data>
   <data name="BackupTitle" xml:space="preserve"><value>Резервная копия</value></data>
   <data name="BackupHint" xml:space="preserve"><value>Экспорт и восстановление настроек, профилей дисплеев и конфигурации обоев.</value></data>
   <data name="ExportBackup" xml:space="preserve"><value>Экспорт</value></data>
@@ -132,4 +132,17 @@
   <data name="BackupExported" xml:space="preserve"><value>Резервная копия экспортирована.</value></data>
   <data name="BackupImported" xml:space="preserve"><value>Резервная копия импортирована. Перезапустите DxTools.</value></data>
   <data name="BackupFailed" xml:space="preserve"><value>Не удалось выполнить операцию с резервной копией.</value></data>
+  <data name="EnableSecondaryTaskbar" xml:space="preserve"><value>Панель задач на дополнительных мониторах</value></data>
+  <data name="EnableSecondaryTaskbarHint" xml:space="preserve"><value>Заменяет панель задач Windows на дополнительных мониторах и резервирует место рабочего стола.</value></data>
+  <data name="TaskbarSettings" xml:space="preserve"><value>Настройки DxTools</value></data>
+  <data name="SlideshowTitle" xml:space="preserve"><value>Слайдшоу</value></data>
+  <data name="SlideshowHint" xml:space="preserve"><value>Циклическая смена изображений из папки на подключённых мониторах.</value></data>
+  <data name="ChooseFolder" xml:space="preserve"><value>Выбрать папку</value></data>
+  <data name="SlideshowFolder" xml:space="preserve"><value>Папка</value></data>
+  <data name="SlideshowInterval" xml:space="preserve"><value>Интервал, сек</value></data>
+  <data name="StartSlideshow" xml:space="preserve"><value>Запустить слайдшоу</value></data>
+  <data name="Stop" xml:space="preserve"><value>Остановить</value></data>
+  <data name="SlideshowStarted" xml:space="preserve"><value>Слайдшоу запущено.</value></data>
+  <data name="SlideshowStopped" xml:space="preserve"><value>Слайдшоу остановлено.</value></data>
+  <data name="NoSlideshowImages" xml:space="preserve"><value>В папке не найдено изображений.</value></data>
 </root>

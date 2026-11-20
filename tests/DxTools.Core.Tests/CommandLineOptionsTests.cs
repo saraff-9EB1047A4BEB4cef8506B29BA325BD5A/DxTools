@@ -45,6 +45,15 @@ public sealed class CommandLineOptionsTests
     }
 
     [Fact]
+    public void Parse_Exit_IsRecognized()
+    {
+        var options = CommandLineOptions.Parse(["--exit"]);
+
+        Assert.True(options.RequestExit);
+        Assert.Empty(options.Errors);
+    }
+
+    [Fact]
     public void Parse_Null_ReturnsDefaults()
     {
         var options = CommandLineOptions.Parse(null);

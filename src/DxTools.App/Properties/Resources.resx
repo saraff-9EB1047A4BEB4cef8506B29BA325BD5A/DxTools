@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 1 · Monitors &amp; windows</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2 · Taskbar &amp; automation</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -68,7 +68,7 @@
   <data name="FirstRunText" xml:space="preserve"><value>DxTools is now in the notification area. Double-click the icon to open settings.</value></data>
   <data name="CrashTitle" xml:space="preserve"><value>DxTools encountered an error</value></data>
   <data name="CrashText" xml:space="preserve"><value>The error was written to the log. You can continue, but some features may be unavailable.</value></data>
-  <data name="HelpText" xml:space="preserve"><value>Usage: DxTools.exe [--autostart] [--safe-mode] [--show] [--version] [--help] [--settings &lt;path&gt;]</value></data>
+  <data name="HelpText" xml:space="preserve"><value>Usage: DxTools.exe [--autostart] [--safe-mode] [--show] [--exit] [--version] [--help] [--settings &lt;path&gt;]</value></data>
   <data name="CloseToTray" xml:space="preserve"><value>Closing the window keeps DxTools running in the notification area.</value></data>
   <data name="NativePath" xml:space="preserve"><value>Path</value></data>
   <data name="Status" xml:space="preserve"><value>Status</value></data>
@@ -124,7 +124,7 @@
   <data name="WallpaperApplied" xml:space="preserve"><value>Wallpaper applied.</value></data>
   <data name="WallpaperFailed" xml:space="preserve"><value>Could not apply wallpaper.</value></data>
   <data name="NoImage" xml:space="preserve"><value>No image</value></data>
-  <data name="WallpaperNote" xml:space="preserve"><value>Static per-monitor wallpaper in Phase 1. Folder slideshow is planned next.</value></data>
+  <data name="WallpaperNote" xml:space="preserve"><value>Use per-monitor images or a folder slideshow with a configurable interval.</value></data>
   <data name="BackupTitle" xml:space="preserve"><value>Backup</value></data>
   <data name="BackupHint" xml:space="preserve"><value>Export or restore settings, display profiles and wallpaper configuration.</value></data>
   <data name="ExportBackup" xml:space="preserve"><value>Export</value></data>
@@ -132,4 +132,17 @@
   <data name="BackupExported" xml:space="preserve"><value>Backup exported.</value></data>
   <data name="BackupImported" xml:space="preserve"><value>Backup imported. Restart DxTools to apply it.</value></data>
   <data name="BackupFailed" xml:space="preserve"><value>Backup operation failed.</value></data>
+  <data name="EnableSecondaryTaskbar" xml:space="preserve"><value>Show taskbar on secondary monitors</value></data>
+  <data name="EnableSecondaryTaskbarHint" xml:space="preserve"><value>Replaces the Windows taskbar on secondary monitors and reserves desktop space.</value></data>
+  <data name="TaskbarSettings" xml:space="preserve"><value>DxTools settings</value></data>
+  <data name="SlideshowTitle" xml:space="preserve"><value>Slideshow</value></data>
+  <data name="SlideshowHint" xml:space="preserve"><value>Cycle images from a folder across the connected monitors.</value></data>
+  <data name="ChooseFolder" xml:space="preserve"><value>Choose folder</value></data>
+  <data name="SlideshowFolder" xml:space="preserve"><value>Folder</value></data>
+  <data name="SlideshowInterval" xml:space="preserve"><value>Interval, seconds</value></data>
+  <data name="StartSlideshow" xml:space="preserve"><value>Start slideshow</value></data>
+  <data name="Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="SlideshowStarted" xml:space="preserve"><value>Slideshow started.</value></data>
+  <data name="SlideshowStopped" xml:space="preserve"><value>Slideshow stopped.</value></data>
+  <data name="NoSlideshowImages" xml:space="preserve"><value>No images found in the folder.</value></data>
 </root>

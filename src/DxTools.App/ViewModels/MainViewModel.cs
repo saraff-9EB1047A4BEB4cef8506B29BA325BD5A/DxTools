@@ -10,7 +10,7 @@ using DxTools.Interop;
 
 namespace DxTools.App.ViewModels;
 
-public sealed class MainViewModel : ObservableObject
+public sealed class MainViewModel : ObservableObject, IDisposable
 {
     private readonly SettingsStore _settingsStore;
     private readonly AppSettings _settings;
@@ -59,6 +59,8 @@ public sealed class MainViewModel : ObservableObject
     public Action<AppTheme>? ThemeChanged { get; set; }
 
     public event Action? BackupImported;
+
+    public event Action? TaskbarSettingsChanged;
 
     public DisplayViewModel Display { get; }
 
@@ -138,6 +140,23 @@ public sealed class MainViewModel : ObservableObject
             _settings.StartMinimized = value;
             OnPropertyChanged();
             SaveSettings();
+        }
+    }
+
+    public bool EnableSecondaryTaskbar
+    {
+        get => _settings.EnableSecondaryTaskbar;
+        set
+        {
+            if (_settings.EnableSecondaryTaskbar == value)
+            {
+                return;
+            }
+
+            _settings.EnableSecondaryTaskbar = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TaskbarSettingsChanged?.Invoke();
         }
     }
 
@@ -289,6 +308,12 @@ public sealed class MainViewModel : ObservableObject
         {
             DxLog.Exception("Failed to open the repository URL.", ex);
         }
+    }
+
+    public void Dispose()
+    {
+        _engine.StatusChanged -= OnEngineStatusChanged;
+        Wallpaper.Dispose();
     }
 
     private void RunSelfCheck()

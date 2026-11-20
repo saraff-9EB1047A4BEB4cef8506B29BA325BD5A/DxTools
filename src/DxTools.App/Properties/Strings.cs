@@ -132,6 +132,20 @@ public static class Strings
     public static string BackupExported => Get(nameof(BackupExported));
     public static string BackupImported => Get(nameof(BackupImported));
     public static string BackupFailed => Get(nameof(BackupFailed));
+    public static string EnableSecondaryTaskbar => Get(nameof(EnableSecondaryTaskbar));
+    public static string EnableSecondaryTaskbarHint => Get(nameof(EnableSecondaryTaskbarHint));
+    public static string TaskbarSettings => Get(nameof(TaskbarSettings));
+    public static string SlideshowTitle => Get(nameof(SlideshowTitle));
+    public static string SlideshowHint => Get(nameof(SlideshowHint));
+    public static string ChooseFolder => Get(nameof(ChooseFolder));
+    public static string SlideshowFolder => Get(nameof(SlideshowFolder));
+    public static string SlideshowInterval => Get(nameof(SlideshowInterval));
+    public static string StartSlideshow => Get(nameof(StartSlideshow));
+    public static string Stop => Get(nameof(Stop));
+    public static string SlideshowStarted => Get(nameof(SlideshowStarted));
+    public static string SlideshowStopped => Get(nameof(SlideshowStopped));
+    public static string NoSlideshowImages => Get(nameof(NoSlideshowImages));
 }
+
 
 

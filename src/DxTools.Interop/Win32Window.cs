@@ -27,6 +27,7 @@ public static partial class Win32Window
     public const uint SwpNoMove = 0x0002;
     public const uint SwpNoZOrder = 0x0004;
     public const uint SwpNoActivate = 0x0010;
+    public const uint SwpShowWindow = 0x0040;
     public const int SwRestore = 9;
     public const int SwMaximize = 3;
 

@@ -6,6 +6,7 @@ namespace DxTools.Core;
 public sealed class SingleInstance : IDisposable
 {
     private const string ShowMessage = "show";
+    private const string ExitMessage = "exit";
 
     private readonly Mutex _mutex;
     private readonly bool _ownsMutex;
@@ -28,6 +29,8 @@ public sealed class SingleInstance : IDisposable
 
     public event Action? ShowRequested;
 
+    public event Action? ExitRequested;
+
     public void StartServer()
     {
         if (!IsFirstInstance || _serverTask is not null)
@@ -39,7 +42,7 @@ public sealed class SingleInstance : IDisposable
         _serverTask = Task.Run(() => ServerLoopAsync(_cancellation.Token));
     }
 
-    public bool TrySignalExisting(int timeoutMilliseconds = 1500)
+    public bool TrySignalExisting(int timeoutMilliseconds = 1500, string message = ShowMessage)
     {
         try
         {
@@ -50,7 +53,7 @@ public sealed class SingleInstance : IDisposable
             {
                 AutoFlush = true,
             };
-            writer.WriteLine(ShowMessage);
+            writer.WriteLine(message);
             return true;
         }
         catch (Exception ex) when (ex is TimeoutException or IOException or UnauthorizedAccessException or ArgumentException)
@@ -80,6 +83,10 @@ public sealed class SingleInstance : IDisposable
                 {
                     RaiseShowRequested();
                 }
+                else if (string.Equals(message, ExitMessage, StringComparison.Ordinal))
+                {
+                    RaiseExitRequested();
+                }
             }
             catch (OperationCanceledException)
             {
@@ -89,6 +96,18 @@ public sealed class SingleInstance : IDisposable
             {
                 DxLog.Warn($"Single-instance pipe error: {ex.Message}");
             }
+        }
+    }
+
+    private void RaiseExitRequested()
+    {
+        try
+        {
+            ExitRequested?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            DxLog.Exception("Single-instance ExitRequested handler failed.", ex);
         }
     }
 

@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 1 и границы модулей.
+Документ описывает архитектуру Phase 2 и границы модулей.
 
 ## Процессная модель
 
@@ -28,6 +28,11 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   `Ctrl+Alt+Left/Right/Up`.
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
+- `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
+  временное скрытие `Shell_SecondaryTrayWnd` и восстановление при выходе.
+- `TaskbarWindow`: WPF-панель 48 DIP, кнопки окон, иконки, часы,
+  `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
+- `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - Никакой бизнес-логики: только представление и композиция.
 
 ### DxTools.Core
@@ -48,7 +53,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `DisplayProfileService`: save/apply/rollback, auto-apply, store профилей.
 - `WindowManager`: перенос активного окна с учётом DPI, topmost.
 - `WallpaperService`: композитное полотно и установка обоев.
-- В Phase 2+: hotkey LL-hook, taskbar, triggers, scripts.
+- `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
+  активация/сворачивание.
+- В Phase 2B: LL-hook, titlebar, profile rules, triggers, scripts, splits.
 
 ### DxTools.Interop
 
@@ -71,6 +78,10 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - UI-поток WPF: представление, команды, горячие клавиши и watcher.
 - Apply DisplayConfig и композиция обоев выполняются в `Task.Run`, чтобы
   не блокировать UI; подтверждение отката показывает модальное окно.
+- Панель задач обновляет окна раз в секунду; скрытая панель Windows
+  восстанавливается при нормальном выходе и в `ProcessExit`.
+- Слайдшоу использует `DispatcherTimer` и выбирает следующее изображение
+  для каждого монитора.
 - Auto-apply подавляется на 4 секунды после изменения, чтобы избежать
   рекурсии от `WM_DISPLAYCHANGE`.
 - Исключения логируются; необработанные исключения UI показывают сообщение

@@ -19,6 +19,8 @@ public partial class App : System.Windows.Application
     private TrayIconHost? _tray;
     private HotkeyService? _hotkeys;
     private DisplayChangeWatcher? _displayWatcher;
+    private TaskbarManager? _taskbarManager;
+    private MainViewModel? _viewModel;
     private bool _isExiting;
     private bool _suppressSaveOnExit;
 
@@ -28,6 +30,7 @@ public partial class App : System.Windows.Application
 
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
+        AppDomain.CurrentDomain.ProcessExit += OnProcessExit;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
 
         try
@@ -88,7 +91,16 @@ public partial class App : System.Windows.Application
         _singleInstance = new SingleInstance();
         if (!_singleInstance.IsFirstInstance)
         {
-            _singleInstance.TrySignalExisting();
+            _singleInstance.TrySignalExisting(message: options.RequestExit ? "exit" : "show");
+            _singleInstance.Dispose();
+            _singleInstance = null;
+            Shutdown(0);
+            return;
+        }
+
+        if (options.RequestExit)
+        {
+            DxLog.Info("Exit requested, but no other DxTools instance is running.");
             _singleInstance.Dispose();
             _singleInstance = null;
             Shutdown(0);
@@ -96,6 +108,7 @@ public partial class App : System.Windows.Application
         }
 
         _singleInstance.ShowRequested += OnShowRequested;
+        _singleInstance.ExitRequested += OnExitRequested;
         _singleInstance.StartServer();
 
         _settingsStore = settingsStore;
@@ -110,6 +123,7 @@ public partial class App : System.Windows.Application
         _engine.Start();
 
         var viewModel = new MainViewModel(settingsStore, _settings, _engine, autostart, DisplayConfirmationWindow.Confirm);
+        _viewModel = viewModel;
         viewModel.BackupImported += () => _suppressSaveOnExit = true;
         viewModel.ThemeChanged += theme =>
         {
@@ -129,9 +143,23 @@ public partial class App : System.Windows.Application
             _hotkeys.Pressed += OnHotkeyPressed;
             viewModel.SetHotkeys(_hotkeys.Bindings);
 
+            _taskbarManager = new TaskbarManager(
+                _engine.Display,
+                _settings,
+                new TaskbarIconCache(),
+                ShowMainWindow,
+                safeMode: false);
+            viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
+
             _displayWatcher = new DisplayChangeWatcher(
                 windowHandle,
-                () => viewModel.Display.NotifyTopologyChanged());
+                () =>
+                {
+                    viewModel.Display.NotifyTopologyChanged();
+                    _taskbarManager?.Rebuild();
+                });
+
+            _taskbarManager.Rebuild();
         }
 
         var showWindow = options.ShowSettings
@@ -191,6 +219,11 @@ public partial class App : System.Windows.Application
                 _ = _engine.Windows.ToggleTopmost();
                 break;
         }
+    }
+
+    private void OnExitRequested()
+    {
+        Dispatcher.BeginInvoke(new Action(ExitApplication));
     }
 
     private void OnShowRequested()
@@ -261,6 +294,8 @@ public partial class App : System.Windows.Application
         _tray?.Dispose();
         _hotkeys?.Dispose();
         _displayWatcher?.Dispose();
+        _taskbarManager?.Dispose();
+        _viewModel?.Dispose();
         _engine?.Stop();
         _singleInstance?.Dispose();
         DxLog.Info("DxTools stopped.");
@@ -276,8 +311,15 @@ public partial class App : System.Windows.Application
         e.Handled = true;
     }
 
-    private static void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    private void OnProcessExit(object? sender, EventArgs e)
     {
+        _taskbarManager?.EmergencyRestore();
+    }
+
+    private void OnDomainUnhandledException(object sender, UnhandledExceptionEventArgs e)
+    {
+        _taskbarManager?.EmergencyRestore();
+
         if (e.ExceptionObject is Exception exception)
         {
             DxLog.Exception("Unhandled domain exception.", exception);

@@ -1,0 +1,89 @@
+<Window x:Class="DxTools.App.TaskbarWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:props="clr-namespace:DxTools.App.Properties"
+        Title="{x:Static props:Strings.AppTitle}"
+        Width="800"
+        Height="48"
+        WindowStyle="None"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        ResizeMode="NoResize"
+        Topmost="True"
+        Background="{DynamicResource SurfaceBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="Segoe UI Variable Text, Segoe UI"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True"
+        PreviewMouseWheel="OnPreviewMouseWheel">
+  <Border BorderBrush="{DynamicResource BorderBrush}"
+          BorderThickness="0,1,0,0"
+          Background="{DynamicResource SurfaceBrush}">
+    <Grid Margin="6,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+
+      <Button Content="Dx"
+              Style="{StaticResource TaskbarStartButtonStyle}"
+              Command="{Binding OpenSettingsCommand}"
+              ToolTip="{x:Static props:Strings.TaskbarSettings}"
+              Focusable="False" />
+
+      <ScrollViewer x:Name="WindowScroller"
+                    Grid.Column="1"
+                    HorizontalScrollBarVisibility="Hidden"
+                    VerticalScrollBarVisibility="Disabled"
+                    PanningMode="HorizontalOnly">
+        <ItemsControl ItemsSource="{Binding Windows}">
+          <ItemsControl.ItemsPanel>
+            <ItemsPanelTemplate>
+              <StackPanel Orientation="Horizontal" />
+            </ItemsPanelTemplate>
+          </ItemsControl.ItemsPanel>
+          <ItemsControl.ItemTemplate>
+            <DataTemplate>
+              <Button Command="{Binding DataContext.ActivateCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
+                      CommandParameter="{Binding}"
+                      ToolTip="{Binding Title}"
+                      AutomationProperties.Name="{Binding Title}"
+                      Focusable="False">
+                <Button.Style>
+                  <Style TargetType="Button" BasedOn="{StaticResource TaskbarButtonStyle}">
+                    <Style.Triggers>
+                      <DataTrigger Binding="{Binding IsActive}" Value="True">
+                        <Setter Property="Background" Value="{DynamicResource AccentSoftBrush}" />
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}" />
+                      </DataTrigger>
+                    </Style.Triggers>
+                  </Style>
+                </Button.Style>
+                <StackPanel Orientation="Horizontal">
+                  <Image Source="{Binding Icon}"
+                         Width="18"
+                         Height="18"
+                         Margin="0,0,7,0" />
+                  <TextBlock Text="{Binding Title}"
+                             MaxWidth="150"
+                             TextTrimming="CharacterEllipsis"
+                             VerticalAlignment="Center" />
+                </StackPanel>
+              </Button>
+            </DataTemplate>
+          </ItemsControl.ItemTemplate>
+        </ItemsControl>
+      </ScrollViewer>
+
+      <TextBlock Grid.Column="2"
+                 Text="{Binding ClockText}"
+                 FontSize="13"
+                 FontWeight="SemiBold"
+                 VerticalAlignment="Center"
+                 TextAlignment="Right"
+                 MinWidth="52"
+                 Margin="10,0,6,0" />
+    </Grid>
+  </Border>
+</Window>

@@ -1,10 +1,11 @@
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Windows.Input;
+using System.Windows.Threading;
 using DxTools.App.Properties;
 using DxTools.Core;
 using DxTools.Engine;
-using Microsoft.Win32;
+using Forms = System.Windows.Forms;
 
 namespace DxTools.App.ViewModels;
 
@@ -94,14 +95,22 @@ public sealed class WallpaperMonitorItemViewModel : ObservableObject
     }
 }
 
-public sealed class WallpaperViewModel : ObservableObject
+public sealed class WallpaperViewModel : ObservableObject, IDisposable
 {
+    private static readonly string[] ImageExtensions = [".png", ".jpg", ".jpeg", ".bmp"];
+
     private readonly DisplayService _display;
     private readonly WallpaperService _wallpaper;
     private readonly SettingsStore _settingsStore;
     private readonly AppSettings _settings;
+    private readonly DispatcherTimer _slideshowTimer;
+    private readonly RelayCommand _stopSlideshowCommand;
+
     private string _statusMessage = string.Empty;
     private bool _isBusy;
+    private bool _isSlideshowRunning;
+    private bool _frameApplying;
+    private int _slideIndex;
 
     public WallpaperViewModel(
         DisplayService display,
@@ -116,6 +125,14 @@ public sealed class WallpaperViewModel : ObservableObject
 
         ApplyCommand = new RelayCommand(() => _ = ApplyAsync());
         RefreshCommand = new RelayCommand(RefreshMonitors);
+        ChooseSlideshowFolderCommand = new RelayCommand(ChooseSlideshowFolder);
+        ClearSlideshowFolderCommand = new RelayCommand(() => SlideshowFolder = string.Empty);
+        StartSlideshowCommand = new RelayCommand(StartSlideshow);
+        _stopSlideshowCommand = new RelayCommand(StopSlideshow, () => IsSlideshowRunning);
+        StopSlideshowCommand = _stopSlideshowCommand;
+
+        _slideshowTimer = new DispatcherTimer();
+        _slideshowTimer.Tick += OnSlideshowTick;
 
         RefreshMonitors();
     }
@@ -125,6 +142,14 @@ public sealed class WallpaperViewModel : ObservableObject
     public ICommand ApplyCommand { get; }
 
     public ICommand RefreshCommand { get; }
+
+    public ICommand ChooseSlideshowFolderCommand { get; }
+
+    public ICommand ClearSlideshowFolderCommand { get; }
+
+    public ICommand StartSlideshowCommand { get; }
+
+    public ICommand StopSlideshowCommand { get; }
 
     public WallpaperFitMode FitMode
     {
@@ -139,6 +164,63 @@ public sealed class WallpaperViewModel : ObservableObject
             _settings.Wallpaper.FitMode = value;
             OnPropertyChanged();
             SaveSettings();
+        }
+    }
+
+    public string SlideshowFolder
+    {
+        get => _settings.Wallpaper.SlideshowFolder ?? string.Empty;
+        set
+        {
+            var normalized = string.IsNullOrWhiteSpace(value) ? null : value.Trim();
+            if (string.Equals(_settings.Wallpaper.SlideshowFolder, normalized, StringComparison.OrdinalIgnoreCase))
+            {
+                return;
+            }
+
+            StopSlideshow();
+            _settings.Wallpaper.SlideshowFolder = normalized;
+            OnPropertyChanged();
+            OnPropertyChanged(nameof(SlideshowFolderDisplay));
+            SaveSettings();
+        }
+    }
+
+    public string SlideshowFolderDisplay => string.IsNullOrWhiteSpace(SlideshowFolder)
+        ? Strings.NoImage
+        : SlideshowFolder;
+
+    public int SlideshowIntervalSeconds
+    {
+        get => _settings.Wallpaper.SlideshowIntervalSeconds;
+        set
+        {
+            var normalized = Math.Clamp(value, 10, 86400);
+            if (_settings.Wallpaper.SlideshowIntervalSeconds == normalized)
+            {
+                return;
+            }
+
+            _settings.Wallpaper.SlideshowIntervalSeconds = normalized;
+            OnPropertyChanged();
+            if (IsSlideshowRunning)
+            {
+                _slideshowTimer.Interval = TimeSpan.FromSeconds(normalized);
+            }
+
+            SaveSettings();
+        }
+    }
+
+    public bool IsSlideshowRunning
+    {
+        get => _isSlideshowRunning;
+        private set
+        {
+            if (SetProperty(ref _isSlideshowRunning, value))
+            {
+                _stopSlideshowCommand.RaiseCanExecuteChanged();
+            }
         }
     }
 
@@ -171,6 +253,17 @@ public sealed class WallpaperViewModel : ObservableObject
 
     private async Task ApplyAsync()
     {
+        if (!string.IsNullOrWhiteSpace(SlideshowFolder))
+        {
+            StartSlideshow();
+            return;
+        }
+
+        await ApplyStaticAsync();
+    }
+
+    private async Task ApplyStaticAsync()
+    {
         if (IsBusy)
         {
             return;
@@ -193,6 +286,135 @@ public sealed class WallpaperViewModel : ObservableObject
         }
     }
 
+    private void ChooseSlideshowFolder()
+    {
+        using var dialog = new Forms.FolderBrowserDialog
+        {
+            Description = Strings.SlideshowTitle,
+            UseDescriptionForTitle = true,
+            ShowNewFolderButton = false,
+        };
+
+        if (dialog.ShowDialog() == Forms.DialogResult.OK)
+        {
+            SlideshowFolder = dialog.SelectedPath;
+        }
+    }
+
+    private void StartSlideshow()
+    {
+        var folder = SlideshowFolder;
+        if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+        {
+            StatusMessage = Strings.NoSlideshowImages;
+            return;
+        }
+
+        if (GetSlideshowFiles(folder).Count == 0)
+        {
+            StatusMessage = Strings.NoSlideshowImages;
+            return;
+        }
+
+        _slideshowTimer.Interval = TimeSpan.FromSeconds(SlideshowIntervalSeconds);
+        _slideshowTimer.Start();
+        IsSlideshowRunning = true;
+        StatusMessage = Strings.SlideshowStarted;
+        _ = ApplySlideshowFrameAsync();
+    }
+
+    private void StopSlideshow()
+    {
+        _slideshowTimer.Stop();
+        if (IsSlideshowRunning)
+        {
+            IsSlideshowRunning = false;
+            StatusMessage = Strings.SlideshowStopped;
+        }
+    }
+
+    private async void OnSlideshowTick(object? sender, EventArgs e)
+    {
+        await ApplySlideshowFrameAsync();
+    }
+
+    private async Task ApplySlideshowFrameAsync()
+    {
+        if (_frameApplying)
+        {
+            return;
+        }
+
+        var folder = SlideshowFolder;
+        if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
+        {
+            StopSlideshow();
+            return;
+        }
+
+        var files = GetSlideshowFiles(folder);
+        if (files.Count == 0)
+        {
+            StopSlideshow();
+            StatusMessage = Strings.NoSlideshowImages;
+            return;
+        }
+
+        var monitors = _display.GetMonitors();
+        if (monitors.Count == 0)
+        {
+            StopSlideshow();
+            StatusMessage = Strings.DisplayNoMonitors;
+            return;
+        }
+
+        var frame = new WallpaperSettings
+        {
+            FitMode = _settings.Wallpaper.FitMode,
+            SlideshowFolder = folder,
+            SlideshowIntervalSeconds = SlideshowIntervalSeconds,
+        };
+
+        for (var index = 0; index < monitors.Count; index++)
+        {
+            var monitor = monitors[index];
+            var key = string.IsNullOrWhiteSpace(monitor.MonitorId) ? monitor.DeviceName : monitor.MonitorId;
+            frame.MonitorImages[key] = files[(_slideIndex + index) % files.Count];
+        }
+
+        _slideIndex = (_slideIndex + monitors.Count) % files.Count;
+        _frameApplying = true;
+
+        try
+        {
+            var result = await Task.Run(() => _wallpaper.Apply(frame)).ConfigureAwait(true);
+            StatusMessage = result.Success
+                ? Strings.WallpaperApplied
+                : $"{Strings.WallpaperFailed} {result.Error}";
+        }
+        finally
+        {
+            _frameApplying = false;
+        }
+    }
+
+    private static List<string> GetSlideshowFiles(string folder)
+    {
+        try
+        {
+            return Directory
+                .EnumerateFiles(folder, "*.*", SearchOption.TopDirectoryOnly)
+                .Where(file => ImageExtensions.Contains(Path.GetExtension(file), StringComparer.OrdinalIgnoreCase))
+                .OrderBy(file => file, StringComparer.CurrentCultureIgnoreCase)
+                .ToList();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            DxLog.Warn($"Could not enumerate slideshow folder '{folder}': {ex.Message}");
+            return [];
+        }
+    }
+
     private void SaveSettings()
     {
         try
@@ -204,5 +426,11 @@ public sealed class WallpaperViewModel : ObservableObject
             StatusMessage = Strings.SaveFailed;
             DxLog.Exception("Failed to save wallpaper settings.", ex);
         }
+    }
+
+    public void Dispose()
+    {
+        _slideshowTimer.Stop();
+        _slideshowTimer.Tick -= OnSlideshowTick;
     }
 }

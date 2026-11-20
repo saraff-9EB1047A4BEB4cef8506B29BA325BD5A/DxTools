@@ -33,5 +33,6 @@ public sealed class WallpaperSettingsTests
 
         Assert.NotNull(settings.Wallpaper);
         Assert.Equal(AppSettings.CurrentSchemaVersion, settings.SchemaVersion);
+        Assert.True(settings.EnableSecondaryTaskbar);
     }
 }

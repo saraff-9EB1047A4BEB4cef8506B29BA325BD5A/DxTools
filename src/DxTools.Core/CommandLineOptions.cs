@@ -6,6 +6,7 @@ public sealed record CommandLineOptions(
     bool ShowSettings,
     bool ShowVersion,
     bool ShowHelp,
+    bool RequestExit,
     string? SettingsPath,
     IReadOnlyList<string> Errors)
 {
@@ -16,12 +17,13 @@ public sealed record CommandLineOptions(
         var showSettings = false;
         var showVersion = false;
         var showHelp = false;
+        var requestExit = false;
         string? settingsPath = null;
         var errors = new List<string>();
 
         if (args is null)
         {
-            return new CommandLineOptions(false, false, false, false, false, null, errors);
+            return new CommandLineOptions(false, false, false, false, false, false, null, errors);
         }
 
         for (var i = 0; i < args.Count; i++)
@@ -53,6 +55,9 @@ public sealed record CommandLineOptions(
                 case "-h":
                 case "/?":
                     showHelp = true;
+                    break;
+                case "--exit":
+                    requestExit = true;
                     break;
                 case "--settings":
                     if (i + 1 >= args.Count)
@@ -86,6 +91,7 @@ public sealed record CommandLineOptions(
             showSettings,
             showVersion,
             showHelp,
+            requestExit,
             settingsPath,
             errors);
     }

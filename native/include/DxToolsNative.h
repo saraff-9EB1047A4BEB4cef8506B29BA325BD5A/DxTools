@@ -4,7 +4,7 @@
 #include <wchar.h>
 
 #define DXTOOLS_NATIVE_API_VERSION 2u
-#define DXTOOLS_NATIVE_VERSION 0x00000200u
+#define DXTOOLS_NATIVE_VERSION 0x00000300u
 
 #ifdef __cplusplus
 extern "C" {
