@@ -9,6 +9,7 @@ DxTools распространяется по GNU GPL v2. Ниже перечи�
 | Компонент | Лицензия | Использование |
 |---|---|---|
 | .NET 10 Runtime / WPF | MIT | поставляется self-contained |
+| System.Drawing.Common 10 | MIT | композиция обоев |
 | Windows SDK headers/libs | Microsoft license | компиляция native-кода |
 
 ## Build and test only (не входят в поставку)
@@ -16,6 +17,7 @@ DxTools распространяется по GNU GPL v2. Ниже перечи�
 | Компонент | Лицензия | Использование |
 |---|---|---|
 | WiX Toolset 6 | MS-RL | сборка MSI |
+| WixToolset.UI.wixext | MS-RL | лицензионный диалог MSI |
 | xUnit | Apache-2.0 | unit-тесты |
 | Microsoft.NET.Test.Sdk | MIT | unit-тесты |
 | coverlet.collector | MIT | покрытие тестов |

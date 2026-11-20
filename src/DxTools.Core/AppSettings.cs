@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 1;
+    public const int CurrentSchemaVersion = 2;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -33,6 +33,8 @@ public sealed class AppSettings
     public bool StartMinimized { get; set; } = true;
 
     public bool FirstRunCompleted { get; set; }
+
+    public WallpaperSettings Wallpaper { get; set; } = new();
 
     public void Normalize()
     {
@@ -50,5 +52,8 @@ public sealed class AppSettings
         {
             SchemaVersion = CurrentSchemaVersion;
         }
+
+        Wallpaper ??= new WallpaperSettings();
+        Wallpaper.Normalize();
     }
 }

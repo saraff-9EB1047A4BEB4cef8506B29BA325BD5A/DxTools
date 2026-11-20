@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <resheader name="resmimetype">
     <value>text/microsoft-resx</value>
@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 0 · Фундамент</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 1 · Мониторы и окна</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -78,4 +78,58 @@
   <data name="LogFolderUnavailable" xml:space="preserve"><value>Папка логов недоступна.</value></data>
   <data name="Phase0Note" xml:space="preserve"><value>Фундаментальная сборка. Мониторы, окна, обои и панель задач появятся в Phase 1–2.</value></data>
   <data name="LicenseName" xml:space="preserve"><value>GNU GPL v2</value></data>
+  <data name="MonitorsTab" xml:space="preserve"><value>Мониторы</value></data>
+  <data name="HotkeysTab" xml:space="preserve"><value>Горячие клавиши</value></data>
+  <data name="WallpaperTab" xml:space="preserve"><value>Обои</value></data>
+  <data name="CurrentLayout" xml:space="preserve"><value>Текущая конфигурация</value></data>
+  <data name="Topology" xml:space="preserve"><value>Топология</value></data>
+  <data name="RefreshMonitors" xml:space="preserve"><value>Обновить</value></data>
+  <data name="SaveCurrentProfile" xml:space="preserve"><value>Сохранить текущую конфигурацию</value></data>
+  <data name="ProfileName" xml:space="preserve"><value>Имя профиля</value></data>
+  <data name="ProfileNameHint" xml:space="preserve"><value>Оставьте пустым для автоматического имени.</value></data>
+  <data name="AutoApply" xml:space="preserve"><value>Применять при подключении</value></data>
+  <data name="Profiles" xml:space="preserve"><value>Сохранённые профили</value></data>
+  <data name="NoProfiles" xml:space="preserve"><value>Сохранённых профилей пока нет.</value></data>
+  <data name="Apply" xml:space="preserve"><value>Применить</value></data>
+  <data name="Delete" xml:space="preserve"><value>Удалить</value></data>
+  <data name="DisplayApplyConfirmTitle" xml:space="preserve"><value>Оставить настройки экрана?</value></data>
+  <data name="DisplayApplyConfirmText" xml:space="preserve"><value>Оставить эти настройки? Возврат через {0} с.</value></data>
+  <data name="Keep" xml:space="preserve"><value>Оставить</value></data>
+  <data name="Revert" xml:space="preserve"><value>Вернуть</value></data>
+  <data name="DisplayApplied" xml:space="preserve"><value>Профиль дисплея применён.</value></data>
+  <data name="DisplayReverted" xml:space="preserve"><value>Настройки экрана возвращены.</value></data>
+  <data name="DisplayApplyFailed" xml:space="preserve"><value>Не удалось применить профиль дисплея.</value></data>
+  <data name="DisplayProfileSaved" xml:space="preserve"><value>Профиль дисплея сохранён.</value></data>
+  <data name="DisplayProfileSaveFailed" xml:space="preserve"><value>Не удалось сохранить профиль дисплея.</value></data>
+  <data name="DisplayNoMonitors" xml:space="preserve"><value>Мониторы не обнаружены.</value></data>
+  <data name="DisplayBusy" xml:space="preserve"><value>Применение настроек экрана…</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Горячие клавиши по умолчанию. Редактор появится в Phase 2.</value></data>
+  <data name="HotkeyMovePrev" xml:space="preserve"><value>Переместить окно на предыдущий монитор</value></data>
+  <data name="HotkeyMoveNext" xml:space="preserve"><value>Переместить окно на следующий монитор</value></data>
+  <data name="HotkeyTopmost" xml:space="preserve"><value>Вкл/выкл поверх всех окон</value></data>
+  <data name="HotkeyActive" xml:space="preserve"><value>Активна</value></data>
+  <data name="HotkeyInactive" xml:space="preserve"><value>Недоступна</value></data>
+  <data name="WallpaperTitle" xml:space="preserve"><value>Обои для нескольких мониторов</value></data>
+  <data name="WallpaperHint" xml:space="preserve"><value>Выберите изображение для каждого монитора. DxTools автоматически соберёт общее полотно.</value></data>
+  <data name="ChooseImage" xml:space="preserve"><value>Выбрать изображение</value></data>
+  <data name="ClearImage" xml:space="preserve"><value>Очистить</value></data>
+  <data name="WallpaperFit" xml:space="preserve"><value>Режим масштабирования</value></data>
+  <data name="FitFill" xml:space="preserve"><value>Заполнить</value></data>
+  <data name="FitFit" xml:space="preserve"><value>Вписать</value></data>
+  <data name="FitStretch" xml:space="preserve"><value>Растянуть</value></data>
+  <data name="FitCenter" xml:space="preserve"><value>По центру</value></data>
+  <data name="FitTile" xml:space="preserve"><value>Замостить</value></data>
+  <data name="ApplyWallpaper" xml:space="preserve"><value>Применить обои</value></data>
+  <data name="WallpaperApplying" xml:space="preserve"><value>Применение обоев…</value></data>
+  <data name="WallpaperApplied" xml:space="preserve"><value>Обои применены.</value></data>
+  <data name="WallpaperFailed" xml:space="preserve"><value>Не удалось применить обои.</value></data>
+  <data name="NoImage" xml:space="preserve"><value>Нет изображения</value></data>
+  <data name="WallpaperNote" xml:space="preserve"><value>В Phase 1 — статические обои на каждый монитор. Слайдшоу из папки — следующий шаг.</value></data>
+  <data name="BackupTitle" xml:space="preserve"><value>Резервная копия</value></data>
+  <data name="BackupHint" xml:space="preserve"><value>Экспорт и восстановление настроек, профилей дисплеев и конфигурации обоев.</value></data>
+  <data name="ExportBackup" xml:space="preserve"><value>Экспорт</value></data>
+  <data name="ImportBackup" xml:space="preserve"><value>Импорт</value></data>
+  <data name="BackupExported" xml:space="preserve"><value>Резервная копия экспортирована.</value></data>
+  <data name="BackupImported" xml:space="preserve"><value>Резервная копия импортирована. Перезапустите DxTools.</value></data>
+  <data name="BackupFailed" xml:space="preserve"><value>Не удалось выполнить операцию с резервной копией.</value></data>
 </root>

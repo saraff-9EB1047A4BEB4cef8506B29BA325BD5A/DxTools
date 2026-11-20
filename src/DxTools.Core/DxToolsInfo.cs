@@ -14,7 +14,21 @@ public static class DxToolsInfo
     public static string Version =>
         ProductAssembly.GetName().Version?.ToString(3) ?? "0.0.0";
 
-    public static string InformationalVersion =>
-        ProductAssembly.GetCustomAttribute<AssemblyInformationalVersionAttribute>()?.InformationalVersion
-        ?? Version;
+    public static string InformationalVersion
+    {
+        get
+        {
+            var version = ProductAssembly
+                .GetCustomAttribute<AssemblyInformationalVersionAttribute>()?
+                .InformationalVersion;
+
+            if (string.IsNullOrWhiteSpace(version))
+            {
+                return Version;
+            }
+
+            var metadataIndex = version.IndexOf('+', StringComparison.Ordinal);
+            return metadataIndex < 0 ? version : version[..metadataIndex];
+        }
+    }
 }

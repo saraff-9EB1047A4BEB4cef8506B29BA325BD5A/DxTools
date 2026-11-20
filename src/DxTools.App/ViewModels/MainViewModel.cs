@@ -18,6 +18,7 @@ public sealed class MainViewModel : ObservableObject
     private readonly AutostartService _autostart;
 
     private string _statusMessage = string.Empty;
+    private string _backupStatusMessage = string.Empty;
     private bool _restartRequired;
     private NativeProbeResult _native;
     private bool _safeMode;
@@ -27,12 +28,21 @@ public sealed class MainViewModel : ObservableObject
         SettingsStore settingsStore,
         AppSettings settings,
         EngineHost engine,
-        AutostartService autostart)
+        AutostartService autostart,
+        Func<string, bool>? confirmDisplayChange = null)
     {
         _settingsStore = settingsStore ?? throw new ArgumentNullException(nameof(settingsStore));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _engine = engine ?? throw new ArgumentNullException(nameof(engine));
         _autostart = autostart ?? throw new ArgumentNullException(nameof(autostart));
+
+        Display = new DisplayViewModel(
+            engine.Display,
+            engine.Profiles,
+            settingsStore,
+            settings,
+            confirmDisplayChange ?? (_ => true));
+        Wallpaper = new WallpaperViewModel(engine.Display, engine.Wallpaper, settingsStore, settings);
 
         _native = engine.Status.Native;
         _safeMode = engine.Status.SafeMode;
@@ -42,15 +52,35 @@ public sealed class MainViewModel : ObservableObject
         OpenLogsCommand = new RelayCommand(OpenLogs);
         OpenRepositoryCommand = new RelayCommand(OpenRepository);
         SelfCheckCommand = new RelayCommand(RunSelfCheck);
+        ExportBackupCommand = new RelayCommand(ExportBackup);
+        ImportBackupCommand = new RelayCommand(ImportBackup);
     }
 
     public Action<AppTheme>? ThemeChanged { get; set; }
+
+    public event Action? BackupImported;
+
+    public DisplayViewModel Display { get; }
+
+    public WallpaperViewModel Wallpaper { get; }
+
+    public IReadOnlyList<HotkeyInfo> Hotkeys { get; private set; } = Array.Empty<HotkeyInfo>();
+
+    public void SetHotkeys(IEnumerable<HotkeyInfo> hotkeys)
+    {
+        Hotkeys = hotkeys.ToList();
+        OnPropertyChanged(nameof(Hotkeys));
+    }
 
     public ICommand OpenLogsCommand { get; }
 
     public ICommand OpenRepositoryCommand { get; }
 
     public ICommand SelfCheckCommand { get; }
+
+    public ICommand ExportBackupCommand { get; }
+
+    public ICommand ImportBackupCommand { get; }
 
     public string VersionText => DxToolsInfo.InformationalVersion;
 
@@ -149,6 +179,12 @@ public sealed class MainViewModel : ObservableObject
     {
         get => _restartRequired;
         private set => SetProperty(ref _restartRequired, value);
+    }
+
+    public string BackupStatusMessage
+    {
+        get => _backupStatusMessage;
+        private set => SetProperty(ref _backupStatusMessage, value);
     }
 
     public string StatusMessage
@@ -259,5 +295,66 @@ public sealed class MainViewModel : ObservableObject
     {
         _engine.Refresh();
         StatusMessage = Strings.SelfCheckDone;
+    }
+
+    private void ExportBackup()
+    {
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Title = Strings.BackupTitle,
+            Filter = "DxTools backup|*.zip|All files|*.*",
+            FileName = $"DxTools-backup-{DateTime.Now:yyyyMMdd}.zip",
+            AddExtension = true,
+            DefaultExt = ".zip",
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        try
+        {
+            SettingsBackupService.Export(dialog.FileName);
+            BackupStatusMessage = Strings.BackupExported;
+        }
+        catch (Exception ex) when (ex is IOException
+            or UnauthorizedAccessException
+            or InvalidDataException
+            or NotSupportedException)
+        {
+            BackupStatusMessage = $"{Strings.BackupFailed} {ex.Message}";
+            DxLog.Exception("Settings export failed.", ex);
+        }
+    }
+
+    private void ImportBackup()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = Strings.BackupTitle,
+            Filter = "DxTools backup|*.zip|All files|*.*",
+            CheckFileExists = true,
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        try
+        {
+            SettingsBackupService.Import(dialog.FileName);
+            BackupStatusMessage = Strings.BackupImported;
+            BackupImported?.Invoke();
+        }
+        catch (Exception ex) when (ex is IOException
+            or UnauthorizedAccessException
+            or InvalidDataException
+            or NotSupportedException)
+        {
+            BackupStatusMessage = $"{Strings.BackupFailed} {ex.Message}";
+            DxLog.Exception("Settings import failed.", ex);
+        }
     }
 }

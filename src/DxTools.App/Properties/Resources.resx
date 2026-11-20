@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 0 · Foundation</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 1 · Monitors &amp; windows</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -78,4 +78,58 @@
   <data name="LogFolderUnavailable" xml:space="preserve"><value>Log folder is not available.</value></data>
   <data name="Phase0Note" xml:space="preserve"><value>Foundation build. Monitor, window, wallpaper and taskbar features are planned for Phase 1–2.</value></data>
   <data name="LicenseName" xml:space="preserve"><value>GNU GPL v2</value></data>
+  <data name="MonitorsTab" xml:space="preserve"><value>Monitors</value></data>
+  <data name="HotkeysTab" xml:space="preserve"><value>Hotkeys</value></data>
+  <data name="WallpaperTab" xml:space="preserve"><value>Wallpaper</value></data>
+  <data name="CurrentLayout" xml:space="preserve"><value>Current layout</value></data>
+  <data name="Topology" xml:space="preserve"><value>Topology</value></data>
+  <data name="RefreshMonitors" xml:space="preserve"><value>Refresh</value></data>
+  <data name="SaveCurrentProfile" xml:space="preserve"><value>Save current configuration</value></data>
+  <data name="ProfileName" xml:space="preserve"><value>Profile name</value></data>
+  <data name="ProfileNameHint" xml:space="preserve"><value>Leave empty to use an automatic name.</value></data>
+  <data name="AutoApply" xml:space="preserve"><value>Auto-apply</value></data>
+  <data name="Profiles" xml:space="preserve"><value>Saved profiles</value></data>
+  <data name="NoProfiles" xml:space="preserve"><value>No saved profiles yet.</value></data>
+  <data name="Apply" xml:space="preserve"><value>Apply</value></data>
+  <data name="Delete" xml:space="preserve"><value>Delete</value></data>
+  <data name="DisplayApplyConfirmTitle" xml:space="preserve"><value>Keep display settings?</value></data>
+  <data name="DisplayApplyConfirmText" xml:space="preserve"><value>Keep these display settings? Reverting in {0} seconds.</value></data>
+  <data name="Keep" xml:space="preserve"><value>Keep</value></data>
+  <data name="Revert" xml:space="preserve"><value>Revert</value></data>
+  <data name="DisplayApplied" xml:space="preserve"><value>Display profile applied.</value></data>
+  <data name="DisplayReverted" xml:space="preserve"><value>Display settings reverted.</value></data>
+  <data name="DisplayApplyFailed" xml:space="preserve"><value>Could not apply the display profile.</value></data>
+  <data name="DisplayProfileSaved" xml:space="preserve"><value>Display profile saved.</value></data>
+  <data name="DisplayProfileSaveFailed" xml:space="preserve"><value>Could not save the display profile.</value></data>
+  <data name="DisplayNoMonitors" xml:space="preserve"><value>No monitors were detected.</value></data>
+  <data name="DisplayBusy" xml:space="preserve"><value>Applying display settings…</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Default hotkeys. A custom hotkey editor is planned for Phase 2.</value></data>
+  <data name="HotkeyMovePrev" xml:space="preserve"><value>Move window to the previous monitor</value></data>
+  <data name="HotkeyMoveNext" xml:space="preserve"><value>Move window to the next monitor</value></data>
+  <data name="HotkeyTopmost" xml:space="preserve"><value>Toggle always-on-top</value></data>
+  <data name="HotkeyActive" xml:space="preserve"><value>Active</value></data>
+  <data name="HotkeyInactive" xml:space="preserve"><value>Unavailable</value></data>
+  <data name="WallpaperTitle" xml:space="preserve"><value>Multi-monitor wallpaper</value></data>
+  <data name="WallpaperHint" xml:space="preserve"><value>Choose an image for each monitor. DxTools builds a composite image automatically.</value></data>
+  <data name="ChooseImage" xml:space="preserve"><value>Choose image</value></data>
+  <data name="ClearImage" xml:space="preserve"><value>Clear</value></data>
+  <data name="WallpaperFit" xml:space="preserve"><value>Fit mode</value></data>
+  <data name="FitFill" xml:space="preserve"><value>Fill</value></data>
+  <data name="FitFit" xml:space="preserve"><value>Fit</value></data>
+  <data name="FitStretch" xml:space="preserve"><value>Stretch</value></data>
+  <data name="FitCenter" xml:space="preserve"><value>Center</value></data>
+  <data name="FitTile" xml:space="preserve"><value>Tile</value></data>
+  <data name="ApplyWallpaper" xml:space="preserve"><value>Apply wallpaper</value></data>
+  <data name="WallpaperApplying" xml:space="preserve"><value>Applying wallpaper...</value></data>
+  <data name="WallpaperApplied" xml:space="preserve"><value>Wallpaper applied.</value></data>
+  <data name="WallpaperFailed" xml:space="preserve"><value>Could not apply wallpaper.</value></data>
+  <data name="NoImage" xml:space="preserve"><value>No image</value></data>
+  <data name="WallpaperNote" xml:space="preserve"><value>Static per-monitor wallpaper in Phase 1. Folder slideshow is planned next.</value></data>
+  <data name="BackupTitle" xml:space="preserve"><value>Backup</value></data>
+  <data name="BackupHint" xml:space="preserve"><value>Export or restore settings, display profiles and wallpaper configuration.</value></data>
+  <data name="ExportBackup" xml:space="preserve"><value>Export</value></data>
+  <data name="ImportBackup" xml:space="preserve"><value>Import</value></data>
+  <data name="BackupExported" xml:space="preserve"><value>Backup exported.</value></data>
+  <data name="BackupImported" xml:space="preserve"><value>Backup imported. Restart DxTools to apply it.</value></data>
+  <data name="BackupFailed" xml:space="preserve"><value>Backup operation failed.</value></data>
 </root>

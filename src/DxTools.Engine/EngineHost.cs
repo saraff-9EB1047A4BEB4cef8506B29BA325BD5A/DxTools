@@ -18,9 +18,22 @@ public sealed class EngineHost
     {
         _safeMode = safeMode;
         Status = EngineStatus.Unknown with { SafeMode = safeMode };
+
+        Display = new DisplayService(safeMode);
+        Profiles = new DisplayProfileService(Display);
+        Windows = new WindowManager(Display);
+        Wallpaper = new WallpaperService(Display);
     }
 
     public EngineStatus Status { get; private set; }
+
+    public DisplayService Display { get; }
+
+    public DisplayProfileService Profiles { get; }
+
+    public WindowManager Windows { get; }
+
+    public WallpaperService Wallpaper { get; }
 
     public event EventHandler<EngineStatus>? StatusChanged;
 

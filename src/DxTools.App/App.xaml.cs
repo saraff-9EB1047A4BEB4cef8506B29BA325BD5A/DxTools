@@ -17,7 +17,10 @@ public partial class App : System.Windows.Application
     private EngineHost? _engine;
     private MainWindow? _window;
     private TrayIconHost? _tray;
+    private HotkeyService? _hotkeys;
+    private DisplayChangeWatcher? _displayWatcher;
     private bool _isExiting;
+    private bool _suppressSaveOnExit;
 
     protected override void OnStartup(System.Windows.StartupEventArgs e)
     {
@@ -106,7 +109,8 @@ public partial class App : System.Windows.Application
         _engine = new EngineHost(options.SafeMode);
         _engine.Start();
 
-        var viewModel = new MainViewModel(settingsStore, _settings, _engine, autostart);
+        var viewModel = new MainViewModel(settingsStore, _settings, _engine, autostart, DisplayConfirmationWindow.Confirm);
+        viewModel.BackupImported += () => _suppressSaveOnExit = true;
         viewModel.ThemeChanged += theme =>
         {
             ThemeManager.Apply(theme);
@@ -117,6 +121,18 @@ public partial class App : System.Windows.Application
         _window.Closing += OnMainWindowClosing;
 
         _tray = new TrayIconHost(_window, _engine, ExitApplication);
+
+        var windowHandle = new System.Windows.Interop.WindowInteropHelper(_window).EnsureHandle();
+        if (!options.SafeMode)
+        {
+            _hotkeys = new HotkeyService(windowHandle);
+            _hotkeys.Pressed += OnHotkeyPressed;
+            viewModel.SetHotkeys(_hotkeys.Bindings);
+
+            _displayWatcher = new DisplayChangeWatcher(
+                windowHandle,
+                () => viewModel.Display.NotifyTopologyChanged());
+        }
 
         var showWindow = options.ShowSettings
             || !_settings.FirstRunCompleted
@@ -154,6 +170,27 @@ public partial class App : System.Windows.Application
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
+    }
+
+    private void OnHotkeyPressed(HotkeyAction action)
+    {
+        if (_engine is null)
+        {
+            return;
+        }
+
+        switch (action)
+        {
+            case HotkeyAction.MoveWindowPrevious:
+                _ = _engine.Windows.MoveForegroundWindow(-1);
+                break;
+            case HotkeyAction.MoveWindowNext:
+                _ = _engine.Windows.MoveForegroundWindow(1);
+                break;
+            case HotkeyAction.ToggleTopmost:
+                _ = _engine.Windows.ToggleTopmost();
+                break;
+        }
     }
 
     private void OnShowRequested()
@@ -217,8 +254,13 @@ public partial class App : System.Windows.Application
 
     protected override void OnExit(System.Windows.ExitEventArgs e)
     {
-        SaveSettings();
+        if (!_suppressSaveOnExit)
+        {
+            SaveSettings();
+        }
         _tray?.Dispose();
+        _hotkeys?.Dispose();
+        _displayWatcher?.Dispose();
         _engine?.Stop();
         _singleInstance?.Dispose();
         DxLog.Info("DxTools stopped.");

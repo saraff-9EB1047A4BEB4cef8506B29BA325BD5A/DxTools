@@ -16,6 +16,7 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\DxTools.Core\DxTools.Core.csproj" />
     <ProjectReference Include="..\..\src\DxTools.Interop\DxTools.Interop.csproj" />
+    <ProjectReference Include="..\..\src\DxTools.Engine\DxTools.Engine.csproj" />
   </ItemGroup>
 
   <ItemGroup>
