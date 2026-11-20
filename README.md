@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 3D (ядро) завершён, ожидает подтверждения
+- Статус: 1.0.0-rc.1 готов, ожидает подтверждения GA
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.17.0-alpha)
+## Возможности текущей версии (1.0.0-rc.1)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -55,8 +55,11 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Phase 1.0: shell extension, UIAccess, ARM64, подпись и security review.
-Подробный план: [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md).
+В RC не входят: shell extension, UIAccess/elevated helper, ARM64, подпись
+сертификатом и независимый security review. Подробный план:
+[spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md),
+security review: [docs/security-review.md](docs/security-review.md),
+release checklist: [docs/release-checklist.md](docs/release-checklist.md).
 
 ## Требования для сборки
 
@@ -76,7 +79,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.17.0-x64.msi`.
+`artifacts/DxTools-1.0.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -116,6 +119,8 @@ build/                 сборочные скрипты
 - [docs/reports/phase-3d.md](docs/reports/phase-3d.md) — отчёт Phase 3D;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [SECURITY.md](SECURITY.md) — политика безопасности;
+- [docs/security-review.md](docs/security-review.md) — security review;
+- [docs/release-checklist.md](docs/release-checklist.md) — release checklist;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.
 

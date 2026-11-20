@@ -1,7 +1,8 @@
 param(
     [string]$Configuration = "Release",
     [string]$OutputDirectory = "",
-    [string]$ZigPath = ""
+    [string]$ZigPath = "",
+    [string]$Architecture = "x64"
 )
 
 $ErrorActionPreference = "Stop"
@@ -44,7 +45,7 @@ if (Test-Path -LiteralPath $vswhere) {
 if ($cmake -and -not [string]::IsNullOrWhiteSpace($msvcPath)) {
     Write-Output "Building native library with CMake + MSVC."
     $buildDir = Join-Path $repoRoot "native\build"
-    $cmakeArgs = @("-S", (Join-Path $repoRoot "native"), "-B", $buildDir, "-A", "x64")
+    $cmakeArch = if ($Architecture -eq "arm64") { "ARM64" } else { "x64" }; $cmakeArgs = @("-S", (Join-Path $repoRoot "native"), "-B", $buildDir, "-A", $cmakeArch)
     if ($Configuration -eq "Release") {
         $cmakeArgs += "-DCMAKE_CONFIGURATION_TYPES=Release"
     }
@@ -76,7 +77,7 @@ else {
     $output = Join-Path $OutputDirectory "DxTools.Native.dll"
     $optimization = if ($Configuration -eq "Debug") { "-O0" } else { "-O2" }
 
-    & $zig "c++" "-target" "x86_64-windows-gnu" "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-shared" `
+    & $zig "c++" "-target" $(if ($Architecture -eq "arm64") { "aarch64-windows-gnu" } else { "x86_64-windows-gnu" }) "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-shared" `
         "-DUNICODE" "-D_UNICODE" "-DWIN32_LEAN_AND_MEAN" "-DNOMINMAX" "-I$include" $source "-o" $output "-lole32" "-loleaut32" "-lpropsys" "-luuid"
     if ($LASTEXITCODE -ne 0) { throw "Zig build failed with exit code $LASTEXITCODE." }
 }

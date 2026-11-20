@@ -4,6 +4,17 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.1] - 2026-11-20
+
+### Added
+
+- release candidate: screensaver, audio, desktop icons, split taskbars,
+  tray mirror, VD hotkeys;
+- `SECURITY.md`, `docs/security-review.md`, `docs/release-checklist.md`,
+  `build/sign.ps1`;
+- MSI 1.0.0, self-contained publish;
+- 27 unit-тестов.
+
 ## [0.17.0-alpha.1] - 2026-11-20
 
 ### Added

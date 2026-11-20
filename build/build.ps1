@@ -1,8 +1,9 @@
 param(
     [string]$Configuration = "Release",
     [string]$Runtime = "win-x64",
-    [string]$ProductVersion = "0.17.0",
+    [string]$ProductVersion = "1.0.0",
     [string]$ZigPath = "",
+    [string]$Architecture = "x64",
     [switch]$SkipTests,
     [switch]$SkipNative
 )
@@ -28,7 +29,8 @@ if (-not $SkipNative) {
     & (Join-Path $PSScriptRoot "build-native.ps1") `
         -Configuration $Configuration `
         -OutputDirectory $nativeDir `
-        -ZigPath $ZigPath
+        -ZigPath $ZigPath `
+        -Architecture $Architecture
 }
 elseif (-not (Test-Path -LiteralPath (Join-Path $nativeDir "DxTools.Native.dll"))) {
     throw "Native DLL is missing in '$nativeDir' and -SkipNative was specified."
