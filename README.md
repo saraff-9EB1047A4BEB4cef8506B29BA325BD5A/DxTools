@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 2H (ядро) завершён, ожидает подтверждения
+- Статус: Phase 2I (ядро) завершён, ожидает подтверждения
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.10.0-alpha)
+## Возможности текущей версии (0.11.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -33,6 +33,7 @@ DisplayFusion: профили мониторов, мультимониторны
   обои, программа или C#-скрипт;
 - кнопки в заголовке активного окна: перенос на следующий монитор и
   always-on-top;
+- сплиты монитора: сетка до 3×3 и snap hotkeys `Ctrl+Alt+1..4`;
 - обои на каждый монитор: композитное полотно, режимы Fill/Fit/Stretch/
   Center/Tile;
 - слайдшоу обоев из папки с настраиваемым интервалом;
@@ -47,7 +48,7 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Сплиты мониторов и системный трей — Phase 2I/3.
+Системный трей на панели задач — Phase 2J/3.
 Подробный план: [spec.md](spec.md).
 
 ## Требования для сборки
@@ -68,7 +69,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.10.0-x64.msi`.
+`artifacts/DxTools-0.11.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -99,6 +100,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-2f.md](docs/reports/phase-2f.md) — отчёт Phase 2F;
 - [docs/reports/phase-2g.md](docs/reports/phase-2g.md) — отчёт Phase 2G;
 - [docs/reports/phase-2h.md](docs/reports/phase-2h.md) — отчёт Phase 2H;
+- [docs/reports/phase-2i.md](docs/reports/phase-2i.md) — отчёт Phase 2I;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.

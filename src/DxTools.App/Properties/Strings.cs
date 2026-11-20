@@ -197,6 +197,14 @@ public static class Strings
     public static string HotkeyCapturePrefixHint => Get(nameof(HotkeyCapturePrefixHint));
     public static string HotkeyPrefix => Get(nameof(HotkeyPrefix));
     public static string HotkeyClearPrefix => Get(nameof(HotkeyClearPrefix));
+    public static string HotkeySnap1 => Get(nameof(HotkeySnap1));
+    public static string HotkeySnap2 => Get(nameof(HotkeySnap2));
+    public static string HotkeySnap3 => Get(nameof(HotkeySnap3));
+    public static string HotkeySnap4 => Get(nameof(HotkeySnap4));
+    public static string SplitsTitle => Get(nameof(SplitsTitle));
+    public static string SplitsHint => Get(nameof(SplitsHint));
+    public static string SplitRows => Get(nameof(SplitRows));
+    public static string SplitColumns => Get(nameof(SplitColumns));
 }
 
 

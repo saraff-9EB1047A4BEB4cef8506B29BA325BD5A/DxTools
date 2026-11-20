@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.11.0-alpha.1] - 2026-11-20
+
+### Added
+
+- сплиты монитора: настройки rows/columns (1–3) и snap hotkeys
+  `Ctrl+Alt+1..4`;
+- WindowManager.SnapForegroundWindowToSplit с учётом монитора и DPI;
+- 25 unit-тестов.
+
+### Changed
+
+- версия приложения 0.11.0-alpha.1; native DLL 0.5.0, API v3;
+- MSI 0.11.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2I.
+
 ## [0.10.0-alpha.1] - 2026-11-20
 
 ### Added

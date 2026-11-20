@@ -360,6 +360,18 @@ public partial class App : System.Windows.Application
             case HotkeyAction.ToggleTopmost:
                 _ = _engine.Windows.ToggleTopmost();
                 break;
+            case HotkeyAction.SnapToSplit1:
+                _ = _engine.Windows.SnapForegroundWindowToSplit(1, _settings?.SplitRows ?? 2, _settings?.SplitColumns ?? 2);
+                break;
+            case HotkeyAction.SnapToSplit2:
+                _ = _engine.Windows.SnapForegroundWindowToSplit(2, _settings?.SplitRows ?? 2, _settings?.SplitColumns ?? 2);
+                break;
+            case HotkeyAction.SnapToSplit3:
+                _ = _engine.Windows.SnapForegroundWindowToSplit(3, _settings?.SplitRows ?? 2, _settings?.SplitColumns ?? 2);
+                break;
+            case HotkeyAction.SnapToSplit4:
+                _ = _engine.Windows.SnapForegroundWindowToSplit(4, _settings?.SplitRows ?? 2, _settings?.SplitColumns ?? 2);
+                break;
         }
     }
 

@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 2H (ядро) завершён, ожидает подтверждения
+Статус: Phase 2I (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -321,6 +321,25 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - сплиты мониторов;
 - цепочки длиннее двух шагов.
 
+### Phase 2I — сплиты монитора 0.11 (ядро завершено)
+
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-2i.md`.
+
+Реализовано:
+
+- настройки SplitRows/SplitColumns (1–3) в разделе «Мониторы»;
+- snap hotkeys `Ctrl+Alt+1..4` для прикрепления окна к ячейке;
+- WindowManager.SnapForegroundWindowToSplit с учётом монитора и DPI;
+- проверено: окно 2128×1288 → 1056×660 в ячейке 2×2;
+- 25 unit-тестов; MSI 0.11.0.
+
+Перенесено в Phase 2J/3:
+
+- системный трей на панели задач;
+- отдельные панели задач для сплитов;
+- произвольное число snap-слотов.
+
 ### Phase 3 — паритет и hardening 1.0 (10–14 недель)
 
 - виртуальные десктопы (undocumented COM + адаптеры по сборкам);
@@ -338,7 +357,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 |---|---|---|
 | Профили дисплеев, режимы, primary, вкл/выкл | C++ DisplayConfig | 1 |
 | DPI scaling | C++ (spike) | 2 |
-| Сплиты мониторов | C# + C++ | 2I |
+| Сплиты мониторов | C# snap grid | 2I (готово) |
 | Горячие клавиши | LL-hook + редактор + 2-step chains | 1–2H (готово) |
 | Move/topmost | C# Win32 | 1 |
 | Snap/transparency/roll-up/span | C# Win32 | 2 |
@@ -348,7 +367,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Pinned apps | C# + taskbar | 2C (готово) |
 | DWM live-превью | HwndHost/DWM | 2D (готово) |
 | Автоскрытие панели | AppBar + timer | 2D (готово) |
-| Зеркало трея | C++/UIA | 2I (риск) |
+| Зеркало трея | C++/UIA | 2J (риск) |
 | Обои per-monitor/span | C# + System.Drawing, composite + span | 1 |
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |

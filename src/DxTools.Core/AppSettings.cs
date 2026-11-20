@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 7;
+    public const int CurrentSchemaVersion = 8;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -39,6 +39,10 @@ public sealed class AppSettings
     public bool TaskbarAutoHide { get; set; }
 
     public bool EnableTitleBarButtons { get; set; }
+
+    public int SplitRows { get; set; } = 2;
+
+    public int SplitColumns { get; set; } = 2;
 
     public WallpaperSettings Wallpaper { get; set; } = new();
 
@@ -92,6 +96,9 @@ public sealed class AppSettings
                 hotkey.PrefixGesture = string.Empty;
             }
         }
+
+        SplitRows = Math.Clamp(SplitRows, 1, 3);
+        SplitColumns = Math.Clamp(SplitColumns, 1, 3);
 
         PinnedApps ??= new List<PinnedApp>();
         PinnedApps.RemoveAll(app => string.IsNullOrWhiteSpace(app.Path));

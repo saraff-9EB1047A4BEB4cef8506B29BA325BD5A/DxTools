@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2H и границы модулей.
+Документ описывает архитектуру Phase 2I и границы модулей.
 
 ## Процессная модель
 
@@ -56,7 +56,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   topology hash.
 - `DisplayProfileService`: save/apply/rollback, auto-apply, store профилей.
 - `WindowManager`: перенос активного окна с учётом DPI, topmost;
-  операции по целевому HWND для titlebar-overlay.
+  операции по целевому HWND для titlebar-overlay; snap в ячейку сетки
+  сплитов (`SplitRows`/`SplitColumns`).
 - `TitleBarOverlayManager`: topmost overlay активного окна с кнопками
   «следующий монитор»/always-on-top.
 - `WallpaperService`: композитное полотно и установка обоев.
@@ -67,7 +68,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 2I/3: splits и системный трей.
+- В Phase 2J/3: системный трей и отдельные taskbar для сплитов.
 
 ### DxTools.Interop
 

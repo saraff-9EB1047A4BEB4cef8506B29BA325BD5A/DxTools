@@ -193,6 +193,40 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public int SplitRows
+    {
+        get => _settings.SplitRows;
+        set
+        {
+            var normalized = Math.Clamp(value, 1, 3);
+            if (_settings.SplitRows == normalized)
+            {
+                return;
+            }
+
+            _settings.SplitRows = normalized;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
+    public int SplitColumns
+    {
+        get => _settings.SplitColumns;
+        set
+        {
+            var normalized = Math.Clamp(value, 1, 3);
+            if (_settings.SplitColumns == normalized)
+            {
+                return;
+            }
+
+            _settings.SplitColumns = normalized;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
     public bool EnableTitleBarButtons
     {
         get => _settings.EnableTitleBarButtons;

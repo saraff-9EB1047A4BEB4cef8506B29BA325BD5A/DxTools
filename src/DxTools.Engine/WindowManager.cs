@@ -108,6 +108,73 @@ public sealed class WindowManager
         return moved;
     }
 
+    public bool SnapForegroundWindowToSplit(int slot, int rows, int columns)
+    {
+        var window = Win32Window.GetForegroundWindow();
+        if (window == IntPtr.Zero
+            || window == Win32Window.GetShellWindow()
+            || !Win32Window.IsWindow(window))
+        {
+            return false;
+        }
+
+        _ = Win32Window.GetWindowThreadProcessId(window, out var processId);
+        if (processId == Environment.ProcessId)
+        {
+            return false;
+        }
+
+        var monitors = _display.GetMonitors();
+        if (monitors.Count == 0 || !Win32Window.GetWindowRect(window, out var currentRect))
+        {
+            return false;
+        }
+
+        var monitorIndex = FindMonitorIndex(monitors, currentRect.CenterX, currentRect.CenterY);
+        if (monitorIndex < 0)
+        {
+            return false;
+        }
+
+        rows = Math.Clamp(rows, 1, 3);
+        columns = Math.Clamp(columns, 1, 3);
+        if (slot < 1 || slot > rows * columns)
+        {
+            return false;
+        }
+
+        var monitor = monitors[monitorIndex];
+        var cellWidth = monitor.Width / columns;
+        var cellHeight = monitor.Height / rows;
+        var index = slot - 1;
+        var row = index / columns;
+        var column = index % columns;
+        var x = monitor.X + (column * cellWidth);
+        var y = monitor.Y + (row * cellHeight);
+        var width = column == columns - 1 ? monitor.Right - x : cellWidth;
+        var height = row == rows - 1 ? monitor.Bottom - y : cellHeight;
+
+        if (Win32Window.IsZoomed(window))
+        {
+            _ = Win32Window.ShowWindow(window, Win32Window.SwRestore);
+        }
+
+        var moved = Win32Window.SetWindowPos(
+            window,
+            IntPtr.Zero,
+            x,
+            y,
+            Math.Max(150, width),
+            Math.Max(100, height),
+            Win32Window.SwpNoZOrder | Win32Window.SwpNoActivate);
+
+        if (moved)
+        {
+            DxLog.Info($"Window snapped to split {slot}/{rows}x{columns} on {monitor.DisplayName}.");
+        }
+
+        return moved;
+    }
     public bool ToggleTopmost() => ToggleTopmost(Win32Window.GetForegroundWindow());
 
     public bool ToggleTopmost(IntPtr window)
