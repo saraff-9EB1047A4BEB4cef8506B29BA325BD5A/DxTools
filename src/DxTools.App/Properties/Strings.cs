@@ -145,6 +145,21 @@ public static class Strings
     public static string SlideshowStarted => Get(nameof(SlideshowStarted));
     public static string SlideshowStopped => Get(nameof(SlideshowStopped));
     public static string NoSlideshowImages => Get(nameof(NoSlideshowImages));
+    public static string WindowsTab => Get(nameof(WindowsTab));
+    public static string CurrentWindows => Get(nameof(CurrentWindows));
+    public static string SaveWindowProfile => Get(nameof(SaveWindowProfile));
+    public static string WindowProfiles => Get(nameof(WindowProfiles));
+    public static string NoWindowProfiles => Get(nameof(NoWindowProfiles));
+    public static string WindowProfileNameHint => Get(nameof(WindowProfileNameHint));
+    public static string WindowProfileSaved => Get(nameof(WindowProfileSaved));
+    public static string WindowProfileSaveFailed => Get(nameof(WindowProfileSaveFailed));
+    public static string WindowProfileApplied => Get(nameof(WindowProfileApplied));
+    public static string WindowProfileApplyFailed => Get(nameof(WindowProfileApplyFailed));
+    public static string HotkeyChange => Get(nameof(HotkeyChange));
+    public static string HotkeyCaptureTitle => Get(nameof(HotkeyCaptureTitle));
+    public static string HotkeyCaptureHint => Get(nameof(HotkeyCaptureHint));
+    public static string HotkeyCaptureInvalid => Get(nameof(HotkeyCaptureInvalid));
+    public static string Cancel => Get(nameof(Cancel));
 }
 
 

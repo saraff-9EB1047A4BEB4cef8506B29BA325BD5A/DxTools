@@ -5,28 +5,20 @@ using DxTools.Core;
 
 namespace DxTools.App.Services;
 
-public enum HotkeyAction
-{
-    MoveWindowPrevious,
-    MoveWindowNext,
-    ToggleTopmost,
-}
-
 public sealed class HotkeyService : IDisposable
 {
     private const int WmHotkey = 0x0312;
-    private const uint ModAlt = 0x0001;
-    private const uint ModControl = 0x0002;
-    private const uint ModNoRepeat = 0x4000;
 
     private readonly IntPtr _windowHandle;
     private readonly HwndSource? _source;
+    private readonly AppSettings _settings;
     private readonly List<HotkeyBinding> _bindings = [];
     private bool _disposed;
 
-    public HotkeyService(IntPtr windowHandle)
+    public HotkeyService(IntPtr windowHandle, AppSettings settings)
     {
         _windowHandle = windowHandle;
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _source = HwndSource.FromHwnd(windowHandle);
 
         if (_source is null)
@@ -36,28 +28,54 @@ public sealed class HotkeyService : IDisposable
         }
 
         _source.AddHook(WindowProcedure);
-
-        Register(1, HotkeyAction.MoveWindowPrevious, "Ctrl+Alt+Left", 0x25, Strings.HotkeyMovePrev);
-        Register(2, HotkeyAction.MoveWindowNext, "Ctrl+Alt+Right", 0x27, Strings.HotkeyMoveNext);
-        Register(3, HotkeyAction.ToggleTopmost, "Ctrl+Alt+Up", 0x26, Strings.HotkeyTopmost);
+        RegisterAll();
     }
 
     public event Action<HotkeyAction>? Pressed;
 
     public IReadOnlyList<HotkeyInfo> Bindings =>
-        _bindings.Select(binding => new HotkeyInfo(binding.Gesture, binding.Description, binding.Registered)).ToList();
+        _bindings
+            .Select(binding => new HotkeyInfo(
+                binding.Setting.Action,
+                binding.Setting.Gesture,
+                Describe(binding.Setting.Action),
+                binding.Registered))
+            .ToList();
 
-    private void Register(int id, HotkeyAction action, string gesture, uint virtualKey, string description)
+    public void Reload()
     {
-        var modifiers = ModControl | ModAlt | ModNoRepeat;
-        var registered = RegisterHotKey(_windowHandle, id, modifiers, virtualKey);
-
-        if (!registered)
+        foreach (var binding in _bindings.Where(item => item.Registered))
         {
-            DxLog.Warn($"Hotkey registration failed: {gesture}.");
+            _ = UnregisterHotKey(_windowHandle, binding.Id);
         }
 
-        _bindings.Add(new HotkeyBinding(id, action, gesture, description, registered));
+        _bindings.Clear();
+        RegisterAll();
+    }
+
+    private void RegisterAll()
+    {
+        var settings = _settings.Hotkeys.Count > 0
+            ? _settings.Hotkeys
+            : HotkeySetting.CreateDefaults();
+
+        var id = 1;
+        foreach (var setting in settings)
+        {
+            var registered = RegisterHotKey(
+                _windowHandle,
+                id,
+                setting.Modifiers,
+                setting.VirtualKey);
+
+            if (!registered)
+            {
+                DxLog.Warn($"Hotkey registration failed: {setting.Gesture}.");
+            }
+
+            _bindings.Add(new HotkeyBinding(id, setting, registered));
+            id++;
+        }
     }
 
     private IntPtr WindowProcedure(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
@@ -78,15 +96,23 @@ public sealed class HotkeyService : IDisposable
 
         try
         {
-            Pressed?.Invoke(binding.Action);
+            Pressed?.Invoke(binding.Setting.Action);
         }
         catch (Exception ex)
         {
-            DxLog.Exception($"Hotkey action '{binding.Action}' failed.", ex);
+            DxLog.Exception($"Hotkey action '{binding.Setting.Action}' failed.", ex);
         }
 
         return IntPtr.Zero;
     }
+
+    private static string Describe(HotkeyAction action) => action switch
+    {
+        HotkeyAction.MoveWindowPrevious => Strings.HotkeyMovePrev,
+        HotkeyAction.MoveWindowNext => Strings.HotkeyMoveNext,
+        HotkeyAction.ToggleTopmost => Strings.HotkeyTopmost,
+        _ => action.ToString(),
+    };
 
     public void Dispose()
     {
@@ -113,10 +139,5 @@ public sealed class HotkeyService : IDisposable
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool UnregisterHotKey(IntPtr hwnd, int id);
 
-    private sealed record HotkeyBinding(
-        int Id,
-        HotkeyAction Action,
-        string Gesture,
-        string Description,
-        bool Registered);
+    private sealed record HotkeyBinding(int Id, HotkeySetting Setting, bool Registered);
 }

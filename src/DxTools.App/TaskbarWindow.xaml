@@ -47,8 +47,8 @@
             <DataTemplate>
               <Button Command="{Binding DataContext.ActivateCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                       CommandParameter="{Binding}"
-                      ToolTip="{Binding Title}"
-                      AutomationProperties.Name="{Binding Title}"
+                      ToolTip="{Binding ToolTipText}"
+                      AutomationProperties.Name="{Binding DisplayTitle}"
                       Focusable="False">
                 <Button.Style>
                   <Style TargetType="Button" BasedOn="{StaticResource TaskbarButtonStyle}">
@@ -65,7 +65,7 @@
                          Width="18"
                          Height="18"
                          Margin="0,0,7,0" />
-                  <TextBlock Text="{Binding Title}"
+                  <TextBlock Text="{Binding DisplayTitle}"
                              MaxWidth="150"
                              TextTrimming="CharacterEllipsis"
                              VerticalAlignment="Center" />

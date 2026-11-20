@@ -1,5 +1,6 @@
 using System.Windows;
 using System.Windows.Input;
+using System.ComponentModel;
 using System.Windows.Interop;
 using DxTools.App.ViewModels;
 using DxTools.Core;
@@ -18,6 +19,7 @@ public partial class TaskbarWindow : System.Windows.Window
         InitializeComponent();
         _viewModel = viewModel;
         DataContext = viewModel;
+        _viewModel.PropertyChanged += OnViewModelPropertyChanged;
     }
 
     public void Place(MonitorInfo monitor, bool useAppBar)
@@ -69,6 +71,8 @@ public partial class TaskbarWindow : System.Windows.Window
 
     protected override void OnClosed(EventArgs e)
     {
+        _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
         if (_appBarRegistered && _handle != IntPtr.Zero)
         {
             Win32Taskbar.RemoveAppBar(_handle);
@@ -77,6 +81,14 @@ public partial class TaskbarWindow : System.Windows.Window
 
         _viewModel.Dispose();
         base.OnClosed(e);
+    }
+
+    private void OnViewModelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(TaskbarViewModel.IsFullscreen))
+        {
+            Visibility = _viewModel.IsFullscreen ? Visibility.Collapsed : Visibility.Visible;
+        }
     }
 
     private void OnPreviewMouseWheel(object sender, MouseWheelEventArgs e)

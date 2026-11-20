@@ -139,7 +139,7 @@ public partial class App : System.Windows.Application
         var windowHandle = new System.Windows.Interop.WindowInteropHelper(_window).EnsureHandle();
         if (!options.SafeMode)
         {
-            _hotkeys = new HotkeyService(windowHandle);
+            _hotkeys = new HotkeyService(windowHandle, _settings);
             _hotkeys.Pressed += OnHotkeyPressed;
             viewModel.SetHotkeys(_hotkeys.Bindings);
 
@@ -150,6 +150,7 @@ public partial class App : System.Windows.Application
                 ShowMainWindow,
                 safeMode: false);
             viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
+            viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
 
             _displayWatcher = new DisplayChangeWatcher(
                 windowHandle,
@@ -198,6 +199,34 @@ public partial class App : System.Windows.Application
         CultureInfo.DefaultThreadCurrentUICulture = culture;
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
+    }
+
+    private void OnHotkeyChangeRequested(HotkeyAction action)
+    {
+        if (_settings is null)
+        {
+            return;
+        }
+
+        var setting = _settings.Hotkeys.FirstOrDefault(hotkey => hotkey.Action == action);
+        if (setting is null)
+        {
+            return;
+        }
+
+        var result = HotkeyCaptureWindow.Capture(action, setting.Gesture);
+        if (result is null)
+        {
+            return;
+        }
+
+        setting.Modifiers = result.Modifiers;
+        setting.VirtualKey = result.VirtualKey;
+        setting.Gesture = result.Gesture;
+
+        SaveSettings();
+        _hotkeys?.Reload();
+        _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
     }
 
     private void OnHotkeyPressed(HotkeyAction action)

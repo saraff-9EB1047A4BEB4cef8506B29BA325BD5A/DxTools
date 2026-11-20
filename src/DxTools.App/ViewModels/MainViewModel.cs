@@ -43,6 +43,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             settings,
             confirmDisplayChange ?? (_ => true));
         Wallpaper = new WallpaperViewModel(engine.Display, engine.Wallpaper, settingsStore, settings);
+        WindowProfiles = new WindowProfilesViewModel(engine.WindowPlacements, engine.Display);
 
         _native = engine.Status.Native;
         _safeMode = engine.Status.SafeMode;
@@ -53,6 +54,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         OpenRepositoryCommand = new RelayCommand(OpenRepository);
         SelfCheckCommand = new RelayCommand(RunSelfCheck);
         ExportBackupCommand = new RelayCommand(ExportBackup);
+        ChangeHotkeyCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is HotkeyInfo hotkey)
+            {
+                HotkeyChangeRequested?.Invoke(hotkey.Action);
+            }
+        });
         ImportBackupCommand = new RelayCommand(ImportBackup);
     }
 
@@ -62,9 +70,13 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public event Action? TaskbarSettingsChanged;
 
+    public event Action<HotkeyAction>? HotkeyChangeRequested;
+
     public DisplayViewModel Display { get; }
 
     public WallpaperViewModel Wallpaper { get; }
+
+    public WindowProfilesViewModel WindowProfiles { get; }
 
     public IReadOnlyList<HotkeyInfo> Hotkeys { get; private set; } = Array.Empty<HotkeyInfo>();
 
@@ -81,6 +93,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public ICommand SelfCheckCommand { get; }
 
     public ICommand ExportBackupCommand { get; }
+
+    public ICommand ChangeHotkeyCommand { get; }
 
     public ICommand ImportBackupCommand { get; }
 

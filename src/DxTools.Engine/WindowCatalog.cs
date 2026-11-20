@@ -10,7 +10,9 @@ public sealed record AppWindow(
     uint ProcessId,
     string ExecutablePath,
     int MonitorIndex,
+    WindowRect Bounds,
     bool IsMinimized,
+    bool IsMaximized,
     bool IsForeground);
 
 public sealed class WindowCatalog
@@ -74,6 +76,7 @@ public sealed class WindowCatalog
             }
 
             var minimized = Win32Taskbar.IsIconic(hwnd);
+            var maximized = Win32Window.IsZoomed(hwnd);
             WindowRect rect;
 
             if (minimized)
@@ -112,7 +115,9 @@ public sealed class WindowCatalog
                 processId,
                 Win32Taskbar.GetProcessPath(processId),
                 monitorIndex,
+                rect,
                 minimized,
+                maximized,
                 hwnd == foreground));
 
             return true;

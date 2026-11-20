@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2 · Панель задач и автоматизация</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2B · Панель задач и окна</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -103,7 +103,7 @@
   <data name="DisplayProfileSaveFailed" xml:space="preserve"><value>Не удалось сохранить профиль дисплея.</value></data>
   <data name="DisplayNoMonitors" xml:space="preserve"><value>Мониторы не обнаружены.</value></data>
   <data name="DisplayBusy" xml:space="preserve"><value>Применение настроек экрана…</value></data>
-  <data name="HotkeyHint" xml:space="preserve"><value>Горячие клавиши по умолчанию. Редактор появится в Phase 2.</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Нажмите «Изменить», чтобы назначить сочетание. LL-hook и цепочки — Phase 2C.</value></data>
   <data name="HotkeyMovePrev" xml:space="preserve"><value>Переместить окно на предыдущий монитор</value></data>
   <data name="HotkeyMoveNext" xml:space="preserve"><value>Переместить окно на следующий монитор</value></data>
   <data name="HotkeyTopmost" xml:space="preserve"><value>Вкл/выкл поверх всех окон</value></data>
@@ -145,4 +145,19 @@
   <data name="SlideshowStarted" xml:space="preserve"><value>Слайдшоу запущено.</value></data>
   <data name="SlideshowStopped" xml:space="preserve"><value>Слайдшоу остановлено.</value></data>
   <data name="NoSlideshowImages" xml:space="preserve"><value>В папке не найдено изображений.</value></data>
+  <data name="WindowsTab" xml:space="preserve"><value>Окна</value></data>
+  <data name="CurrentWindows" xml:space="preserve"><value>Текущие окна</value></data>
+  <data name="SaveWindowProfile" xml:space="preserve"><value>Сохранить позиции окон</value></data>
+  <data name="WindowProfiles" xml:space="preserve"><value>Профили окон</value></data>
+  <data name="NoWindowProfiles" xml:space="preserve"><value>Сохранённых профилей окон пока нет.</value></data>
+  <data name="WindowProfileNameHint" xml:space="preserve"><value>Оставьте пустым для автоматического имени.</value></data>
+  <data name="WindowProfileSaved" xml:space="preserve"><value>Профиль окон сохранён.</value></data>
+  <data name="WindowProfileSaveFailed" xml:space="preserve"><value>Не удалось сохранить профиль окон.</value></data>
+  <data name="WindowProfileApplied" xml:space="preserve"><value>Позиции окон применены:</value></data>
+  <data name="WindowProfileApplyFailed" xml:space="preserve"><value>Не удалось применить профиль окон.</value></data>
+  <data name="HotkeyChange" xml:space="preserve"><value>Изменить</value></data>
+  <data name="HotkeyCaptureTitle" xml:space="preserve"><value>Изменение горячей клавиши</value></data>
+  <data name="HotkeyCaptureHint" xml:space="preserve"><value>Нажмите сочетание с Ctrl, Alt, Shift или Win.</value></data>
+  <data name="HotkeyCaptureInvalid" xml:space="preserve"><value>Нужен хотя бы один модификатор и обычная клавиша.</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
 </root>

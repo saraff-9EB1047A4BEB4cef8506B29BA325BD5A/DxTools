@@ -34,5 +34,7 @@ public sealed class WallpaperSettingsTests
         Assert.NotNull(settings.Wallpaper);
         Assert.Equal(AppSettings.CurrentSchemaVersion, settings.SchemaVersion);
         Assert.True(settings.EnableSecondaryTaskbar);
+        Assert.Equal(3, settings.Hotkeys.Count);
+        Assert.Contains(settings.Hotkeys, hotkey => hotkey.Action == HotkeyAction.MoveWindowNext);
     }
 }

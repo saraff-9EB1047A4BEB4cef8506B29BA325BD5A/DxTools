@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2 · Taskbar &amp; automation</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2B · Taskbar &amp; windows</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -103,7 +103,7 @@
   <data name="DisplayProfileSaveFailed" xml:space="preserve"><value>Could not save the display profile.</value></data>
   <data name="DisplayNoMonitors" xml:space="preserve"><value>No monitors were detected.</value></data>
   <data name="DisplayBusy" xml:space="preserve"><value>Applying display settings…</value></data>
-  <data name="HotkeyHint" xml:space="preserve"><value>Default hotkeys. A custom hotkey editor is planned for Phase 2.</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Use Change to assign a new combination. LL-hook and multi-step chords are planned for Phase 2C.</value></data>
   <data name="HotkeyMovePrev" xml:space="preserve"><value>Move window to the previous monitor</value></data>
   <data name="HotkeyMoveNext" xml:space="preserve"><value>Move window to the next monitor</value></data>
   <data name="HotkeyTopmost" xml:space="preserve"><value>Toggle always-on-top</value></data>
@@ -145,4 +145,19 @@
   <data name="SlideshowStarted" xml:space="preserve"><value>Slideshow started.</value></data>
   <data name="SlideshowStopped" xml:space="preserve"><value>Slideshow stopped.</value></data>
   <data name="NoSlideshowImages" xml:space="preserve"><value>No images found in the folder.</value></data>
+  <data name="WindowsTab" xml:space="preserve"><value>Windows</value></data>
+  <data name="CurrentWindows" xml:space="preserve"><value>Current windows</value></data>
+  <data name="SaveWindowProfile" xml:space="preserve"><value>Save current window positions</value></data>
+  <data name="WindowProfiles" xml:space="preserve"><value>Window profiles</value></data>
+  <data name="NoWindowProfiles" xml:space="preserve"><value>No saved window profiles yet.</value></data>
+  <data name="WindowProfileNameHint" xml:space="preserve"><value>Leave empty to use an automatic name.</value></data>
+  <data name="WindowProfileSaved" xml:space="preserve"><value>Window profile saved.</value></data>
+  <data name="WindowProfileSaveFailed" xml:space="preserve"><value>Could not save the window profile.</value></data>
+  <data name="WindowProfileApplied" xml:space="preserve"><value>Window positions applied:</value></data>
+  <data name="WindowProfileApplyFailed" xml:space="preserve"><value>Could not apply the window profile.</value></data>
+  <data name="HotkeyChange" xml:space="preserve"><value>Change</value></data>
+  <data name="HotkeyCaptureTitle" xml:space="preserve"><value>Change hotkey</value></data>
+  <data name="HotkeyCaptureHint" xml:space="preserve"><value>Press a key combination with Ctrl, Alt, Shift or Win.</value></data>
+  <data name="HotkeyCaptureInvalid" xml:space="preserve"><value>Use at least one modifier and a non-modifier key.</value></data>
+  <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
 </root>

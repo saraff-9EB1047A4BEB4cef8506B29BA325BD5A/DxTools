@@ -4,6 +4,7 @@ using System.Windows.Threading;
 using DxTools.App.Services;
 using DxTools.Core;
 using DxTools.Engine;
+using DxTools.Interop;
 
 namespace DxTools.App.ViewModels;
 
@@ -17,6 +18,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     private readonly DispatcherTimer _timer;
     private string _signature = string.Empty;
     private string _clockText = string.Empty;
+    private bool _isFullscreen;
     private bool _disposed;
 
     public TaskbarViewModel(
@@ -34,9 +36,25 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
 
         ActivateCommand = new RelayCommand(parameter =>
         {
-            if (parameter is TaskbarWindowItemViewModel item)
+            if (parameter is TaskbarGroupItemViewModel group && group.Windows.Count > 0)
             {
-                _ = _catalog.Activate(item.Handle);
+                var windows = group.Windows;
+                var activeIndex = -1;
+
+                for (var index = 0; index < windows.Count; index++)
+                {
+                    if (windows[index].IsForeground)
+                    {
+                        activeIndex = index;
+                        break;
+                    }
+                }
+
+                var target = activeIndex >= 0
+                    ? windows[(activeIndex + 1) % windows.Count]
+                    : windows.FirstOrDefault(window => !window.IsMinimized) ?? windows[0];
+
+                _ = _catalog.Activate(target.Handle);
                 Refresh();
             }
         });
@@ -53,7 +71,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         Refresh();
     }
 
-    public ObservableCollection<TaskbarWindowItemViewModel> Windows { get; } = [];
+    public ObservableCollection<TaskbarGroupItemViewModel> Windows { get; } = [];
 
     public ICommand ActivateCommand { get; }
 
@@ -62,6 +80,12 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     public MonitorInfo Monitor { get; }
 
     public string MonitorLabel => Monitor.DisplayName;
+
+    public bool IsFullscreen
+    {
+        get => _isFullscreen;
+        private set => SetProperty(ref _isFullscreen, value);
+    }
 
     public string ClockText
     {
@@ -77,27 +101,47 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
             .Where(window => window.MonitorIndex == _monitorIndex)
             .ToList();
 
+        var groups = windows
+            .GroupBy(
+                window => string.IsNullOrWhiteSpace(window.ExecutablePath)
+                    ? $"pid:{window.ProcessId}"
+                    : window.ExecutablePath,
+                StringComparer.OrdinalIgnoreCase)
+            .Select(group => new
+            {
+                Key = group.Key,
+                Windows = group
+                    .OrderBy(window => window.Title, StringComparer.CurrentCultureIgnoreCase)
+                    .ToList(),
+            })
+            .OrderBy(group => group.Windows[0].Title, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
         var signature = string.Join(
             "|",
-            windows.Select(window => $"{window.Handle}:{window.Title}:{window.IsForeground}:{window.IsMinimized}"));
+            groups.Select(group => $"{group.Key}:{string.Join(",", group.Windows.Select(
+                window => $"{window.Handle}:{window.Title}:{window.IsForeground}:{window.IsMinimized}"))}"));
 
         if (string.Equals(signature, _signature, StringComparison.Ordinal))
         {
             return;
         }
 
-        var existing = Windows.ToDictionary(item => item.Handle);
+        var existing = Windows.ToDictionary(item => item.Key, StringComparer.OrdinalIgnoreCase);
         Windows.Clear();
 
-        foreach (var window in windows)
+        foreach (var group in groups)
         {
-            if (existing.TryGetValue(window.Handle, out var item))
+            if (existing.TryGetValue(group.Key, out var item))
             {
-                item.Update(window);
+                item.Update(group.Windows);
             }
             else
             {
-                item = new TaskbarWindowItemViewModel(window, _icons.GetIcon(window.ExecutablePath));
+                item = new TaskbarGroupItemViewModel(
+                    group.Key,
+                    group.Windows,
+                    _icons.GetIcon(group.Windows[0].ExecutablePath));
             }
 
             Windows.Add(item);
@@ -110,6 +154,43 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     {
         ClockText = DateTime.Now.ToString("HH:mm");
         Refresh();
+        UpdateFullscreenState();
+    }
+
+    private void UpdateFullscreenState()
+    {
+        var foreground = Win32Window.GetForegroundWindow();
+        if (foreground == IntPtr.Zero)
+        {
+            IsFullscreen = false;
+            return;
+        }
+
+        _ = Win32Window.GetWindowThreadProcessId(foreground, out var processId);
+        if (processId == Environment.ProcessId)
+        {
+            IsFullscreen = false;
+            return;
+        }
+
+        if (!Win32Window.GetWindowRect(foreground, out var rect))
+        {
+            IsFullscreen = false;
+            return;
+        }
+
+        var centerX = rect.CenterX;
+        var centerY = rect.CenterY;
+        if (centerX < Monitor.X || centerX >= Monitor.Right || centerY < Monitor.Y || centerY >= Monitor.Bottom)
+        {
+            IsFullscreen = false;
+            return;
+        }
+
+        IsFullscreen = rect.Left <= Monitor.X + 1
+            && rect.Top <= Monitor.Y + 1
+            && rect.Right >= Monitor.Right - 1
+            && rect.Bottom >= Monitor.Bottom - 1;
     }
 
     public void Dispose()

@@ -1,3 +1,3 @@
 namespace DxTools.Core;
 
-public sealed record HotkeyInfo(string Gesture, string Description, bool Registered);
+public sealed record HotkeyInfo(HotkeyAction Action, string Gesture, string Description, bool Registered);

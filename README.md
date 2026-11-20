@@ -6,22 +6,26 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 2 (ядро) завершён, ожидает подтверждения
+- Статус: Phase 2B (ядро) завершён, ожидает подтверждения
 
-![DxTools, панель задач на втором мониторе](docs/images/phase2-taskbar.png)
+![DxTools, сгруппированные кнопки на панели задач](docs/images/phase2b-taskbar.png)
+
+![DxTools, профили окон](docs/images/phase2b-windows.png)
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.3.0-alpha)
+## Возможности текущей версии (0.4.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
 - профили мониторов: сохранение текущей конфигурации, применение,
   подтверждение с автоматическим откатом, авто-применение по набору мониторов;
-- панель задач на дополнительных мониторах: AppBar, кнопки окон с иконками,
-  активация/сворачивание, часы, замена панели задач Windows;
+- панель задач на дополнительных мониторах: AppBar, группировка окон по
+  приложению, кнопки с иконками, активация/сворачивание, часы, замена панели
+  задач Windows, скрытие для fullscreen;
+- профили позиций окон: сохранение, применение и удаление;
 - перенос активного окна между мониторами с учётом DPI и always-on-top;
-- глобальные горячие клавиши `Ctrl+Alt+Left/Right/Up`;
+- настраиваемые горячие клавиши с диалогом захвата сочетания;
 - обои на каждый монитор: композитное полотно, режимы Fill/Fit/Stretch/
   Center/Tile;
 - слайдшоу обоев из папки с настраиваемым интервалом;
@@ -36,9 +40,9 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Сплиты мониторов, titlebar-кнопки, профили позиций окон, триггеры, скрипты,
-LL-hook и редактор горячих клавиш — Phase 2B. Подробный план:
-[spec.md](spec.md).
+Сплиты мониторов, titlebar-кнопки, pinned apps, системный трей, DWM-превью,
+auto-hide, триггеры, C#-скрипты, LL-hook и цепочки горячих клавиш — Phase 2C.
+Подробный план: [spec.md](spec.md).
 
 ## Требования для сборки
 
@@ -58,7 +62,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.3.0-x64.msi`.
+`artifacts/DxTools-0.4.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -82,6 +86,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-0.md](docs/reports/phase-0.md) — отчёт Phase 0;
 - [docs/reports/phase-1.md](docs/reports/phase-1.md) — отчёт Phase 1;
 - [docs/reports/phase-2.md](docs/reports/phase-2.md) — отчёт Phase 2;
+- [docs/reports/phase-2b.md](docs/reports/phase-2b.md) — отчёт Phase 2B;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.

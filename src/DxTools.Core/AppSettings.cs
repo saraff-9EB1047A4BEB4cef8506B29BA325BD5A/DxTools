@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 3;
+    public const int CurrentSchemaVersion = 4;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -37,6 +37,8 @@ public sealed class AppSettings
     public bool EnableSecondaryTaskbar { get; set; } = true;
 
     public WallpaperSettings Wallpaper { get; set; } = new();
+
+    public List<HotkeySetting> Hotkeys { get; set; } = [];
 
     public void Normalize()
     {
@@ -57,5 +59,26 @@ public sealed class AppSettings
 
         Wallpaper ??= new WallpaperSettings();
         Wallpaper.Normalize();
+
+        Hotkeys ??= new List<HotkeySetting>();
+        Hotkeys.RemoveAll(hotkey => !Enum.IsDefined(hotkey.Action));
+        var seenActions = new HashSet<HotkeyAction>();
+        Hotkeys.RemoveAll(hotkey => !seenActions.Add(hotkey.Action));
+        var defaults = HotkeySetting.CreateDefaults();
+        foreach (var defaultHotkey in defaults)
+        {
+            if (Hotkeys.All(hotkey => hotkey.Action != defaultHotkey.Action))
+            {
+                Hotkeys.Add(defaultHotkey);
+            }
+        }
+
+        foreach (var hotkey in Hotkeys)
+        {
+            if (string.IsNullOrWhiteSpace(hotkey.Gesture))
+            {
+                hotkey.Gesture = defaults.First(item => item.Action == hotkey.Action).Gesture;
+            }
+        }
     }
 }

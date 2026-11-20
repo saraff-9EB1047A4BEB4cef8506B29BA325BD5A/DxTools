@@ -23,6 +23,7 @@ public sealed class EngineHost
         Profiles = new DisplayProfileService(Display);
         Windows = new WindowManager(Display);
         Wallpaper = new WallpaperService(Display);
+        WindowPlacements = new WindowPlacementService(Display);
     }
 
     public EngineStatus Status { get; private set; }
@@ -34,6 +35,8 @@ public sealed class EngineHost
     public WindowManager Windows { get; }
 
     public WallpaperService Wallpaper { get; }
+
+    public WindowPlacementService WindowPlacements { get; }
 
     public event EventHandler<EngineStatus>? StatusChanged;
 

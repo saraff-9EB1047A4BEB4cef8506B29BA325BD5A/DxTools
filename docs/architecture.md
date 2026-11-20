@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2 и границы модулей.
+Документ описывает архитектуру Phase 2B и границы модулей.
 
 ## Процессная модель
 
@@ -24,13 +24,14 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - Трей через `System.Windows.Forms.NotifyIcon` (временно; позже возможен
   собственный host).
 - Single instance, crash handler, безопасный режим.
-- `HotkeyService` на `RegisterHotKey` + `HwndSource`; по умолчанию
-  `Ctrl+Alt+Left/Right/Up`.
+- `HotkeyService` на `RegisterHotKey` + `HwndSource`; сочетания хранятся в
+  настройках и меняются через `HotkeyCaptureWindow` (LL-hook — Phase 2C).
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
 - `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
   временное скрытие `Shell_SecondaryTrayWnd` и восстановление при выходе.
-- `TaskbarWindow`: WPF-панель 48 DIP, кнопки окон, иконки, часы,
+- `TaskbarWindow`: WPF-панель 48 DIP, группировка окон по exe, кнопки с
+  иконками и счётчиком, часы, fullscreen-скрытие,
   `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - Никакой бизнес-логики: только представление и композиция.
@@ -43,6 +44,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `DxLog`: локальные логи без телеметрии.
 - `SingleInstance`, `AutostartService`, `SettingsBackupService`.
 - `DisplayProfile`, `DisplayProfileStore`, `MonitorInfo`, `WallpaperSettings`.
+- `HotkeySetting`, `WindowPlacementProfile`, `WindowPlacementStore`.
 - Домен не зависит от WPF.
 
 ### DxTools.Engine
@@ -55,7 +57,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `WallpaperService`: композитное полотно и установка обоев.
 - `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
   активация/сворачивание.
-- В Phase 2B: LL-hook, titlebar, profile rules, triggers, scripts, splits.
+- `WindowPlacementService`: сохранение/восстановление позиций окон.
+- В Phase 2C: LL-hook, titlebar, triggers, scripts, splits, pinned/tray/превью.
 
 ### DxTools.Interop
 
@@ -93,6 +96,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 |---|---|
 | Настройки | `%AppData%\DxTools\settings.json` |
 | Профили дисплеев | `%AppData%\DxTools\display-profiles.json` |
+| Профили окон | `%AppData%\DxTools\window-profiles.json` |
 | Композит обоев | `%LocalAppData%\DxTools\wallpaper\` |
 | Логи | `%LocalAppData%\DxTools\logs\DxTools-YYYYMMDD.log` |
 | Автозапуск | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |
