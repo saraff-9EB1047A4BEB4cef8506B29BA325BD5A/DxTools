@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [0.12.0-alpha.1] - 2026-11-20
+
+### Added
+
+- кнопка трея и popup-зеркало области уведомлений Windows;
+- UIA-сканирование иконок, снимки и передача клика исходному элементу;
+- 25 unit-тестов.
+
+### Changed
+
+- версия приложения 0.12.0-alpha.1; native DLL 0.5.0, API v3;
+- MSI 0.12.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2J.
+
 ## [0.11.0-alpha.1] - 2026-11-20
 
 ### Added

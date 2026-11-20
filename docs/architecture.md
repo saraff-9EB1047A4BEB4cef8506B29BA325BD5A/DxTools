@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2I и границы модулей.
+Документ описывает архитектуру Phase 2J и границы модулей.
 
 ## Процессная модель
 
@@ -36,6 +36,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   DWM live-превью в topmost-окне, автоскрытие с управлением AppBar,
   `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
+- `TrayMirrorService`: UIA-сканирование области уведомлений, снимки иконок
+  и передача клика исходному элементу.
 - Никакой бизнес-логики: только представление и композиция.
 
 ### DxTools.Core
@@ -68,7 +70,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 2J/3: системный трей и отдельные taskbar для сплитов.
+- В Phase 2K/3: отдельные taskbar для сплитов, live-обновление трея.
 
 ### DxTools.Interop
 

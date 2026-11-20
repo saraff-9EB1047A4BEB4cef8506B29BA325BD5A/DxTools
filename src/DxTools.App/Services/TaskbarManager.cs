@@ -13,6 +13,7 @@ public sealed class TaskbarManager : IDisposable
     private readonly Action _showSettings;
     private readonly bool _safeMode;
     private readonly WindowCatalog _catalog;
+    private readonly TrayMirrorService _trayMirror = new();
     private readonly List<TaskbarWindow> _windows = [];
     private readonly List<IntPtr> _hiddenShellTaskbars = [];
     private bool _disposed;
@@ -79,7 +80,7 @@ public sealed class TaskbarManager : IDisposable
                     usedShellTaskbars.Add(shellTaskbar.Handle);
                 }
 
-                var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings, _settings.PinnedApps, _settings.TaskbarAutoHide);
+                var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings, _settings.PinnedApps, _settings.TaskbarAutoHide, _trayMirror);
                 var window = new TaskbarWindow(viewModel);
                 window.Show();
                 window.Place(monitor, useAppBar);

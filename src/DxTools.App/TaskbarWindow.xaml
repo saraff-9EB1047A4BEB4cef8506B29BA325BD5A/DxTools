@@ -24,6 +24,7 @@
         <ColumnDefinition Width="Auto" />
         <ColumnDefinition Width="*" />
         <ColumnDefinition Width="Auto" />
+        <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
       <Button Content="Dx"
@@ -78,7 +79,20 @@
         </ItemsControl>
       </ScrollViewer>
 
-      <TextBlock Grid.Column="2"
+      <Button x:Name="TrayButton"
+              Grid.Column="2"
+              Content="▾"
+              Width="32"
+              Height="30"
+              Padding="0"
+              FontSize="14"
+              Style="{StaticResource SecondaryButtonStyle}"
+              ToolTip="{x:Static props:Strings.TrayButton}"
+              Command="{Binding ToggleTrayCommand}"
+              Focusable="False"
+              Margin="0,0,4,0" />
+
+      <TextBlock Grid.Column="3"
                  Text="{Binding ClockText}"
                  FontSize="13"
                  FontWeight="SemiBold"
@@ -88,6 +102,44 @@
                  Margin="10,0,6,0" />
 
 
+      <Popup x:Name="TrayPopup"
+             PlacementTarget="{Binding ElementName=TrayButton}"
+             Placement="Top"
+             IsOpen="{Binding IsTrayOpen, Mode=TwoWay}"
+             StaysOpen="False"
+             AllowsTransparency="True"
+             VerticalOffset="-8">
+        <Border Background="{DynamicResource SurfaceBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Padding="8"
+                Width="380"
+                MaxHeight="420">
+          <ScrollViewer VerticalScrollBarVisibility="Auto">
+            <ItemsControl ItemsSource="{Binding TrayItems}">
+              <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                  <WrapPanel />
+                </ItemsPanelTemplate>
+              </ItemsControl.ItemsPanel>
+              <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                  <Button Width="36"
+                          Height="34"
+                          Padding="0"
+                          Margin="2"
+                          Style="{StaticResource SecondaryButtonStyle}"
+                          Command="{Binding ClickCommand}"
+                          ToolTip="{Binding Name}">
+                    <Image Source="{Binding Icon}" Width="22" Height="22" />
+                  </Button>
+                </DataTemplate>
+              </ItemsControl.ItemTemplate>
+            </ItemsControl>
+          </ScrollViewer>
+        </Border>
+      </Popup>
     </Grid>
   </Border>
 </Window>

@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 using DxTools.App.Services;
@@ -18,6 +19,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     private readonly TaskbarIconCache _icons;
     private readonly Action _showSettings;
     private readonly IReadOnlyList<PinnedApp> _pinnedApps;
+    private readonly TrayMirrorService _trayMirror;
+    private bool _isTrayOpen;
     private readonly DispatcherTimer _timer;
     private string _signature = string.Empty;
     private string _clockText = string.Empty;
@@ -31,7 +34,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         TaskbarIconCache icons,
         Action showSettings,
         IReadOnlyList<PinnedApp> pinnedApps,
-        bool autoHide)
+        bool autoHide,
+        TrayMirrorService trayMirror)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
         _monitors = monitors ?? throw new ArgumentNullException(nameof(monitors));
@@ -40,6 +44,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
         _pinnedApps = pinnedApps ?? throw new ArgumentNullException(nameof(pinnedApps));
         AutoHide = autoHide;
+        _trayMirror = trayMirror ?? throw new ArgumentNullException(nameof(trayMirror));
 
         ActivateCommand = new RelayCommand(parameter =>
         {
@@ -77,6 +82,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
             }
         });
         OpenSettingsCommand = new RelayCommand(_showSettings);
+        ToggleTrayCommand = new RelayCommand(ToggleTray);
 
         _timer = new DispatcherTimer
         {
@@ -94,6 +100,16 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     public ICommand ActivateCommand { get; }
 
     public ICommand OpenSettingsCommand { get; }
+
+    public ICommand ToggleTrayCommand { get; }
+
+    public ObservableCollection<TrayItemViewModel> TrayItems { get; } = [];
+
+    public bool IsTrayOpen
+    {
+        get => _isTrayOpen;
+        set => SetProperty(ref _isTrayOpen, value);
+    }
 
     public MonitorInfo Monitor { get; }
 
@@ -199,6 +215,30 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         }
 
         _signature = signature;
+    }
+
+    private void ToggleTray()
+    {
+        if (IsTrayOpen)
+        {
+            IsTrayOpen = false;
+            return;
+        }
+
+        TrayItems.Clear();
+        foreach (var item in _trayMirror.Capture())
+        {
+            TrayItems.Add(new TrayItemViewModel(item, ClickTrayItem));
+        }
+
+        IsTrayOpen = true;
+    }
+
+    private void ClickTrayItem(TrayItem item)
+    {
+        IsTrayOpen = false;
+        System.Windows.Application.Current?.Dispatcher.BeginInvoke(
+            new Action(() => _trayMirror.Click(item)));
     }
 
     private void OnTimerTick(object? sender, EventArgs e)

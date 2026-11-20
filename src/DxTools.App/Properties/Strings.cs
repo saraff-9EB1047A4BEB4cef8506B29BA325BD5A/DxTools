@@ -205,6 +205,7 @@ public static class Strings
     public static string SplitsHint => Get(nameof(SplitsHint));
     public static string SplitRows => Get(nameof(SplitRows));
     public static string SplitColumns => Get(nameof(SplitColumns));
+    public static string TrayButton => Get(nameof(TrayButton));
 }
 
 

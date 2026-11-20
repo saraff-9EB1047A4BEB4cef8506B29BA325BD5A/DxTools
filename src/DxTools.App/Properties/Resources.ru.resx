@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2I · Сплиты монитора</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2J · Зеркало трея</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -205,4 +205,5 @@
   <data name="SplitsHint" xml:space="preserve"><value>Сетка для hotkeys прикрепления окон. До 3×3, назначены четыре слота.</value></data>
   <data name="SplitRows" xml:space="preserve"><value>Строки</value></data>
   <data name="SplitColumns" xml:space="preserve"><value>Колонки</value></data>
+  <data name="TrayButton" xml:space="preserve"><value>Системный трей</value></data>
 </root>
