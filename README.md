@@ -6,7 +6,9 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 0 (фундамент), alpha
+- Статус: Phase 0 завершён, ожидает подтверждения перехода к Phase 1
+
+![DxTools, русский интерфейс, тёмная тема](docs/images/main-ru-dark.png)
 
 ## Возможности текущей версии (0.1.0-alpha)
 
@@ -63,6 +65,7 @@ build/                 сборочные скрипты
 ## Документация
 
 - [spec.md](spec.md) — спецификация и план;
+- [docs/reports/phase-0.md](docs/reports/phase-0.md) — отчёт Phase 0;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.
