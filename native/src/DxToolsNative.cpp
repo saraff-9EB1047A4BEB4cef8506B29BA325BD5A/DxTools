@@ -1,6 +1,12 @@
 #include "DxToolsNative.h"
 
 #include <windows.h>
+#include <mmreg.h>
+#include <mmdeviceapi.h>
+#include <functiondiscoverykeys_devpkey.h>
+#include <propsys.h>
+#include <propvarutil.h>
+#include <combaseapi.h>
 
 #include <algorithm>
 #include <atomic>
@@ -416,6 +422,132 @@ void HotkeyThreadProc()
     g_hotkey = nullptr;
 }
 }
+namespace
+{
+const CLSID kMmDeviceEnumeratorClsid = {0xBCDE0395, 0xE52F, 0x467C, {0x8E, 0x3D, 0xC4, 0x57, 0x92, 0x91, 0x69, 0x2E}};
+const IID kMmDeviceEnumeratorIid = {0xA95664D2, 0x9614, 0x4F35, {0xA7, 0x46, 0xDE, 0x8D, 0xB6, 0x36, 0x17, 0xE6}};
+const CLSID kPolicyConfigClientClsid = {0x870AF99C, 0x171D, 0x4F9E, {0xAF, 0x0D, 0xE6, 0x3D, 0xF4, 0x0C, 0x2B, 0xC9}};
+const IID kPolicyConfigIid = {0xF8679F50, 0x850A, 0x41CF, {0x9C, 0x72, 0x43, 0x0F, 0x1B, 0x8F, 0xF2, 0xD1}};
+
+struct IPolicyConfig : public IUnknown
+{
+    virtual HRESULT STDMETHODCALLTYPE GetMixFormat(PCWSTR, WAVEFORMATEX**) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetDeviceFormat(PCWSTR, INT, WAVEFORMATEX**) = 0;
+    virtual HRESULT STDMETHODCALLTYPE ResetDeviceFormat(PCWSTR) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetDeviceFormat(PCWSTR, WAVEFORMATEX*, WAVEFORMATEX*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetProcessingPeriod(PCWSTR, INT, PINT64, PINT64) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetProcessingPeriod(PCWSTR, PINT64) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetShareMode(PCWSTR, void*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetShareMode(PCWSTR, void*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE GetPropertyValue(PCWSTR, const PROPERTYKEY&, PROPVARIANT*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetPropertyValue(PCWSTR, const PROPERTYKEY&, PROPVARIANT*) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetDefaultEndpoint(PCWSTR, ERole) = 0;
+    virtual HRESULT STDMETHODCALLTYPE SetEndpointVisibility(PCWSTR, INT) = 0;
+};
+
+class ComScope
+{
+public:
+    ComScope()
+    {
+        result_ = CoInitializeEx(nullptr, COINIT_APARTMENTTHREADED);
+    }
+
+    ~ComScope()
+    {
+        if (SUCCEEDED(result_))
+        {
+            CoUninitialize();
+        }
+    }
+
+    bool Ok() const
+    {
+        return SUCCEEDED(result_) || result_ == RPC_E_CHANGED_MODE;
+    }
+
+private:
+    HRESULT result_ = E_FAIL;
+};
+
+std::vector<DxTools_AudioDevice> EnumerateAudioDevices()
+{
+    std::vector<DxTools_AudioDevice> devices;
+    ComScope com;
+    if (!com.Ok())
+    {
+        return devices;
+    }
+
+    IMMDeviceEnumerator* enumerator = nullptr;
+    if (FAILED(CoCreateInstance(kMmDeviceEnumeratorClsid, nullptr, CLSCTX_ALL, kMmDeviceEnumeratorIid, reinterpret_cast<void**>(&enumerator))))
+    {
+        return devices;
+    }
+
+    IMMDeviceCollection* collection = nullptr;
+    if (FAILED(enumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &collection)))
+    {
+        enumerator->Release();
+        return devices;
+    }
+
+    LPWSTR defaultId = nullptr;
+    IMMDevice* defaultDevice = nullptr;
+    if (SUCCEEDED(enumerator->GetDefaultAudioEndpoint(eRender, eConsole, &defaultDevice)))
+    {
+        defaultDevice->GetId(&defaultId);
+    }
+
+    UINT count = 0;
+    collection->GetCount(&count);
+    for (UINT index = 0; index < count; ++index)
+    {
+        IMMDevice* device = nullptr;
+        if (FAILED(collection->Item(index, &device)))
+        {
+            continue;
+        }
+
+        LPWSTR id = nullptr;
+        device->GetId(&id);
+
+        DxTools_AudioDevice info{};
+        CopyWide(info.id, 256, id);
+
+        IPropertyStore* store = nullptr;
+        if (SUCCEEDED(device->OpenPropertyStore(STGM_READ, &store)))
+        {
+            PROPVARIANT value;
+            PropVariantInit(&value);
+            if (SUCCEEDED(store->GetValue(PKEY_Device_FriendlyName, &value)) && value.vt == VT_LPWSTR)
+            {
+                CopyWide(info.name, 128, value.pwszVal);
+            }
+
+            PropVariantClear(&value);
+            store->Release();
+        }
+
+        if (info.name[0] == L'\0')
+        {
+            CopyWide(info.name, 128, L"Audio device");
+        }
+
+        info.isDefault = id != nullptr && defaultId != nullptr && wcscmp(id, defaultId) == 0 ? 1u : 0u;
+        devices.push_back(info);
+
+        if (id != nullptr) CoTaskMemFree(id);
+        device->Release();
+    }
+
+    if (defaultId != nullptr) CoTaskMemFree(defaultId);
+    if (defaultDevice != nullptr) defaultDevice->Release();
+    collection->Release();
+    enumerator->Release();
+    return devices;
+}
+}
 extern "C" {
 
 DXTOOLS_NATIVE_EXPORT uint32_t __cdecl DxTools_GetApiVersion(void)
@@ -438,6 +570,61 @@ DXTOOLS_NATIVE_EXPORT void __cdecl DxTools_FreeMemory(void* ptr)
     free(ptr);
 }
 
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_GetDeviceCount(uint32_t* count)
+{
+    if (count == nullptr)
+    {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    try
+    {
+        *count = static_cast<uint32_t>(EnumerateAudioDevices().size());
+        return ERROR_SUCCESS;
+    }
+    catch (...)
+    {
+        return ERROR_NOT_ENOUGH_MEMORY;
+    }
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_GetDevices(
+    DxTools_AudioDevice* buffer,
+    uint32_t capacity,
+    uint32_t* written)
+{
+    try
+    {
+        const auto devices = EnumerateAudioDevices();
+        const auto required = static_cast<uint32_t>(devices.size());
+        if (written != nullptr) *written = required;
+        if (buffer == nullptr || capacity < required) return ERROR_INSUFFICIENT_BUFFER;
+        if (required > 0) memcpy(buffer, devices.data(), required * sizeof(DxTools_AudioDevice));
+        return ERROR_SUCCESS;
+    }
+    catch (...)
+    {
+        return ERROR_NOT_ENOUGH_MEMORY;
+    }
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_SetDefault(const wchar_t* deviceId)
+{
+    if (deviceId == nullptr) return ERROR_INVALID_PARAMETER;
+
+    ComScope com;
+    if (!com.Ok()) return E_FAIL;
+
+    IPolicyConfig* policy = nullptr;
+    HRESULT result = CoCreateInstance(kPolicyConfigClientClsid, nullptr, CLSCTX_ALL, kPolicyConfigIid, reinterpret_cast<void**>(&policy));
+    if (FAILED(result) || policy == nullptr) return result;
+
+    result = policy->SetDefaultEndpoint(deviceId, eConsole);
+    if (SUCCEEDED(result)) result = policy->SetDefaultEndpoint(deviceId, eMultimedia);
+    if (SUCCEEDED(result)) result = policy->SetDefaultEndpoint(deviceId, eCommunications);
+    policy->Release();
+    return result;
+}
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t message)
 {
     if (hwnd == nullptr || message == 0)

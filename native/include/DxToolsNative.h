@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <wchar.h>
 
-#define DXTOOLS_NATIVE_API_VERSION 3u
-#define DXTOOLS_NATIVE_VERSION 0x00000500u
+#define DXTOOLS_NATIVE_API_VERSION 4u
+#define DXTOOLS_NATIVE_VERSION 0x00000600u
 
 #ifdef __cplusplus
 extern "C" {
@@ -48,6 +48,21 @@ typedef struct DxTools_HotkeyBinding
     uint32_t prefixVirtualKey;
     uint32_t reserved;
 } DxTools_HotkeyBinding;
+
+typedef struct DxTools_AudioDevice
+{
+    wchar_t id[256];
+    wchar_t name[128];
+    uint32_t isDefault;
+    uint32_t reserved;
+} DxTools_AudioDevice;
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_GetDeviceCount(uint32_t* count);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_GetDevices(
+    DxTools_AudioDevice* buffer,
+    uint32_t capacity,
+    uint32_t* written);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Audio_SetDefault(const wchar_t* deviceId);
 
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t message);
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Stop(void);

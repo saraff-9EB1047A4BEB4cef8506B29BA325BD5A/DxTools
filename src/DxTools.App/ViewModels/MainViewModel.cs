@@ -47,6 +47,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         WindowProfiles = new WindowProfilesViewModel(engine.WindowPlacements, engine.Display);
         Triggers = new TriggersViewModel(engine.Triggers);
         DesktopIcons = new DesktopIconsViewModel(engine.DesktopIcons);
+        Audio = new AudioViewModel(engine.Audio);
 
         _native = engine.Status.Native;
         _safeMode = engine.Status.SafeMode;
@@ -108,6 +109,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public TriggersViewModel Triggers { get; }
 
     public DesktopIconsViewModel DesktopIcons { get; }
+
+    public AudioViewModel Audio { get; }
 
     public IReadOnlyList<HotkeyInfo> Hotkeys { get; private set; } = Array.Empty<HotkeyInfo>();
 

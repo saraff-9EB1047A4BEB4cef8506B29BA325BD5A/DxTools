@@ -77,7 +77,7 @@ else {
     $optimization = if ($Configuration -eq "Debug") { "-O0" } else { "-O2" }
 
     & $zig "c++" "-target" "x86_64-windows-gnu" "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-shared" `
-        "-DUNICODE" "-D_UNICODE" "-DWIN32_LEAN_AND_MEAN" "-DNOMINMAX" "-I$include" $source "-o" $output
+        "-DUNICODE" "-D_UNICODE" "-DWIN32_LEAN_AND_MEAN" "-DNOMINMAX" "-I$include" $source "-o" $output "-lole32" "-loleaut32" "-lpropsys" "-luuid"
     if ($LASTEXITCODE -ne 0) { throw "Zig build failed with exit code $LASTEXITCODE." }
 }
 

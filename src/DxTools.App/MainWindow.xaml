@@ -736,6 +736,60 @@
         </ScrollViewer>
       </TabItem>
 
+      <TabItem Header="{x:Static props:Strings.AudioTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <DockPanel>
+                  <TextBlock Text="{x:Static props:Strings.AudioTitle}"
+                             Style="{StaticResource SectionTitleStyle}"
+                             Margin="0" />
+                  <Button Content="{x:Static props:Strings.RefreshMonitors}"
+                          DockPanel.Dock="Right"
+                          Command="{Binding Audio.RefreshCommand}"
+                          Style="{StaticResource SecondaryButtonStyle}" />
+                </DockPanel>
+                <TextBlock Text="{x:Static props:Strings.AudioHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,8,0,0" />
+
+                <ItemsControl ItemsSource="{Binding Audio.Devices}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Background="{DynamicResource SurfaceAltBrush}"
+                              CornerRadius="8"
+                              Padding="12"
+                              Margin="0,6,0,0">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <TextBlock Text="{Binding Name}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Grid.Column="1"
+                                     Text="{Binding StatusText}"
+                                     Foreground="{DynamicResource SuccessBrush}"
+                                     VerticalAlignment="Center"
+                                     Margin="12,0" />
+                          <Button Grid.Column="2"
+                                  Content="{x:Static props:Strings.SetDefaultAudio}"
+                                  Command="{Binding SetDefaultCommand}"
+                                  Style="{StaticResource SecondaryButtonStyle}" />
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+            <TextBlock Text="{Binding Audio.StatusMessage}"
+                       Style="{StaticResource HintStyle}"
+                       Margin="2,0,0,0" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="{x:Static props:Strings.DesktopTab}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
           <StackPanel>

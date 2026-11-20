@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 3A (ядро) завершён, ожидает подтверждения
+Статус: Phase 3B (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -393,16 +393,24 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - виртуальные десктопы, screensaver, аудио, shell extension, UIAccess,
   ARM64, подпись и hardening.
 
-### Phase 3B — паритет и hardening 1.0 (10–14 недель)
+### Phase 3B — переключение аудиоустройств 0.15 (ядро завершено)
 
-- виртуальные десктопы (undocumented COM + адаптеры по сборкам);
-- multi-monitor screensaver;
-- профили иконок рабочего стола;
-- переключение аудиоустройств;
-- shell context menu;
-- UIAccess/elevated helper, активация окон;
-- ARM64, HDR, accessibility, локализация, security review;
-- подпись кода, финальные README/USER_MANUAL, RC → 1.0.
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-3b.md`.
+
+Реализовано:
+
+- native API v4: enumeration активных render-устройств и default endpoint;
+- `IPolicyConfig` для переключения устройства по умолчанию;
+- вкладка «Аудио» с устройствами и кнопкой «Сделать основным»;
+- проверено: 3 активных устройства найдены;
+- 27 unit-тестов; MSI 0.15.0.
+
+Перенесено в Phase 3C/1.0:
+
+- виртуальные десктопы, screensaver, shell context menu;
+- UIAccess/elevated helper, ARM64, HDR, accessibility;
+- подпись кода, security review, финальный RC → 1.0.
 
 ## 5. Матрица функций
 
@@ -426,13 +434,13 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |
 | C#-скрипты | Roslyn Scripting | 2E (готово) |
-| Виртуальные десктопы | C++ undocumented | 3B |
-| Screensaver | C# | 3B |
+| Виртуальные десктопы | C++ undocumented | 3C |
+| Screensaver | C# | 3C |
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
-| Аудиоустройства | C++ CoreAudio | 3B |
-| Shell extension | C++ | 3B |
-| UIAccess | C++/manifest | 3B |
-| ARM64 | publish + native | 3B |
+| Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
+| Shell extension | C++ | 3C |
+| UIAccess | C++/manifest | 3C |
+| ARM64 | publish + native | 3C |
 
 ## 6. Критические спайки
 

@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 3A и границы модулей.
+Документ описывает архитектуру Phase 3B и границы модулей.
 
 ## Процессная модель
 
@@ -73,7 +73,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 3B: VD, screensaver, audio, shell extension, UIAccess, ARM64, signing.
+- `AudioService`: CoreAudio enumeration и `IPolicyConfig` для default endpoint.
+- В Phase 3C/1.0: VD, screensaver, shell extension, UIAccess, ARM64, signing.
 
 ### DxTools.Interop
 
@@ -84,9 +85,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ### DxTools.Native
 
 - C++20, Win32, без сторонних runtime-зависимостей.
-- C ABI v3: версия/ ping, `DxTools_FreeMemory`, DisplayConfig API,
-  `DxTools_Hotkey_Start/Stop/SetBindings` (LL keyboard hook на отдельном
-  потоке, подавление совпавших сочетаний, двухшаговые prefix-цепочки).
+- C ABI v4: версия/ ping, DisplayConfig API, LL-hook, prefix-цепочки,
+  `DxTools_Audio_GetDeviceCount/GetDevices/SetDefault`.
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
 - В следующих фазах: splits, виртуальные десктопы.

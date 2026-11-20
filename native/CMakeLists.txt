@@ -10,6 +10,8 @@ target_include_directories(DxTools.Native PRIVATE include)
 target_compile_features(DxTools.Native PRIVATE cxx_std_20)
 target_compile_definitions(DxTools.Native PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX)
 
+target_link_libraries(DxTools.Native PRIVATE ole32 oleaut32 propsys uuid)
+
 set_target_properties(DxTools.Native PROPERTIES
     PREFIX ""
     OUTPUT_NAME "DxTools.Native"

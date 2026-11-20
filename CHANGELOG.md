@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.15.0-alpha.1] - 2026-11-20
+
+### Added
+
+- native API v4: перечисление аудиоустройств и смена default endpoint;
+- CoreAudio + `IPolicyConfig`;
+- вкладка «Аудио» с кнопкой «Сделать основным»;
+- 27 unit-тестов.
+
+### Changed
+
+- версия приложения 0.15.0-alpha.1; native DLL 0.6.0, API v4;
+- MSI 0.15.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 3B.
+
 ## [0.14.0-alpha.1] - 2026-11-20
 
 ### Added

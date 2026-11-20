@@ -219,6 +219,13 @@ public static class Strings
     public static string DesktopProfileSaveFailed => Get(nameof(DesktopProfileSaveFailed));
     public static string DesktopProfileApplied => Get(nameof(DesktopProfileApplied));
     public static string DesktopProfileApplyFailed => Get(nameof(DesktopProfileApplyFailed));
+    public static string AudioTab => Get(nameof(AudioTab));
+    public static string AudioTitle => Get(nameof(AudioTitle));
+    public static string AudioHint => Get(nameof(AudioHint));
+    public static string SetDefaultAudio => Get(nameof(SetDefaultAudio));
+    public static string AudioDefault => Get(nameof(AudioDefault));
+    public static string AudioDefaultSet => Get(nameof(AudioDefaultSet));
+    public static string AudioDefaultFailed => Get(nameof(AudioDefaultFailed));
 }
 
 

@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3A · Иконки рабочего стола</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3B · Переключение аудио</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -219,4 +219,11 @@
   <data name="DesktopProfileSaveFailed" xml:space="preserve"><value>Не удалось сохранить профиль иконок.</value></data>
   <data name="DesktopProfileApplied" xml:space="preserve"><value>Позиции иконок применены:</value></data>
   <data name="DesktopProfileApplyFailed" xml:space="preserve"><value>Не удалось применить профиль иконок.</value></data>
+  <data name="AudioTab" xml:space="preserve"><value>Аудио</value></data>
+  <data name="AudioTitle" xml:space="preserve"><value>Аудиоустройства</value></data>
+  <data name="AudioHint" xml:space="preserve"><value>Переключение устройства воспроизведения по умолчанию.</value></data>
+  <data name="SetDefaultAudio" xml:space="preserve"><value>Сделать основным</value></data>
+  <data name="AudioDefault" xml:space="preserve"><value>По умолчанию</value></data>
+  <data name="AudioDefaultSet" xml:space="preserve"><value>Аудиоустройство по умолчанию изменено.</value></data>
+  <data name="AudioDefaultFailed" xml:space="preserve"><value>Не удалось изменить аудиоустройство по умолчанию.</value></data>
 </root>
