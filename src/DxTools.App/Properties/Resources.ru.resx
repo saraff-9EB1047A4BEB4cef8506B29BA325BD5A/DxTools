@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2K · Панели задач сплитов</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3A · Иконки рабочего стола</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -208,4 +208,15 @@
   <data name="TrayButton" xml:space="preserve"><value>Системный трей</value></data>
   <data name="SplitTaskbars" xml:space="preserve"><value>Панель задач на каждый сплит</value></data>
   <data name="SplitTaskbarsHint" xml:space="preserve"><value>Создавать отдельную панель задач внизу каждой ячейки сплита. Используются overlay-панели без резервирования AppBar.</value></data>
+  <data name="DesktopTab" xml:space="preserve"><value>Рабочий стол</value></data>
+  <data name="DesktopIconsTitle" xml:space="preserve"><value>Профили иконок рабочего стола</value></data>
+  <data name="DesktopIconsHint" xml:space="preserve"><value>Сохранение и восстановление позиций иконок. Порядок иконок должен оставаться неизменным.</value></data>
+  <data name="DesktopIconCount" xml:space="preserve"><value>Текущее число иконок</value></data>
+  <data name="SaveDesktopProfile" xml:space="preserve"><value>Сохранить позиции иконок</value></data>
+  <data name="DesktopProfiles" xml:space="preserve"><value>Профили иконок</value></data>
+  <data name="NoDesktopProfiles" xml:space="preserve"><value>Сохранённых профилей иконок пока нет.</value></data>
+  <data name="DesktopProfileSaved" xml:space="preserve"><value>Профиль иконок сохранён.</value></data>
+  <data name="DesktopProfileSaveFailed" xml:space="preserve"><value>Не удалось сохранить профиль иконок.</value></data>
+  <data name="DesktopProfileApplied" xml:space="preserve"><value>Позиции иконок применены:</value></data>
+  <data name="DesktopProfileApplyFailed" xml:space="preserve"><value>Не удалось применить профиль иконок.</value></data>
 </root>

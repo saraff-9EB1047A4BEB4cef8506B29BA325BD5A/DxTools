@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 2K (ядро) завершён, ожидает подтверждения
+- Статус: Phase 3A (ядро) завершён, ожидает подтверждения
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.13.0-alpha)
+## Возможности текущей версии (0.14.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -36,6 +36,7 @@ DisplayFusion: профили мониторов, мультимониторны
 - сплиты монитора: сетка до 3×3 и snap hotkeys `Ctrl+Alt+1..4`;
 - зеркало системного трея в popup на панели задач с live-обновлением;
 - отдельные overlay-панели задач для каждой ячейки сплита;
+- профили иконок рабочего стола (save/apply/delete);
 - обои на каждый монитор: композитное полотно, режимы Fill/Fit/Stretch/
   Center/Tile;
 - слайдшоу обоев из папки с настраиваемым интервалом;
@@ -50,9 +51,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Следующий этап — Phase 3: виртуальные десктопы, screensaver, иконки,
-аудио, UIAccess, ARM64 и подпись.
-Подробный план: [spec.md](spec.md).
+Phase 3B: виртуальные десктопы, screensaver, аудио, shell extension,
+UIAccess, ARM64 и подпись. Подробный план: [spec.md](spec.md).
 
 ## Требования для сборки
 
@@ -72,7 +72,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.13.0-x64.msi`.
+`artifacts/DxTools-0.14.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -106,6 +106,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-2i.md](docs/reports/phase-2i.md) — отчёт Phase 2I;
 - [docs/reports/phase-2j.md](docs/reports/phase-2j.md) — отчёт Phase 2J;
 - [docs/reports/phase-2k.md](docs/reports/phase-2k.md) — отчёт Phase 2K;
+- [docs/reports/phase-3a.md](docs/reports/phase-3a.md) — отчёт Phase 3A;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.

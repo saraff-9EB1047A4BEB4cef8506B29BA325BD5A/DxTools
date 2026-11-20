@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.14.0-alpha.1] - 2026-11-20
+
+### Added
+
+- профили позиций иконок рабочего стола (save/apply/delete);
+- cross-process доступ к `SysListView32` Explorer;
+- вкладка «Рабочий стол»;
+- 2 новых unit-теста (всего 27).
+
+### Changed
+
+- версия приложения 0.14.0-alpha.1; native DLL 0.5.0, API v3;
+- MSI 0.14.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 3A.
+
 ## [0.13.0-alpha.1] - 2026-11-20
 
 ### Added

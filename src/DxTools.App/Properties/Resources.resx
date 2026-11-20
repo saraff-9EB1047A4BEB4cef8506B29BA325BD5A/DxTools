@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2K · Split taskbars</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 3A · Desktop icons</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -208,4 +208,15 @@
   <data name="TrayButton" xml:space="preserve"><value>System tray</value></data>
   <data name="SplitTaskbars" xml:space="preserve"><value>Taskbar per split</value></data>
   <data name="SplitTaskbarsHint" xml:space="preserve"><value>Create a separate taskbar at the bottom of each split cell. Uses overlay taskbars without AppBar reservation.</value></data>
+  <data name="DesktopTab" xml:space="preserve"><value>Desktop</value></data>
+  <data name="DesktopIconsTitle" xml:space="preserve"><value>Desktop icon profiles</value></data>
+  <data name="DesktopIconsHint" xml:space="preserve"><value>Save and restore desktop icon positions. Icon order must remain unchanged.</value></data>
+  <data name="DesktopIconCount" xml:space="preserve"><value>Current icon count</value></data>
+  <data name="SaveDesktopProfile" xml:space="preserve"><value>Save icon positions</value></data>
+  <data name="DesktopProfiles" xml:space="preserve"><value>Icon profiles</value></data>
+  <data name="NoDesktopProfiles" xml:space="preserve"><value>No saved icon profiles yet.</value></data>
+  <data name="DesktopProfileSaved" xml:space="preserve"><value>Desktop icon profile saved.</value></data>
+  <data name="DesktopProfileSaveFailed" xml:space="preserve"><value>Could not save the desktop icon profile.</value></data>
+  <data name="DesktopProfileApplied" xml:space="preserve"><value>Desktop icon positions applied:</value></data>
+  <data name="DesktopProfileApplyFailed" xml:space="preserve"><value>Could not apply the desktop icon profile.</value></data>
 </root>

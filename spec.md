@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 2K (ядро) завершён, ожидает подтверждения
+Статус: Phase 3A (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -376,7 +376,24 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 
 - виртуальные десктопы, screensaver, иконки, аудио, UIAccess, ARM64, подпись.
 
-### Phase 3 — паритет и hardening 1.0 (10–14 недель)
+### Phase 3A — профили иконок рабочего стола 0.14 (ядро завершено)
+
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-3a.md`.
+
+Реализовано:
+
+- профили позиций иконок рабочего стола (save/apply/delete);
+- доступ к `SysListView32` Explorer через cross-process memory;
+- UI вкладки «Рабочий стол»;
+- 27 unit-тестов; MSI 0.14.0.
+
+Перенесено в Phase 3B:
+
+- виртуальные десктопы, screensaver, аудио, shell extension, UIAccess,
+  ARM64, подпись и hardening.
+
+### Phase 3B — паритет и hardening 1.0 (10–14 недель)
 
 - виртуальные десктопы (undocumented COM + адаптеры по сборкам);
 - multi-monitor screensaver;
@@ -409,13 +426,13 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |
 | C#-скрипты | Roslyn Scripting | 2E (готово) |
-| Виртуальные десктопы | C++ undocumented | 3 |
-| Screensaver | C# | 3 |
-| Иконки рабочего стола | C++ | 3 |
-| Аудиоустройства | C++ CoreAudio | 3 |
-| Shell extension | C++ | 3 |
-| UIAccess | C++/manifest | 3 |
-| ARM64 | publish + native | 3 |
+| Виртуальные десктопы | C++ undocumented | 3B |
+| Screensaver | C# | 3B |
+| Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
+| Аудиоустройства | C++ CoreAudio | 3B |
+| Shell extension | C++ | 3B |
+| UIAccess | C++/manifest | 3B |
+| ARM64 | publish + native | 3B |
 
 ## 6. Критические спайки
 

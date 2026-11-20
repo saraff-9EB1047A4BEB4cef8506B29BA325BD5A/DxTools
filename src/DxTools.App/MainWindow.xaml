@@ -736,6 +736,102 @@
         </ScrollViewer>
       </TabItem>
 
+      <TabItem Header="{x:Static props:Strings.DesktopTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <DockPanel>
+                  <TextBlock Text="{x:Static props:Strings.DesktopIconsTitle}"
+                             Style="{StaticResource SectionTitleStyle}"
+                             Margin="0" />
+                  <Button Content="{x:Static props:Strings.RefreshMonitors}"
+                          DockPanel.Dock="Right"
+                          Command="{Binding DesktopIcons.RefreshCommand}"
+                          Style="{StaticResource SecondaryButtonStyle}" />
+                </DockPanel>
+                <TextBlock Text="{x:Static props:Strings.DesktopIconsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,8,0,0" />
+                <TextBlock Margin="0,8,0,0" Style="{StaticResource HintStyle}">
+                  <Run Text="{x:Static props:Strings.DesktopIconCount}" />
+                  <Run Text=": " />
+                  <Run Text="{Binding DesktopIcons.IconCount, Mode=OneWay}" />
+                </TextBlock>
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.SaveDesktopProfile}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBox Text="{Binding DesktopIcons.NewProfileName, UpdateSourceTrigger=PropertyChanged}"
+                         Margin="0,0,0,8" />
+                <Button Content="{x:Static props:Strings.SaveDesktopProfile}"
+                        Command="{Binding DesktopIcons.SaveProfileCommand}" />
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.DesktopProfiles}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBlock Text="{x:Static props:Strings.NoDesktopProfiles}">
+                  <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource HintStyle}">
+                      <Setter Property="Visibility" Value="Collapsed" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding DesktopIcons.HasProfiles}" Value="False">
+                          <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+
+                <ItemsControl ItemsSource="{Binding DesktopIcons.Profiles}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Background="{DynamicResource SurfaceAltBrush}"
+                              CornerRadius="8"
+                              Padding="12"
+                              Margin="0,6,0,0">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding Summary}" Style="{StaticResource HintStyle}" />
+                            <TextBlock Text="{Binding CreatedText}" Style="{StaticResource HintStyle}" />
+                          </StackPanel>
+                          <Button Grid.Column="1"
+                                  Content="{x:Static props:Strings.Apply}"
+                                  Command="{Binding DataContext.DesktopIcons.ApplyProfileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  CommandParameter="{Binding Profile}"
+                                  Style="{StaticResource SecondaryButtonStyle}"
+                                  Margin="0,0,8,0" />
+                          <Button Grid.Column="2"
+                                  Content="{x:Static props:Strings.Delete}"
+                                  Command="{Binding DataContext.DesktopIcons.DeleteProfileCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  CommandParameter="{Binding Profile}"
+                                  Style="{StaticResource SecondaryButtonStyle}" />
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding DesktopIcons.StatusMessage}"
+                       Style="{StaticResource HintStyle}"
+                       Margin="2,0,0,0" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="{x:Static props:Strings.TriggersTab}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
           <StackPanel>

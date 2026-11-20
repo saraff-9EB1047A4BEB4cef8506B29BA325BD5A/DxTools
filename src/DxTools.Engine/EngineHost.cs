@@ -24,6 +24,7 @@ public sealed class EngineHost
         Windows = new WindowManager(Display);
         Wallpaper = new WallpaperService(Display);
         WindowPlacements = new WindowPlacementService(Display);
+        DesktopIcons = new DesktopIconManager();
         Triggers = new TriggerService(Display, Profiles, WindowPlacements, Wallpaper, settings);
     }
 
@@ -38,6 +39,8 @@ public sealed class EngineHost
     public WallpaperService Wallpaper { get; }
 
     public WindowPlacementService WindowPlacements { get; }
+
+    public DesktopIconManager DesktopIcons { get; }
 
     public TriggerService Triggers { get; }
 

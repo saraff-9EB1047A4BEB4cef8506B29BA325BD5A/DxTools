@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2K и границы модулей.
+Документ описывает архитектуру Phase 3A и границы модулей.
 
 ## Процессная модель
 
@@ -67,11 +67,13 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
   активация/сворачивание.
 - `WindowPlacementService`: сохранение/восстановление позиций окон.
+- `DesktopIconService`: cross-process доступ к `SysListView32` Explorer для
+  сохранения/восстановления позиций иконок; `DesktopIconManager` и store.
 - `TriggerService`: события, условия, действия и Roslyn-скрипты `.csx`.
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 3: VD, screensaver, desktop icons, audio, UIAccess, ARM64, signing.
+- В Phase 3B: VD, screensaver, audio, shell extension, UIAccess, ARM64, signing.
 
 ### DxTools.Interop
 

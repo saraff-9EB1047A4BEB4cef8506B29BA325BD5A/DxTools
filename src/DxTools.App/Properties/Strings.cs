@@ -208,6 +208,17 @@ public static class Strings
     public static string TrayButton => Get(nameof(TrayButton));
     public static string SplitTaskbars => Get(nameof(SplitTaskbars));
     public static string SplitTaskbarsHint => Get(nameof(SplitTaskbarsHint));
+    public static string DesktopTab => Get(nameof(DesktopTab));
+    public static string DesktopIconsTitle => Get(nameof(DesktopIconsTitle));
+    public static string DesktopIconsHint => Get(nameof(DesktopIconsHint));
+    public static string DesktopIconCount => Get(nameof(DesktopIconCount));
+    public static string SaveDesktopProfile => Get(nameof(SaveDesktopProfile));
+    public static string DesktopProfiles => Get(nameof(DesktopProfiles));
+    public static string NoDesktopProfiles => Get(nameof(NoDesktopProfiles));
+    public static string DesktopProfileSaved => Get(nameof(DesktopProfileSaved));
+    public static string DesktopProfileSaveFailed => Get(nameof(DesktopProfileSaveFailed));
+    public static string DesktopProfileApplied => Get(nameof(DesktopProfileApplied));
+    public static string DesktopProfileApplyFailed => Get(nameof(DesktopProfileApplyFailed));
 }
 
 
