@@ -4,6 +4,22 @@
 
 ## [Unreleased]
 
+## [0.9.0-alpha.1] - 2026-11-20
+
+### Added
+
+- titlebar-overlay активного окна с кнопками «следующий монитор» и
+  always-on-top;
+- настройка «Кнопки в заголовке окон»;
+- позиционирование по DWM extended frame bounds и DPI;
+- 25 unit-тестов (без новых тестов overlay).
+
+### Changed
+
+- версия приложения 0.9.0-alpha.1; native DLL 0.4.0, API v3;
+- MSI 0.9.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2G.
+
 ## [0.8.0-alpha.1] - 2026-11-20
 
 ### Added

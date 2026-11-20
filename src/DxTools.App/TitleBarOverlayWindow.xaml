@@ -1,0 +1,41 @@
+<Window x:Class="DxTools.App.TitleBarOverlayWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:props="clr-namespace:DxTools.App.Properties"
+        Width="76"
+        Height="30"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        ShowInTaskbar="False"
+        ShowActivated="False"
+        ResizeMode="NoResize"
+        Topmost="True"
+        WindowStartupLocation="Manual">
+  <Border Background="{DynamicResource SurfaceBrush}"
+          BorderBrush="{DynamicResource BorderBrush}"
+          BorderThickness="1"
+          CornerRadius="8"
+          Opacity="0.96">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+      <Button Content="→"
+              Width="32"
+              Height="24"
+              Padding="0"
+              FontSize="13"
+              Style="{StaticResource SecondaryButtonStyle}"
+              ToolTip="{x:Static props:Strings.TitleBarMoveNext}"
+              Click="Move_Click" />
+      <Button Content="T"
+              Width="32"
+              Height="24"
+              Padding="0"
+              FontSize="12"
+              FontWeight="Bold"
+              Style="{StaticResource SecondaryButtonStyle}"
+              ToolTip="{x:Static props:Strings.TitleBarTopmost}"
+              Click="Topmost_Click"
+              Margin="2,0,0,0" />
+    </StackPanel>
+  </Border>
+</Window>

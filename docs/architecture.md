@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2F и границы модулей.
+Документ описывает архитектуру Phase 2G и границы модулей.
 
 ## Процессная модель
 
@@ -54,7 +54,10 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `DisplayService`: перечисление мониторов, capture/apply DisplayConfig,
   topology hash.
 - `DisplayProfileService`: save/apply/rollback, auto-apply, store профилей.
-- `WindowManager`: перенос активного окна с учётом DPI, topmost.
+- `WindowManager`: перенос активного окна с учётом DPI, topmost;
+  операции по целевому HWND для titlebar-overlay.
+- `TitleBarOverlayManager`: topmost overlay активного окна с кнопками
+  «следующий монитор»/always-on-top.
 - `WallpaperService`: композитное полотно и установка обоев.
 - `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
   активация/сворачивание.
@@ -63,7 +66,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 2G/3: titlebar, splits, системный трей, цепочки hotkeys.
+- В Phase 2H/3: splits, системный трей, цепочки hotkeys.
 
 ### DxTools.Interop
 
@@ -79,7 +82,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   потоке, подавление совпавших сочетаний).
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
-- В следующих фазах: titlebar-кнопки, splits, виртуальные десктопы.
+- В следующих фазах: splits, виртуальные десктопы.
 
 ## Потоки и отказоустойчивость
 
@@ -88,6 +91,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   не блокировать UI; подтверждение отката показывает модальное окно.
 - Native LL-hook работает на выделенном потоке с message loop и передаёт
   события в UI через `PostMessage`.
+- Titlebar-overlay опрашивает foreground-окно каждые 250 мс, позиционируется
+  по DWM extended frame bounds и не активируется.
 - Панель задач обновляет окна раз в секунду; auto-hide опрашивает курсор
   каждые 250 мс и снимает/возвращает AppBar; скрытая панель Windows
   восстанавливается при нормальном выходе и в `ProcessExit`.

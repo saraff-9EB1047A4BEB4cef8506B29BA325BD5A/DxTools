@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2F · Низкоуровневые hotkeys</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2G · Кнопки в заголовке</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -189,4 +189,8 @@
   <data name="OpenScriptsFolder" xml:space="preserve"><value>Открыть папку скриптов</value></data>
   <data name="NoTriggers" xml:space="preserve"><value>Триггеров пока нет.</value></data>
   <data name="TriggerEnabled" xml:space="preserve"><value>Включён</value></data>
+  <data name="TitleBarButtons" xml:space="preserve"><value>Кнопки в заголовке окон</value></data>
+  <data name="TitleBarButtonsHint" xml:space="preserve"><value>Показывать кнопки «на следующий монитор» и «поверх всех окон» на активном окне.</value></data>
+  <data name="TitleBarMoveNext" xml:space="preserve"><value>На следующий монитор</value></data>
+  <data name="TitleBarTopmost" xml:space="preserve"><value>Поверх всех окон</value></data>
 </root>

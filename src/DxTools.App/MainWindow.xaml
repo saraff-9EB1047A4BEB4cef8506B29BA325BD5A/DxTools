@@ -109,6 +109,13 @@
                 <TextBlock Text="{x:Static props:Strings.TaskbarAutoHideHint}"
                            Style="{StaticResource HintStyle}"
                            Margin="26,2,0,0" />
+
+                <CheckBox Content="{x:Static props:Strings.TitleBarButtons}"
+                          IsChecked="{Binding EnableTitleBarButtons, Mode=TwoWay}"
+                          Margin="0,12,0,2" />
+                <TextBlock Text="{x:Static props:Strings.TitleBarButtonsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="26,2,0,0" />
               </StackPanel>
             </Border>
 

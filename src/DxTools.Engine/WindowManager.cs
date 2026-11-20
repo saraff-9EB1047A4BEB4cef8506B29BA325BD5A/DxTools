@@ -12,9 +12,10 @@ public sealed class WindowManager
         _display = display ?? throw new ArgumentNullException(nameof(display));
     }
 
-    public bool MoveForegroundWindow(int direction)
+    public bool MoveForegroundWindow(int direction) => MoveWindow(Win32Window.GetForegroundWindow(), direction);
+
+    public bool MoveWindow(IntPtr window, int direction)
     {
-        var window = Win32Window.GetForegroundWindow();
         if (window == IntPtr.Zero
             || window == Win32Window.GetShellWindow()
             || !Win32Window.IsWindow(window))
@@ -107,9 +108,10 @@ public sealed class WindowManager
         return moved;
     }
 
-    public bool ToggleTopmost()
+    public bool ToggleTopmost() => ToggleTopmost(Win32Window.GetForegroundWindow());
+
+    public bool ToggleTopmost(IntPtr window)
     {
-        var window = Win32Window.GetForegroundWindow();
         if (window == IntPtr.Zero
             || window == Win32Window.GetShellWindow()
             || !Win32Window.IsWindow(window))

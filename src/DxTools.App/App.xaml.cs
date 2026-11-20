@@ -20,6 +20,7 @@ public partial class App : System.Windows.Application
     private HotkeyService? _hotkeys;
     private DisplayChangeWatcher? _displayWatcher;
     private TaskbarManager? _taskbarManager;
+    private TitleBarOverlayManager? _titleBarOverlay;
     private MainViewModel? _viewModel;
     private bool _isExiting;
     private bool _suppressSaveOnExit;
@@ -158,6 +159,9 @@ public partial class App : System.Windows.Application
             viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
             viewModel.PinnedAppsChanged += () => _taskbarManager?.Rebuild();
+
+            _titleBarOverlay = new TitleBarOverlayManager(_engine.Windows, _settings);
+            viewModel.TitleBarSettingsChanged += () => _titleBarOverlay?.Refresh();
 
             _displayWatcher = new DisplayChangeWatcher(
                 windowHandle,
@@ -381,6 +385,7 @@ public partial class App : System.Windows.Application
         _hotkeys?.Dispose();
         _displayWatcher?.Dispose();
         _engine?.Triggers.Dispose();
+        _titleBarOverlay?.Dispose();
         _taskbarManager?.Dispose();
         _viewModel?.Dispose();
         _engine?.Stop();

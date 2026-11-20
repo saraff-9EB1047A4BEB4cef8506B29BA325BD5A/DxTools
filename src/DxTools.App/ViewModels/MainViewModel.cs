@@ -74,6 +74,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public event Action? TaskbarSettingsChanged;
 
+    public event Action? TitleBarSettingsChanged;
+
     public event Action<HotkeyAction>? HotkeyChangeRequested;
 
     public event Action? PinnedAppsChanged;
@@ -166,6 +168,23 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             _settings.StartMinimized = value;
             OnPropertyChanged();
             SaveSettings();
+        }
+    }
+
+    public bool EnableTitleBarButtons
+    {
+        get => _settings.EnableTitleBarButtons;
+        set
+        {
+            if (_settings.EnableTitleBarButtons == value)
+            {
+                return;
+            }
+
+            _settings.EnableTitleBarButtons = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TitleBarSettingsChanged?.Invoke();
         }
     }
 

@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2F · Low-level hotkeys</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2G · Titlebar buttons</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -189,4 +189,8 @@
   <data name="OpenScriptsFolder" xml:space="preserve"><value>Open scripts folder</value></data>
   <data name="TriggerEnabled" xml:space="preserve"><value>Enabled</value></data>
   <data name="NoTriggers" xml:space="preserve"><value>No triggers yet.</value></data>
+  <data name="TitleBarButtons" xml:space="preserve"><value>Titlebar buttons</value></data>
+  <data name="TitleBarButtonsHint" xml:space="preserve"><value>Show move-to-next-monitor and always-on-top buttons on the active window.</value></data>
+  <data name="TitleBarMoveNext" xml:space="preserve"><value>Move to next monitor</value></data>
+  <data name="TitleBarTopmost" xml:space="preserve"><value>Toggle always-on-top</value></data>
 </root>

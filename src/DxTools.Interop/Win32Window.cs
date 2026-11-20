@@ -22,6 +22,8 @@ public struct WindowRect
 public static partial class Win32Window
 {
     public const int GwlExStyle = -20;
+    public const int GwlStyle = -16;
+    public const long WsCaption = 0x00C00000;
     public const long WsExTopmost = 0x00000008;
     public const uint SwpNoSize = 0x0001;
     public const uint SwpNoMove = 0x0002;
@@ -75,6 +77,12 @@ public static partial class Win32Window
 
     [LibraryImport("user32.dll")]
     public static partial uint GetWindowThreadProcessId(IntPtr hwnd, out uint processId);
+
+    [LibraryImport("user32.dll")]
+    public static partial int GetSystemMetrics(int index);
+
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmGetWindowAttribute(IntPtr hwnd, int attribute, out WindowRect value, int size);
 
     [LibraryImport("user32.dll")]
     public static partial uint GetDpiForWindow(IntPtr hwnd);

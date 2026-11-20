@@ -189,6 +189,10 @@ public static class Strings
     public static string OpenScriptsFolder => Get(nameof(OpenScriptsFolder));
     public static string TriggerEnabled => Get(nameof(TriggerEnabled));
     public static string NoTriggers => Get(nameof(NoTriggers));
+    public static string TitleBarButtons => Get(nameof(TitleBarButtons));
+    public static string TitleBarButtonsHint => Get(nameof(TitleBarButtonsHint));
+    public static string TitleBarMoveNext => Get(nameof(TitleBarMoveNext));
+    public static string TitleBarTopmost => Get(nameof(TitleBarTopmost));
 }
 
 
