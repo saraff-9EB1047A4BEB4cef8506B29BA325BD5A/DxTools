@@ -116,7 +116,7 @@ public partial class App : System.Windows.Application
         _window = new MainWindow(viewModel);
         _window.Closing += OnMainWindowClosing;
 
-        _tray = new TrayIconHost(_window, viewModel, _engine, ExitApplication);
+        _tray = new TrayIconHost(_window, _engine, ExitApplication);
 
         var showWindow = options.ShowSettings
             || !_settings.FirstRunCompleted

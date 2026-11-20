@@ -1,7 +1,6 @@
 using System.Drawing;
 using System.IO;
 using DxTools.App.Properties;
-using DxTools.App.ViewModels;
 using DxTools.Core;
 using DxTools.Engine;
 using Forms = System.Windows.Forms;
@@ -12,12 +11,12 @@ public sealed class TrayIconHost : IDisposable
 {
     private readonly Forms.NotifyIcon _notifyIcon;
     private readonly Forms.ToolStripMenuItem _statusItem;
+    private readonly Forms.ContextMenuStrip _menu;
     private readonly Icon? _icon;
 
-    public TrayIconHost(MainWindow window, MainViewModel viewModel, EngineHost engine, Action exit)
+    public TrayIconHost(MainWindow window, EngineHost engine, Action exit)
     {
         ArgumentNullException.ThrowIfNull(window);
-        ArgumentNullException.ThrowIfNull(viewModel);
         ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(exit);
 
@@ -29,28 +28,28 @@ public sealed class TrayIconHost : IDisposable
             Visible = true,
         };
 
-        var menu = new Forms.ContextMenuStrip();
+        _menu = new Forms.ContextMenuStrip();
 
         var openItem = new Forms.ToolStripMenuItem(Strings.Open);
         openItem.Click += (_, _) => window.ShowAndActivate();
-        menu.Items.Add(openItem);
+        _menu.Items.Add(openItem);
 
         _statusItem = new Forms.ToolStripMenuItem { Enabled = false };
-        menu.Items.Add(_statusItem);
+        _menu.Items.Add(_statusItem);
 
-        menu.Items.Add(new Forms.ToolStripSeparator());
+        _menu.Items.Add(new Forms.ToolStripSeparator());
 
         var aboutItem = new Forms.ToolStripMenuItem(Strings.AboutTitle);
         aboutItem.Click += (_, _) => ShowAbout();
-        menu.Items.Add(aboutItem);
+        _menu.Items.Add(aboutItem);
 
-        menu.Items.Add(new Forms.ToolStripSeparator());
+        _menu.Items.Add(new Forms.ToolStripSeparator());
 
         var exitItem = new Forms.ToolStripMenuItem(Strings.Exit);
         exitItem.Click += (_, _) => exit();
-        menu.Items.Add(exitItem);
+        _menu.Items.Add(exitItem);
 
-        _notifyIcon.ContextMenuStrip = menu;
+        _notifyIcon.ContextMenuStrip = _menu;
         _notifyIcon.DoubleClick += (_, _) => window.ShowAndActivate();
 
         engine.StatusChanged += OnStatusChanged;
@@ -121,6 +120,7 @@ public sealed class TrayIconHost : IDisposable
     {
         _notifyIcon.Visible = false;
         _notifyIcon.Dispose();
+        _menu.Dispose();
         _icon?.Dispose();
     }
 }
