@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 8;
+    public const int CurrentSchemaVersion = 9;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -43,6 +43,8 @@ public sealed class AppSettings
     public int SplitRows { get; set; } = 2;
 
     public int SplitColumns { get; set; } = 2;
+
+    public bool EnableSplitTaskbars { get; set; }
 
     public WallpaperSettings Wallpaper { get; set; } = new();
 

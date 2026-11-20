@@ -321,6 +321,11 @@
                   <TextBox Text="{Binding SplitColumns, UpdateSourceTrigger=LostFocus}"
                            Width="60" />
                 </StackPanel>
+                <CheckBox Content="{x:Static props:Strings.SplitTaskbars}"
+                          IsChecked="{Binding EnableSplitTaskbars, Mode=TwoWay}"
+                          Margin="0,12,0,2" />
+                <TextBlock Text="{x:Static props:Strings.SplitTaskbarsHint}"
+                           Style="{StaticResource HintStyle}" />
               </StackPanel>
             </Border>
 

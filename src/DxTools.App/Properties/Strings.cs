@@ -206,6 +206,8 @@ public static class Strings
     public static string SplitRows => Get(nameof(SplitRows));
     public static string SplitColumns => Get(nameof(SplitColumns));
     public static string TrayButton => Get(nameof(TrayButton));
+    public static string SplitTaskbars => Get(nameof(SplitTaskbars));
+    public static string SplitTaskbarsHint => Get(nameof(SplitTaskbarsHint));
 }
 
 

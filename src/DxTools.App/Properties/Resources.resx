@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2J · Tray mirror</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2K · Split taskbars</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -206,4 +206,6 @@
   <data name="SplitRows" xml:space="preserve"><value>Rows</value></data>
   <data name="SplitColumns" xml:space="preserve"><value>Columns</value></data>
   <data name="TrayButton" xml:space="preserve"><value>System tray</value></data>
+  <data name="SplitTaskbars" xml:space="preserve"><value>Taskbar per split</value></data>
+  <data name="SplitTaskbarsHint" xml:space="preserve"><value>Create a separate taskbar at the bottom of each split cell. Uses overlay taskbars without AppBar reservation.</value></data>
 </root>

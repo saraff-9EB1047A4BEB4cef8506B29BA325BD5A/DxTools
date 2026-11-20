@@ -18,6 +18,7 @@ public partial class TaskbarWindow : System.Windows.Window
     private readonly ThumbnailPreviewWindow _previewWindow = new();
     private readonly DispatcherTimer _autoHideTimer;
     private MonitorInfo? _monitor;
+    private WindowRect? _bounds;
     private bool _useAppBar;
     private bool _isAutoHidden;
 
@@ -31,10 +32,11 @@ public partial class TaskbarWindow : System.Windows.Window
         _autoHideTimer.Tick += (_, _) => UpdateAutoHide();
     }
 
-    public void Place(MonitorInfo monitor, bool useAppBar)
+    public void Place(MonitorInfo monitor, bool useAppBar, WindowRect? bounds = null)
     {
         _monitor = monitor;
         _useAppBar = useAppBar;
+        _bounds = bounds;
 
         if (_handle == IntPtr.Zero)
         {
@@ -62,14 +64,22 @@ public partial class TaskbarWindow : System.Windows.Window
             return;
         }
 
-        var height = Math.Max(36, (int)Math.Round(48 * _monitor.Dpi / 96.0));
-        var desired = new WindowRect
+        WindowRect desired;
+        if (_bounds is { } bounds)
         {
-            Left = _monitor.X,
-            Top = _monitor.Bottom - height,
-            Right = _monitor.Right,
-            Bottom = _monitor.Bottom,
-        };
+            desired = bounds;
+        }
+        else
+        {
+            var height = Math.Max(36, (int)Math.Round(48 * _monitor.Dpi / 96.0));
+            desired = new WindowRect
+            {
+                Left = _monitor.X,
+                Top = _monitor.Bottom - height,
+                Right = _monitor.Right,
+                Bottom = _monitor.Bottom,
+            };
+        }
 
         var actual = useAppBar ? Win32Taskbar.RegisterAppBar(_handle, desired) : desired;
         _ = Win32Window.SetWindowPos(

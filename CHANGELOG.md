@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.13.0-alpha.1] - 2026-11-20
+
+### Added
+
+- отдельная overlay-панель задач для каждой ячейки сплита;
+- фильтрация окон по bounds ячейки;
+- live-обновление popup трея раз в 2 секунды;
+- 25 unit-тестов.
+
+### Changed
+
+- версия приложения 0.13.0-alpha.1; native DLL 0.5.0, API v3;
+- MSI 0.13.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2K.
+
 ## [0.12.0-alpha.1] - 2026-11-20
 
 ### Added

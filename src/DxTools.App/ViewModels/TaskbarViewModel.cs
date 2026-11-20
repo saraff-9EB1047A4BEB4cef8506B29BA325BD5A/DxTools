@@ -20,7 +20,9 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     private readonly Action _showSettings;
     private readonly IReadOnlyList<PinnedApp> _pinnedApps;
     private readonly TrayMirrorService _trayMirror;
+    private readonly Rect? _filterBounds;
     private bool _isTrayOpen;
+    private DateTimeOffset _lastTrayRefresh;
     private readonly DispatcherTimer _timer;
     private string _signature = string.Empty;
     private string _clockText = string.Empty;
@@ -35,7 +37,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         Action showSettings,
         IReadOnlyList<PinnedApp> pinnedApps,
         bool autoHide,
-        TrayMirrorService trayMirror)
+        TrayMirrorService trayMirror,
+        Rect? filterBounds = null)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
         _monitors = monitors ?? throw new ArgumentNullException(nameof(monitors));
@@ -45,6 +48,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         _pinnedApps = pinnedApps ?? throw new ArgumentNullException(nameof(pinnedApps));
         AutoHide = autoHide;
         _trayMirror = trayMirror ?? throw new ArgumentNullException(nameof(trayMirror));
+        _filterBounds = filterBounds;
 
         ActivateCommand = new RelayCommand(parameter =>
         {
@@ -135,6 +139,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     {
         var windows = _catalog.GetWindows()
             .Where(window => window.MonitorIndex == _monitorIndex)
+            .Where(window => _filterBounds is null
+                || _filterBounds.Value.Contains(new System.Windows.Point(window.Bounds.CenterX, window.Bounds.CenterY)))
             .ToList();
 
         var groups = windows
@@ -225,13 +231,19 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
             return;
         }
 
+        RefreshTrayItems();
+        IsTrayOpen = true;
+    }
+
+    private void RefreshTrayItems()
+    {
         TrayItems.Clear();
         foreach (var item in _trayMirror.Capture())
         {
             TrayItems.Add(new TrayItemViewModel(item, ClickTrayItem));
         }
 
-        IsTrayOpen = true;
+        _lastTrayRefresh = DateTimeOffset.Now;
     }
 
     private void ClickTrayItem(TrayItem item)
@@ -245,6 +257,11 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     {
         ClockText = DateTime.Now.ToString("HH:mm");
         Refresh();
+
+        if (IsTrayOpen && DateTimeOffset.Now - _lastTrayRefresh > TimeSpan.FromSeconds(2))
+        {
+            RefreshTrayItems();
+        }
         UpdateFullscreenState();
     }
 

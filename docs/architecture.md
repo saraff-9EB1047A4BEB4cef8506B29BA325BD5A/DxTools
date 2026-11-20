@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2J и границы модулей.
+Документ описывает архитектуру Phase 2K и границы модулей.
 
 ## Процессная модель
 
@@ -29,15 +29,16 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   `HotkeyCaptureWindow`.
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
-- `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
-  временное скрытие `Shell_SecondaryTrayWnd` и восстановление при выходе.
+- `TaskbarManager`: панели задач для неосновных мониторов, опционально
+  overlay-панель на каждую ячейку сплита (без AppBar), временное скрытие
+  `Shell_SecondaryTrayWnd` и восстановление при выходе.
 - `TaskbarWindow`: WPF-панель 48 DIP, группировка окон по exe, кнопки с
   иконками и счётчиком, pinned apps, часы, fullscreen-скрытие,
   DWM live-превью в topmost-окне, автоскрытие с управлением AppBar,
   `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - `TrayMirrorService`: UIA-сканирование области уведомлений, снимки иконок
-  и передача клика исходному элементу.
+  и передача клика исходному элементу; popup обновляется раз в 2 секунды.
 - Никакой бизнес-логики: только представление и композиция.
 
 ### DxTools.Core
@@ -70,7 +71,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 2K/3: отдельные taskbar для сплитов, live-обновление трея.
+- В Phase 3: VD, screensaver, desktop icons, audio, UIAccess, ARM64, signing.
 
 ### DxTools.Interop
 

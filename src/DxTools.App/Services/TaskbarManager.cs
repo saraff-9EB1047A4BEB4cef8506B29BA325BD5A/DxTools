@@ -1,3 +1,4 @@
+using System.Windows;
 using DxTools.Core;
 using DxTools.App.ViewModels;
 using DxTools.Interop;
@@ -78,6 +79,52 @@ public sealed class TaskbarManager : IDisposable
                     ShellTaskbars.SetVisible(shellTaskbar.Handle, visible: false);
                     _hiddenShellTaskbars.Add(shellTaskbar.Handle);
                     usedShellTaskbars.Add(shellTaskbar.Handle);
+                }
+
+                var rows = Math.Clamp(_settings.SplitRows, 1, 3);
+                var columns = Math.Clamp(_settings.SplitColumns, 1, 3);
+
+                if (_settings.EnableSplitTaskbars && rows * columns > 1)
+                {
+                    var cellWidth = monitor.Width / columns;
+                    var cellHeight = monitor.Height / rows;
+                    var height = Math.Max(36, (int)Math.Round(48 * monitor.Dpi / 96.0));
+
+                    for (var row = 0; row < rows; row++)
+                    {
+                        for (var column = 0; column < columns; column++)
+                        {
+                            var left = monitor.X + (column * cellWidth);
+                            var top = monitor.Y + (row * cellHeight);
+                            var width = column == columns - 1 ? monitor.Right - left : cellWidth;
+                            var cellHeightActual = row == rows - 1 ? monitor.Bottom - top : cellHeight;
+                            var bounds = new WindowRect
+                            {
+                                Left = left,
+                                Top = top + cellHeightActual - height,
+                                Right = left + width,
+                                Bottom = top + cellHeightActual,
+                            };
+
+                            var splitViewModel = new TaskbarViewModel(
+                                _catalog,
+                                monitors,
+                                index,
+                                _icons,
+                                _showSettings,
+                                _settings.PinnedApps,
+                                autoHide: false,
+                                trayMirror: _trayMirror,
+                                filterBounds: new Rect(left, top, width, cellHeightActual));
+
+                            var splitWindow = new TaskbarWindow(splitViewModel);
+                            splitWindow.Show();
+                            splitWindow.Place(monitor, false, bounds);
+                            _windows.Add(splitWindow);
+                        }
+                    }
+
+                    continue;
                 }
 
                 var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings, _settings.PinnedApps, _settings.TaskbarAutoHide, _trayMirror);

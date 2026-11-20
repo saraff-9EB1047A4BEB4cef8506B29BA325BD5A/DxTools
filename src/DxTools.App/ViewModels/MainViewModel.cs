@@ -227,6 +227,23 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool EnableSplitTaskbars
+    {
+        get => _settings.EnableSplitTaskbars;
+        set
+        {
+            if (_settings.EnableSplitTaskbars == value)
+            {
+                return;
+            }
+
+            _settings.EnableSplitTaskbars = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TaskbarSettingsChanged?.Invoke();
+        }
+    }
+
     public bool EnableTitleBarButtons
     {
         get => _settings.EnableTitleBarButtons;
