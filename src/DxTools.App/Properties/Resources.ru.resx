@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
+  <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 0 · Фундамент</value></data>
+  <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
+  <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
+  <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
+  <data name="StartWithWindows" xml:space="preserve"><value>Запускать при входе в Windows</value></data>
+  <data name="StartWithWindowsHint" xml:space="preserve"><value>Автоматически запускать DxTools при входе в систему.</value></data>
+  <data name="StartMinimized" xml:space="preserve"><value>Запускать свёрнутым</value></data>
+  <data name="StartMinimizedHint" xml:space="preserve"><value>При автозапуске окно остаётся скрытым в области уведомлений.</value></data>
+  <data name="Language" xml:space="preserve"><value>Язык</value></data>
+  <data name="LanguageHint" xml:space="preserve"><value>Язык интерфейса. Требуется перезапуск.</value></data>
+  <data name="LanguageAuto" xml:space="preserve"><value>Авто</value></data>
+  <data name="LanguageRussian" xml:space="preserve"><value>Русский</value></data>
+  <data name="LanguageEnglish" xml:space="preserve"><value>English</value></data>
+  <data name="Theme" xml:space="preserve"><value>Тема</value></data>
+  <data name="ThemeHint" xml:space="preserve"><value>Цветовая схема окна.</value></data>
+  <data name="ThemeSystem" xml:space="preserve"><value>Системная</value></data>
+  <data name="ThemeLight" xml:space="preserve"><value>Светлая</value></data>
+  <data name="ThemeDark" xml:space="preserve"><value>Тёмная</value></data>
+  <data name="RestartRequired" xml:space="preserve"><value>Перезапустите DxTools, чтобы применить язык.</value></data>
+  <data name="DiagnosticsTitle" xml:space="preserve"><value>Диагностика среды выполнения</value></data>
+  <data name="NativeStatus" xml:space="preserve"><value>Нативная библиотека</value></data>
+  <data name="NativeAvailable" xml:space="preserve"><value>Доступна</value></data>
+  <data name="NativeUnavailable" xml:space="preserve"><value>Недоступна</value></data>
+  <data name="SafeMode" xml:space="preserve"><value>Безопасный режим</value></data>
+  <data name="SafeModeHint" xml:space="preserve"><value>Нативные проверки и хуки отключены.</value></data>
+  <data name="ApiVersion" xml:space="preserve"><value>Версия API</value></data>
+  <data name="LibraryVersion" xml:space="preserve"><value>Версия библиотеки</value></data>
+  <data name="Ping" xml:space="preserve"><value>Проверка связи</value></data>
+  <data name="PingOk" xml:space="preserve"><value>OK</value></data>
+  <data name="PingFailed" xml:space="preserve"><value>Ошибка</value></data>
+  <data name="NotAvailable" xml:space="preserve"><value>Нет данных</value></data>
+  <data name="CheckedAt" xml:space="preserve"><value>Проверено</value></data>
+  <data name="LogsTitle" xml:space="preserve"><value>Логи</value></data>
+  <data name="LogsHint" xml:space="preserve"><value>Логи хранятся локально. Телеметрия не отправляется.</value></data>
+  <data name="OpenLogs" xml:space="preserve"><value>Открыть папку логов</value></data>
+  <data name="SelfCheck" xml:space="preserve"><value>Выполнить самопроверку</value></data>
+  <data name="AboutTitle" xml:space="preserve"><value>О DxTools</value></data>
+  <data name="Version" xml:space="preserve"><value>Версия</value></data>
+  <data name="License" xml:space="preserve"><value>Лицензия</value></data>
+  <data name="Repository" xml:space="preserve"><value>Исходный код</value></data>
+  <data name="OpenRepository" xml:space="preserve"><value>Открыть репозиторий</value></data>
+  <data name="Exit" xml:space="preserve"><value>Выход</value></data>
+  <data name="Open" xml:space="preserve"><value>Открыть DxTools</value></data>
+  <data name="TrayStatus" xml:space="preserve"><value>Состояние</value></data>
+  <data name="StatusReady" xml:space="preserve"><value>Нативная среда готова</value></data>
+  <data name="StatusUnavailable" xml:space="preserve"><value>Нативная среда недоступна</value></data>
+  <data name="StatusSafeMode" xml:space="preserve"><value>Безопасный режим</value></data>
+  <data name="SaveFailed" xml:space="preserve"><value>Не удалось сохранить настройки. Подробности в логе.</value></data>
+  <data name="AutostartFailed" xml:space="preserve"><value>Не удалось изменить автозапуск. Подробности в логе.</value></data>
+  <data name="SelfCheckDone" xml:space="preserve"><value>Самопроверка завершена.</value></data>
+  <data name="FirstRunTitle" xml:space="preserve"><value>DxTools запущен</value></data>
+  <data name="FirstRunText" xml:space="preserve"><value>DxTools работает в области уведомлений. Двойной щелчок по значку открывает настройки.</value></data>
+  <data name="CrashTitle" xml:space="preserve"><value>В DxTools произошла ошибка</value></data>
+  <data name="CrashText" xml:space="preserve"><value>Ошибка записана в лог. Можно продолжить работу, но часть функций может быть недоступна.</value></data>
+  <data name="HelpText" xml:space="preserve"><value>Использование: DxTools.exe [--autostart] [--safe-mode] [--show] [--version] [--help] [--settings &lt;path&gt;]</value></data>
+  <data name="CloseToTray" xml:space="preserve"><value>Закрытие окна оставляет DxTools в области уведомлений.</value></data>
+  <data name="NativePath" xml:space="preserve"><value>Путь</value></data>
+  <data name="Status" xml:space="preserve"><value>Состояние</value></data>
+  <data name="Healthy" xml:space="preserve"><value>Готово</value></data>
+  <data name="Unhealthy" xml:space="preserve"><value>Требует внимания</value></data>
+  <data name="SettingsSaved" xml:space="preserve"><value>Настройки сохранены.</value></data>
+  <data name="LogFolderUnavailable" xml:space="preserve"><value>Папка логов недоступна.</value></data>
+  <data name="Phase0Note" xml:space="preserve"><value>Фундаментальная сборка. Мониторы, окна, обои и панель задач появятся в Phase 1–2.</value></data>
+  <data name="LicenseName" xml:space="preserve"><value>GNU GPL v2</value></data>
+</root>

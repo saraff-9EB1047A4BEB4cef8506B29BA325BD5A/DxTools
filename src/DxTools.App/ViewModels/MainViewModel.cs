@@ -1,0 +1,263 @@
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Security;
+using System.Windows.Input;
+using DxTools.App.Properties;
+using DxTools.Core;
+using DxTools.Engine;
+using DxTools.Interop;
+
+namespace DxTools.App.ViewModels;
+
+public sealed class MainViewModel : ObservableObject
+{
+    private readonly SettingsStore _settingsStore;
+    private readonly AppSettings _settings;
+    private readonly EngineHost _engine;
+    private readonly AutostartService _autostart;
+
+    private string _statusMessage = string.Empty;
+    private bool _restartRequired;
+    private NativeProbeResult _native;
+    private bool _safeMode;
+    private DateTimeOffset _checkedAt = DateTimeOffset.MinValue;
+
+    public MainViewModel(
+        SettingsStore settingsStore,
+        AppSettings settings,
+        EngineHost engine,
+        AutostartService autostart)
+    {
+        _settingsStore = settingsStore ?? throw new ArgumentNullException(nameof(settingsStore));
+        _settings = settings ?? throw new ArgumentNullException(nameof(settings));
+        _engine = engine ?? throw new ArgumentNullException(nameof(engine));
+        _autostart = autostart ?? throw new ArgumentNullException(nameof(autostart));
+
+        _native = engine.Status.Native;
+        _safeMode = engine.Status.SafeMode;
+        _checkedAt = engine.Status.CheckedAt;
+        _engine.StatusChanged += OnEngineStatusChanged;
+
+        OpenLogsCommand = new RelayCommand(OpenLogs);
+        OpenRepositoryCommand = new RelayCommand(OpenRepository);
+        SelfCheckCommand = new RelayCommand(RunSelfCheck);
+    }
+
+    public Action<AppTheme>? ThemeChanged { get; set; }
+
+    public ICommand OpenLogsCommand { get; }
+
+    public ICommand OpenRepositoryCommand { get; }
+
+    public ICommand SelfCheckCommand { get; }
+
+    public string VersionText => DxToolsInfo.InformationalVersion;
+
+    public string LicenseText => $"{Strings.LicenseName} ({DxToolsInfo.LicenseId})";
+
+    public string CopyrightText => DxToolsInfo.Copyright;
+
+    public string RepositoryUrl => DxToolsInfo.RepositoryUrl;
+
+    public string LogDirectory => AppPaths.LogDirectory;
+
+    public string PhaseNote => Strings.Phase0Note;
+
+    public bool StartWithWindows
+    {
+        get => _settings.StartWithWindows;
+        set
+        {
+            if (_settings.StartWithWindows == value)
+            {
+                return;
+            }
+
+            var previous = _settings.StartWithWindows;
+            try
+            {
+                _autostart.SetEnabled(value);
+                _settings.StartWithWindows = value;
+                OnPropertyChanged();
+                SaveSettings();
+            }
+            catch (Exception ex) when (ex is UnauthorizedAccessException
+                or IOException
+                or SecurityException
+                or InvalidOperationException)
+            {
+                _settings.StartWithWindows = previous;
+                OnPropertyChanged();
+                StatusMessage = Strings.AutostartFailed;
+                DxLog.Exception("Failed to update autostart.", ex);
+            }
+        }
+    }
+
+    public bool StartMinimized
+    {
+        get => _settings.StartMinimized;
+        set
+        {
+            if (_settings.StartMinimized == value)
+            {
+                return;
+            }
+
+            _settings.StartMinimized = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
+    public AppLanguage Language
+    {
+        get => _settings.Language;
+        set
+        {
+            if (_settings.Language == value)
+            {
+                return;
+            }
+
+            _settings.Language = value;
+            OnPropertyChanged();
+            RestartRequired = true;
+            SaveSettings();
+        }
+    }
+
+    public AppTheme Theme
+    {
+        get => _settings.Theme;
+        set
+        {
+            if (_settings.Theme == value)
+            {
+                return;
+            }
+
+            _settings.Theme = value;
+            OnPropertyChanged();
+            SaveSettings();
+            ThemeChanged?.Invoke(value);
+        }
+    }
+
+    public bool RestartRequired
+    {
+        get => _restartRequired;
+        private set => SetProperty(ref _restartRequired, value);
+    }
+
+    public string StatusMessage
+    {
+        get => _statusMessage;
+        set => SetProperty(ref _statusMessage, value);
+    }
+
+    public bool NativeAvailable => _native.IsAvailable;
+
+    public bool IsHealthy => !_safeMode && _native.IsHealthy;
+
+    public bool SafeMode => _safeMode;
+
+    public string StatusText => _safeMode
+        ? Strings.StatusSafeMode
+        : IsHealthy ? Strings.StatusReady : Strings.StatusUnavailable;
+
+    public string NativeStatusText => _safeMode
+        ? Strings.SafeMode
+        : _native.IsAvailable ? Strings.NativeAvailable : Strings.NativeUnavailable;
+
+    public string ApiVersionText => _native.IsAvailable
+        ? _native.ApiVersion.ToString(CultureInfo.InvariantCulture)
+        : Strings.NotAvailable;
+
+    public string LibraryVersionText => _native.LibraryVersion ?? Strings.NotAvailable;
+
+    public string PingText => !_native.IsAvailable
+        ? Strings.NotAvailable
+        : _native.PingOk ? Strings.PingOk : Strings.PingFailed;
+
+    public string NativePath => _native.LibraryPath;
+
+    public string CheckedAtText => _checkedAt == DateTimeOffset.MinValue
+        ? Strings.NotAvailable
+        : _checkedAt.ToLocalTime().ToString("g", CultureInfo.CurrentCulture);
+
+    private void OnEngineStatusChanged(object? sender, EngineStatus status)
+    {
+        _native = status.Native;
+        _safeMode = status.SafeMode;
+        _checkedAt = status.CheckedAt;
+
+        OnPropertyChanged(nameof(NativeAvailable));
+        OnPropertyChanged(nameof(IsHealthy));
+        OnPropertyChanged(nameof(SafeMode));
+        OnPropertyChanged(nameof(StatusText));
+        OnPropertyChanged(nameof(NativeStatusText));
+        OnPropertyChanged(nameof(ApiVersionText));
+        OnPropertyChanged(nameof(LibraryVersionText));
+        OnPropertyChanged(nameof(PingText));
+        OnPropertyChanged(nameof(NativePath));
+        OnPropertyChanged(nameof(CheckedAtText));
+    }
+
+    private void SaveSettings()
+    {
+        try
+        {
+            _settingsStore.Save(_settings);
+            StatusMessage = Strings.SettingsSaved;
+        }
+        catch (Exception ex) when (ex is IOException
+            or UnauthorizedAccessException
+            or NotSupportedException)
+        {
+            StatusMessage = Strings.SaveFailed;
+            DxLog.Exception("Failed to save settings.", ex);
+        }
+    }
+
+    private void OpenLogs()
+    {
+        try
+        {
+            Directory.CreateDirectory(AppPaths.LogDirectory);
+            Process.Start(new ProcessStartInfo(AppPaths.LogDirectory)
+            {
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception ex) when (ex is IOException
+            or UnauthorizedAccessException
+            or System.ComponentModel.Win32Exception)
+        {
+            StatusMessage = Strings.LogFolderUnavailable;
+            DxLog.Exception("Failed to open the log folder.", ex);
+        }
+    }
+
+    private void OpenRepository()
+    {
+        try
+        {
+            Process.Start(new ProcessStartInfo(DxToolsInfo.RepositoryUrl)
+            {
+                UseShellExecute = true,
+            });
+        }
+        catch (Exception ex) when (ex is System.ComponentModel.Win32Exception or InvalidOperationException)
+        {
+            DxLog.Exception("Failed to open the repository URL.", ex);
+        }
+    }
+
+    private void RunSelfCheck()
+    {
+        _engine.Refresh();
+        StatusMessage = Strings.SelfCheckDone;
+    }
+}

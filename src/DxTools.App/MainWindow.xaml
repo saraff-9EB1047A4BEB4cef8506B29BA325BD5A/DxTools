@@ -1,0 +1,311 @@
+﻿<Window x:Class="DxTools.App.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:props="clr-namespace:DxTools.App.Properties"
+        mc:Ignorable="d"
+        Title="{x:Static props:Strings.AppTitle}"
+        Icon="Resources/DxTools.ico"
+        Width="940"
+        Height="720"
+        MinWidth="780"
+        MinHeight="560"
+        WindowStartupLocation="CenterScreen"
+        Background="{DynamicResource WindowBackgroundBrush}"
+        Foreground="{DynamicResource TextPrimaryBrush}"
+        FontFamily="Segoe UI Variable Text, Segoe UI"
+        TextOptions.TextFormattingMode="Display"
+        UseLayoutRounding="True"
+        SnapsToDevicePixels="True">
+
+  <Grid Margin="24">
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto" />
+      <RowDefinition Height="*" />
+      <RowDefinition Height="Auto" />
+    </Grid.RowDefinitions>
+
+    <Border Grid.Row="0"
+            Style="{StaticResource CardStyle}"
+            Background="{DynamicResource HeroBrush}"
+            Padding="20"
+            Margin="0">
+      <Grid>
+        <Grid.ColumnDefinitions>
+          <ColumnDefinition Width="Auto" />
+          <ColumnDefinition Width="*" />
+          <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+
+        <Border Width="56"
+                Height="56"
+                CornerRadius="14"
+                Background="{DynamicResource AccentBrush}">
+          <TextBlock Text="Dx"
+                     Foreground="White"
+                     FontSize="24"
+                     FontWeight="Bold"
+                     HorizontalAlignment="Center"
+                     VerticalAlignment="Center" />
+        </Border>
+
+        <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+          <TextBlock Text="{x:Static props:Strings.AppTitle}"
+                     FontSize="24"
+                     FontWeight="Bold" />
+          <TextBlock Text="{x:Static props:Strings.AppSubtitle}"
+                     Style="{StaticResource HintStyle}"
+                     FontSize="13"
+                     Margin="0,2,0,0" />
+        </StackPanel>
+
+        <StackPanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Right">
+          <Border Style="{StaticResource PillStyle}"
+                  Background="{DynamicResource AccentSoftBrush}"
+                  HorizontalAlignment="Right">
+            <TextBlock Text="{x:Static props:Strings.PhaseLabel}"
+                       Foreground="{DynamicResource AccentBrush}"
+                       FontSize="11"
+                       FontWeight="SemiBold" />
+          </Border>
+          <TextBlock Text="{Binding VersionText}"
+                     Style="{StaticResource HintStyle}"
+                     Margin="0,6,0,0"
+                     HorizontalAlignment="Right" />
+        </StackPanel>
+      </Grid>
+    </Border>
+
+    <TabControl Grid.Row="1" Margin="0,16,0,8">
+      <TabItem Header="{x:Static props:Strings.GeneralTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <CheckBox Content="{x:Static props:Strings.StartWithWindows}"
+                          IsChecked="{Binding StartWithWindows, Mode=TwoWay}" />
+                <TextBlock Text="{x:Static props:Strings.StartWithWindowsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="26,2,0,0" />
+
+                <CheckBox Content="{x:Static props:Strings.StartMinimized}"
+                          IsChecked="{Binding StartMinimized, Mode=TwoWay}"
+                          Margin="0,14,0,2" />
+                <TextBlock Text="{x:Static props:Strings.StartMinimizedHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="26,2,0,0" />
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.Language}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBlock Text="{x:Static props:Strings.LanguageHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,0,0,10" />
+                <StackPanel Orientation="Horizontal">
+                  <RadioButton Content="{x:Static props:Strings.LanguageAuto}"
+                               GroupName="Language"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Language, Converter={StaticResource EnumToBoolean}, ConverterParameter=Auto, Mode=TwoWay}" />
+                  <RadioButton Content="{x:Static props:Strings.LanguageRussian}"
+                               GroupName="Language"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Language, Converter={StaticResource EnumToBoolean}, ConverterParameter=Russian, Mode=TwoWay}" />
+                  <RadioButton Content="{x:Static props:Strings.LanguageEnglish}"
+                               GroupName="Language"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Language, Converter={StaticResource EnumToBoolean}, ConverterParameter=English, Mode=TwoWay}" />
+                </StackPanel>
+                <TextBlock Text="{x:Static props:Strings.RestartRequired}"
+                           Foreground="{DynamicResource WarningBrush}"
+                           FontSize="12"
+                           TextWrapping="Wrap"
+                           Margin="0,10,0,0"
+                           Visibility="{Binding RestartRequired, Converter={StaticResource BoolToVisibility}}" />
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.Theme}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBlock Text="{x:Static props:Strings.ThemeHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,0,0,10" />
+                <StackPanel Orientation="Horizontal">
+                  <RadioButton Content="{x:Static props:Strings.ThemeSystem}"
+                               GroupName="Theme"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Theme, Converter={StaticResource EnumToBoolean}, ConverterParameter=System, Mode=TwoWay}" />
+                  <RadioButton Content="{x:Static props:Strings.ThemeLight}"
+                               GroupName="Theme"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Theme, Converter={StaticResource EnumToBoolean}, ConverterParameter=Light, Mode=TwoWay}" />
+                  <RadioButton Content="{x:Static props:Strings.ThemeDark}"
+                               GroupName="Theme"
+                               Style="{StaticResource SegmentRadioStyle}"
+                               IsChecked="{Binding Theme, Converter={StaticResource EnumToBoolean}, ConverterParameter=Dark, Mode=TwoWay}" />
+                </StackPanel>
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="{x:Static props:Strings.DiagnosticsTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                  <TextBlock Text="{x:Static props:Strings.NativeStatus}"
+                             Style="{StaticResource SectionTitleStyle}"
+                             Margin="0,0,10,0" />
+                  <Border HorizontalAlignment="Left" Margin="0,0,0,8">
+                    <Border.Style>
+                      <Style TargetType="Border" BasedOn="{StaticResource PillStyle}">
+                        <Setter Property="Background" Value="{DynamicResource DangerSoftBrush}" />
+                        <Style.Triggers>
+                          <DataTrigger Binding="{Binding IsHealthy}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource SuccessSoftBrush}" />
+                          </DataTrigger>
+                          <DataTrigger Binding="{Binding SafeMode}" Value="True">
+                            <Setter Property="Background" Value="{DynamicResource WarningSoftBrush}" />
+                          </DataTrigger>
+                        </Style.Triggers>
+                      </Style>
+                    </Border.Style>
+                    <TextBlock Text="{Binding NativeStatusText}"
+                               FontSize="11"
+                               FontWeight="SemiBold"
+                               Foreground="{DynamicResource TextPrimaryBrush}" />
+                  </Border>
+                </StackPanel>
+
+                <Grid Margin="0,8,0,0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static props:Strings.Status}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding StatusText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static props:Strings.ApiVersion}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding ApiVersionText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static props:Strings.LibraryVersion}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding LibraryVersionText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="3" Grid.Column="0" Text="{x:Static props:Strings.Ping}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="3" Grid.Column="1" Text="{Binding PingText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="4" Grid.Column="0" Text="{x:Static props:Strings.NativePath}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="4" Grid.Column="1" Text="{Binding NativePath}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="5" Grid.Column="0" Text="{x:Static props:Strings.CheckedAt}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="5" Grid.Column="1" Text="{Binding CheckedAtText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+                </Grid>
+
+                <Button Content="{x:Static props:Strings.SelfCheck}"
+                        Command="{Binding SelfCheckCommand}"
+                        Margin="0,12,0,0" />
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.LogsTitle}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBlock Text="{x:Static props:Strings.LogsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,0,0,8" />
+                <TextBlock Text="{Binding LogDirectory}"
+                           Style="{StaticResource ValueStyle}"
+                           Foreground="{DynamicResource TextSecondaryBrush}"
+                           FontSize="12"
+                           Margin="0,0,0,12" />
+                <Button Content="{x:Static props:Strings.OpenLogs}"
+                        Command="{Binding OpenLogsCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+              </StackPanel>
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+
+      <TabItem Header="{x:Static props:Strings.AboutTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.AboutTitle}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <Grid Margin="0,4,0,0">
+                  <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150" />
+                    <ColumnDefinition Width="*" />
+                  </Grid.ColumnDefinitions>
+                  <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto" />
+                  </Grid.RowDefinitions>
+
+                  <TextBlock Grid.Row="0" Grid.Column="0" Text="{x:Static props:Strings.Version}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding VersionText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="1" Grid.Column="0" Text="{x:Static props:Strings.License}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="1" Grid.Column="1" Text="{Binding LicenseText}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+
+                  <TextBlock Grid.Row="2" Grid.Column="0" Text="{x:Static props:Strings.Repository}" Style="{StaticResource HintStyle}" Margin="0,0,0,6" />
+                  <TextBlock Grid.Row="2" Grid.Column="1" Text="{Binding RepositoryUrl}" Style="{StaticResource ValueStyle}" Margin="0,0,0,6" />
+                </Grid>
+                <TextBlock Text="{Binding CopyrightText}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,8,0,0" />
+                <Button Content="{x:Static props:Strings.OpenRepository}"
+                        Command="{Binding OpenRepositoryCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}"
+                        Margin="0,14,0,0" />
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <TextBlock Text="{Binding PhaseNote}"
+                         Style="{StaticResource HintStyle}"
+                         FontSize="13" />
+            </Border>
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
+    </TabControl>
+
+    <Grid Grid.Row="2" Margin="2,2,2,0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*" />
+        <ColumnDefinition Width="Auto" />
+      </Grid.ColumnDefinitions>
+      <TextBlock Text="{Binding StatusMessage}"
+                 Style="{StaticResource HintStyle}"
+                 VerticalAlignment="Center" />
+      <TextBlock Grid.Column="1"
+                 Text="{x:Static props:Strings.CloseToTray}"
+                 Style="{StaticResource HintStyle}"
+                 Margin="16,0,0,0"
+                 VerticalAlignment="Center" />
+    </Grid>
+  </Grid>
+</Window>

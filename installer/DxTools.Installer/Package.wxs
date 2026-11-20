@@ -1,0 +1,54 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="DxTools"
+           Manufacturer="DxTools Project"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="{091EAF2A-E6F1-4B03-9EFF-6186F45EBAE9}"
+           Scope="perMachine"
+           Language="1033">
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of DxTools is already installed." />
+    <MediaTemplate EmbedCab="yes" CompressionLevel="high" />
+
+    <Icon Id="DxToolsIcon" SourceFile="..\..\src\DxTools.App\Resources\DxTools.ico" />
+    <Property Id="ARPPRODUCTICON" Value="DxToolsIcon" />
+    <Property Id="ARPNOMODIFY" Value="1" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools" />
+
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="DxTools" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="CommonAppDataFolder">
+      <Directory Id="CommonProgramsMicrosoft" Name="Microsoft">
+        <Directory Id="CommonProgramsWindows" Name="Windows">
+          <Directory Id="CommonProgramsStartMenu" Name="Start Menu">
+            <Directory Id="CommonProgramsPrograms" Name="Programs">
+              <Directory Id="ApplicationProgramsFolder" Name="DxTools">
+                <Component Id="StartMenuShortcut" Guid="{F8A2E499-53F3-4BAD-B983-3CE8E8BC4842}">
+                  <Shortcut Id="DxToolsStartMenuShortcut"
+                            Name="DxTools"
+                            Description="DxTools multi-monitor utilities"
+                            Target="[INSTALLFOLDER]DxTools.exe"
+                            WorkingDirectory="INSTALLFOLDER"
+                            Icon="DxToolsIcon" />
+                  <RemoveFolder Id="RemoveApplicationProgramsFolder" On="uninstall" />
+                  <RegistryValue Root="HKLM"
+                                 Key="Software\DxTools"
+                                 Name="StartMenuShortcut"
+                                 Type="integer"
+                                 Value="1"
+                                 KeyPath="yes" />
+                </Component>
+              </Directory>
+            </Directory>
+          </Directory>
+        </Directory>
+      </Directory>
+    </StandardDirectory>
+
+    <Feature Id="MainFeature" Title="DxTools" Level="1">
+      <ComponentGroupRef Id="AppFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+    </Feature>
+  </Package>
+</Wix>

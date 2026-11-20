@@ -1,0 +1,81 @@
+# DxTools
+
+DxTools — открытая утилита для Windows 11, повторяющая ключевые возможности
+DisplayFusion: профили мониторов, мультимониторные панели задач, управление
+окнами, обои, горячие клавиши, триггеры и скрипты.
+
+- Лицензия: GNU GPL v2 (`GPL-2.0-only`)
+- Платформа: Windows 11 22H2+ (x64), .NET 10
+- Статус: Phase 0 (фундамент), alpha
+
+## Возможности текущей версии (0.1.0-alpha)
+
+- установщик MSI (per-machine, x64);
+- приложение в системном трее, окно настроек;
+- JSON-настройки с атомарной записью и восстановлением после повреждения;
+- автозапуск при входе в систему;
+- русский и английский интерфейс (переключение языка — после перезапуска);
+- светлая/тёмная/системная тема;
+- единственный экземпляр приложения, команда открытия настроек из второй копии;
+- файловые логи и crash handler;
+- безопасный режим (`--safe-mode`);
+- нативная библиотека `DxTools.Native.dll` с C ABI и проверкой handshake.
+
+Функции мониторов, окон, обоев и панели задач появятся в Phase 1–2.
+Подробный план: [spec.md](spec.md).
+
+## Требования для сборки
+
+- Windows 11 x64;
+- .NET SDK 10.0.400+;
+- Visual Studio 2022/2026 с workload «Desktop development with C++» и
+  Windows 11 SDK 10.0.26100;
+- CMake 3.28+ (для нативной библиотеки);
+- WiX Toolset 6 восстанавливается как NuGet-пакет.
+
+## Сборка
+
+```powershell
+dotnet build DxTools.sln -c Release
+dotnet test DxTools.sln -c Release
+powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
+```
+
+Результат: `artifacts/publish/` (self-contained приложение) и
+`artifacts/DxTools-0.1.0-x64.msi`.
+
+Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
+(см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
+
+## Структура
+
+```
+src/DxTools.App        WPF UI, трей, настройки
+src/DxTools.Core       домен, настройки, утилиты
+src/DxTools.Engine     фоновые сервисы
+src/DxTools.Interop    P/Invoke и загрузка native DLL
+native/                C++ библиотека
+tests/                 unit-тесты
+installer/             WiX 6 MSI
+build/                 сборочные скрипты
+```
+
+## Документация
+
+- [spec.md](spec.md) — спецификация и план;
+- [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
+- [CHANGELOG.md](CHANGELOG.md) — история версий;
+- [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.
+
+## Участие
+
+Проект распространяется по GPLv2. Отправляя изменения, вы соглашаетесь
+лицензировать их на тех же условиях. Не добавляйте код и ресурсы,
+несовместимые с GPLv2.
+
+## Лицензия
+
+Copyright (C) 2026 DxTools contributors.
+
+Программа распространяется в надежде, что она будет полезной, но БЕЗ
+КАКИХ-ЛИБО ГАРАНТИЙ. Полный текст — в [LICENSE](LICENSE).
