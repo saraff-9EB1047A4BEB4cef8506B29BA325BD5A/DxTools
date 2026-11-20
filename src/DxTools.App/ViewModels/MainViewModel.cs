@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Security;
@@ -51,9 +52,11 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         _engine.StatusChanged += OnEngineStatusChanged;
 
         OpenLogsCommand = new RelayCommand(OpenLogs);
+        RefreshPinnedApps();
         OpenRepositoryCommand = new RelayCommand(OpenRepository);
         SelfCheckCommand = new RelayCommand(RunSelfCheck);
         ExportBackupCommand = new RelayCommand(ExportBackup);
+        AddPinnedAppCommand = new RelayCommand(AddPinnedApp);
         ChangeHotkeyCommand = new RelayCommand(parameter =>
         {
             if (parameter is HotkeyInfo hotkey)
@@ -71,6 +74,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public event Action? TaskbarSettingsChanged;
 
     public event Action<HotkeyAction>? HotkeyChangeRequested;
+
+    public event Action? PinnedAppsChanged;
 
     public DisplayViewModel Display { get; }
 
@@ -95,6 +100,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public ICommand ExportBackupCommand { get; }
 
     public ICommand ChangeHotkeyCommand { get; }
+
+    public ICommand AddPinnedAppCommand { get; }
+
+    public ObservableCollection<PinnedAppItemViewModel> PinnedApps { get; } = [];
 
     public ICommand ImportBackupCommand { get; }
 
@@ -328,6 +337,56 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     {
         _engine.StatusChanged -= OnEngineStatusChanged;
         Wallpaper.Dispose();
+    }
+
+    private void RefreshPinnedApps()
+    {
+        PinnedApps.Clear();
+        foreach (var app in _settings.PinnedApps)
+        {
+            PinnedApps.Add(new PinnedAppItemViewModel(app, RemovePinnedApp));
+        }
+    }
+
+    private void AddPinnedApp()
+    {
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Title = Strings.PinnedAppsTitle,
+            Filter = "Applications|*.exe|All files|*.*",
+            CheckFileExists = true,
+            Multiselect = false,
+        };
+
+        if (dialog.ShowDialog() != true)
+        {
+            return;
+        }
+
+        if (_settings.PinnedApps.Any(app => string.Equals(app.Path, dialog.FileName, StringComparison.OrdinalIgnoreCase)))
+        {
+            return;
+        }
+
+        _settings.PinnedApps.Add(new PinnedApp
+        {
+            Path = dialog.FileName,
+            Name = System.IO.Path.GetFileNameWithoutExtension(dialog.FileName),
+        });
+
+        SaveSettings();
+        RefreshPinnedApps();
+        PinnedAppsChanged?.Invoke();
+    }
+
+    private void RemovePinnedApp(PinnedApp app)
+    {
+        if (_settings.PinnedApps.Remove(app))
+        {
+            SaveSettings();
+            RefreshPinnedApps();
+            PinnedAppsChanged?.Invoke();
+        }
     }
 
     private void RunSelfCheck()

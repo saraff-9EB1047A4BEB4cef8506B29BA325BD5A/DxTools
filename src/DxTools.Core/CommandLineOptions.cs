@@ -7,6 +7,9 @@ public sealed record CommandLineOptions(
     bool ShowVersion,
     bool ShowHelp,
     bool RequestExit,
+    string? ApplyDisplayProfile,
+    string? ApplyWindowProfile,
+    bool ApplyWallpaper,
     string? SettingsPath,
     IReadOnlyList<string> Errors)
 {
@@ -18,12 +21,15 @@ public sealed record CommandLineOptions(
         var showVersion = false;
         var showHelp = false;
         var requestExit = false;
+        string? applyDisplayProfile = null;
+        string? applyWindowProfile = null;
+        var applyWallpaper = false;
         string? settingsPath = null;
         var errors = new List<string>();
 
         if (args is null)
         {
-            return new CommandLineOptions(false, false, false, false, false, false, null, errors);
+            return new CommandLineOptions(false, false, false, false, false, false, null, null, false, null, errors);
         }
 
         for (var i = 0; i < args.Count; i++)
@@ -59,6 +65,27 @@ public sealed record CommandLineOptions(
                 case "--exit":
                     requestExit = true;
                     break;
+                case "--apply-wallpaper":
+                    applyWallpaper = true;
+                    break;
+                case "--apply-display":
+                    if (i + 1 >= args.Count)
+                    {
+                        errors.Add("Missing value for --apply-display.");
+                        break;
+                    }
+
+                    applyDisplayProfile = args[++i];
+                    break;
+                case "--apply-window":
+                    if (i + 1 >= args.Count)
+                    {
+                        errors.Add("Missing value for --apply-window.");
+                        break;
+                    }
+
+                    applyWindowProfile = args[++i];
+                    break;
                 case "--settings":
                     if (i + 1 >= args.Count)
                     {
@@ -80,6 +107,28 @@ public sealed record CommandLineOptions(
                         break;
                     }
 
+                    if (arg.StartsWith("--apply-display=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        applyDisplayProfile = arg["--apply-display=".Length..];
+                        if (string.IsNullOrWhiteSpace(applyDisplayProfile))
+                        {
+                            errors.Add("Missing value for --apply-display.");
+                        }
+
+                        break;
+                    }
+
+                    if (arg.StartsWith("--apply-window=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        applyWindowProfile = arg["--apply-window=".Length..];
+                        if (string.IsNullOrWhiteSpace(applyWindowProfile))
+                        {
+                            errors.Add("Missing value for --apply-window.");
+                        }
+
+                        break;
+                    }
+
                     errors.Add($"Unknown argument: {arg}");
                     break;
             }
@@ -92,6 +141,9 @@ public sealed record CommandLineOptions(
             showVersion,
             showHelp,
             requestExit,
+            applyDisplayProfile,
+            applyWindowProfile,
+            applyWallpaper,
             settingsPath,
             errors);
     }

@@ -107,6 +107,61 @@
 
             <Border Style="{StaticResource CardStyle}">
               <StackPanel>
+                <DockPanel>
+                  <TextBlock Text="{x:Static props:Strings.PinnedAppsTitle}"
+                             Style="{StaticResource SectionTitleStyle}"
+                             Margin="0" />
+                  <Button Content="{x:Static props:Strings.AddPinnedApp}"
+                          Command="{Binding AddPinnedAppCommand}"
+                          DockPanel.Dock="Right"
+                          Style="{StaticResource SecondaryButtonStyle}"
+                          HorizontalAlignment="Right" />
+                </DockPanel>
+                <TextBlock Text="{x:Static props:Strings.PinnedAppsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,8,0,8" />
+                <TextBlock Text="{x:Static props:Strings.NoPinnedApps}">
+                  <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource HintStyle}">
+                      <Setter Property="Visibility" Value="Collapsed" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding PinnedApps.Count}" Value="0">
+                          <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+                <ItemsControl ItemsSource="{Binding PinnedApps}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Background="{DynamicResource SurfaceAltBrush}"
+                              CornerRadius="8"
+                              Padding="10"
+                              Margin="0,4,0,0">
+                        <Grid>
+                          <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                          </Grid.ColumnDefinitions>
+                          <StackPanel>
+                            <TextBlock Text="{Binding Name}" FontWeight="SemiBold" />
+                            <TextBlock Text="{Binding PathText}" Style="{StaticResource HintStyle}" />
+                          </StackPanel>
+                          <Button Grid.Column="1"
+                                  Content="{x:Static props:Strings.Delete}"
+                                  Command="{Binding RemoveCommand}"
+                                  Style="{StaticResource SecondaryButtonStyle}" />
+                        </Grid>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
                 <TextBlock Text="{x:Static props:Strings.Language}"
                            Style="{StaticResource SectionTitleStyle}" />
                 <TextBlock Text="{x:Static props:Strings.LanguageHint}"

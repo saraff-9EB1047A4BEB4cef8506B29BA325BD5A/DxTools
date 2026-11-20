@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2B · Панель задач и окна</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2C · Закреплённые и автоматизация</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -68,7 +68,7 @@
   <data name="FirstRunText" xml:space="preserve"><value>DxTools работает в области уведомлений. Двойной щелчок по значку открывает настройки.</value></data>
   <data name="CrashTitle" xml:space="preserve"><value>В DxTools произошла ошибка</value></data>
   <data name="CrashText" xml:space="preserve"><value>Ошибка записана в лог. Можно продолжить работу, но часть функций может быть недоступна.</value></data>
-  <data name="HelpText" xml:space="preserve"><value>Использование: DxTools.exe [--autostart] [--safe-mode] [--show] [--exit] [--version] [--help] [--settings &lt;path&gt;]</value></data>
+  <data name="HelpText" xml:space="preserve"><value>Использование: DxTools.exe [--autostart] [--safe-mode] [--show] [--exit] [--apply-display &lt;name&gt;] [--apply-window &lt;name&gt;] [--apply-wallpaper] [--version] [--help] [--settings &lt;path&gt;]</value></data>
   <data name="CloseToTray" xml:space="preserve"><value>Закрытие окна оставляет DxTools в области уведомлений.</value></data>
   <data name="NativePath" xml:space="preserve"><value>Путь</value></data>
   <data name="Status" xml:space="preserve"><value>Состояние</value></data>
@@ -160,4 +160,8 @@
   <data name="HotkeyCaptureHint" xml:space="preserve"><value>Нажмите сочетание с Ctrl, Alt, Shift или Win.</value></data>
   <data name="HotkeyCaptureInvalid" xml:space="preserve"><value>Нужен хотя бы один модификатор и обычная клавиша.</value></data>
   <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
+  <data name="PinnedAppsTitle" xml:space="preserve"><value>Закреплённые приложения</value></data>
+  <data name="PinnedAppsHint" xml:space="preserve"><value>Закреплённые приложения отображаются на каждой панели задач DxTools.</value></data>
+  <data name="AddPinnedApp" xml:space="preserve"><value>Добавить приложение</value></data>
+  <data name="NoPinnedApps" xml:space="preserve"><value>Закреплённых приложений нет.</value></data>
 </root>

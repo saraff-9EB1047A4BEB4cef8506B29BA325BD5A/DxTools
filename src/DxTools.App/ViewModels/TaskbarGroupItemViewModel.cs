@@ -23,6 +23,10 @@ public sealed class TaskbarGroupItemViewModel : ObservableObject
 
     public string Key { get; }
 
+    public string? PinnedPath { get; private set; }
+
+    public bool IsPinnedOnly => !string.IsNullOrWhiteSpace(PinnedPath);
+
     public ImageSource? Icon { get; }
 
     public IReadOnlyList<AppWindow> Windows => _windows;
@@ -49,6 +53,15 @@ public sealed class TaskbarGroupItemViewModel : ObservableObject
     {
         get => _isMinimized;
         private set => SetProperty(ref _isMinimized, value);
+    }
+
+    public TaskbarGroupItemViewModel(string title, string pinnedPath, ImageSource? icon)
+    {
+        Key = pinnedPath;
+        PinnedPath = pinnedPath;
+        _windows = [];
+        Icon = icon;
+        _title = title;
     }
 
     public void Update(IReadOnlyList<AppWindow> windows)

@@ -79,7 +79,7 @@ public sealed class TaskbarManager : IDisposable
                     usedShellTaskbars.Add(shellTaskbar.Handle);
                 }
 
-                var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings);
+                var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings, _settings.PinnedApps);
                 var window = new TaskbarWindow(viewModel);
                 window.Show();
                 window.Place(monitor, useAppBar);

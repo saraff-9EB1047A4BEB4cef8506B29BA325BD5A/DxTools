@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 4;
+    public const int CurrentSchemaVersion = 5;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -39,6 +39,8 @@ public sealed class AppSettings
     public WallpaperSettings Wallpaper { get; set; } = new();
 
     public List<HotkeySetting> Hotkeys { get; set; } = [];
+
+    public List<PinnedApp> PinnedApps { get; set; } = [];
 
     public void Normalize()
     {
@@ -78,6 +80,17 @@ public sealed class AppSettings
             if (string.IsNullOrWhiteSpace(hotkey.Gesture))
             {
                 hotkey.Gesture = defaults.First(item => item.Action == hotkey.Action).Gesture;
+            }
+        }
+
+        PinnedApps ??= new List<PinnedApp>();
+        PinnedApps.RemoveAll(app => string.IsNullOrWhiteSpace(app.Path));
+        foreach (var app in PinnedApps)
+        {
+            app.Path = app.Path.Trim();
+            if (string.IsNullOrWhiteSpace(app.Name))
+            {
+                app.Name = System.IO.Path.GetFileNameWithoutExtension(app.Path);
             }
         }
     }

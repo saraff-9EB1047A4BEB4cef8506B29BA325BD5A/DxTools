@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2B и границы модулей.
+Документ описывает архитектуру Phase 2C и границы модулей.
 
 ## Процессная модель
 
@@ -31,7 +31,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
   временное скрытие `Shell_SecondaryTrayWnd` и восстановление при выходе.
 - `TaskbarWindow`: WPF-панель 48 DIP, группировка окон по exe, кнопки с
-  иконками и счётчиком, часы, fullscreen-скрытие,
+  иконками и счётчиком, pinned apps, часы, fullscreen-скрытие,
   `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - Никакой бизнес-логики: только представление и композиция.
@@ -44,7 +44,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `DxLog`: локальные логи без телеметрии.
 - `SingleInstance`, `AutostartService`, `SettingsBackupService`.
 - `DisplayProfile`, `DisplayProfileStore`, `MonitorInfo`, `WallpaperSettings`.
-- `HotkeySetting`, `WindowPlacementProfile`, `WindowPlacementStore`.
+- `HotkeySetting`, `WindowPlacementProfile`, `WindowPlacementStore`, `PinnedApp`.
 - Домен не зависит от WPF.
 
 ### DxTools.Engine
@@ -58,7 +58,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
   активация/сворачивание.
 - `WindowPlacementService`: сохранение/восстановление позиций окон.
-- В Phase 2C: LL-hook, titlebar, triggers, scripts, splits, pinned/tray/превью.
+- CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
+- В Phase 2D/3: LL-hook, titlebar, triggers, scripts, splits, tray/превью.
 
 ### DxTools.Interop
 

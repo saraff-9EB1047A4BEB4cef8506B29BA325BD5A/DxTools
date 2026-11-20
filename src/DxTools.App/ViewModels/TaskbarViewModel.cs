@@ -1,4 +1,6 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Input;
 using System.Windows.Threading;
 using DxTools.App.Services;
@@ -15,6 +17,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     private readonly int _monitorIndex;
     private readonly TaskbarIconCache _icons;
     private readonly Action _showSettings;
+    private readonly IReadOnlyList<PinnedApp> _pinnedApps;
     private readonly DispatcherTimer _timer;
     private string _signature = string.Empty;
     private string _clockText = string.Empty;
@@ -26,17 +29,30 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         IReadOnlyList<MonitorInfo> monitors,
         int monitorIndex,
         TaskbarIconCache icons,
-        Action showSettings)
+        Action showSettings,
+        IReadOnlyList<PinnedApp> pinnedApps)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
         _monitors = monitors ?? throw new ArgumentNullException(nameof(monitors));
         _monitorIndex = monitorIndex;
         _icons = icons ?? throw new ArgumentNullException(nameof(icons));
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
+        _pinnedApps = pinnedApps ?? throw new ArgumentNullException(nameof(pinnedApps));
 
         ActivateCommand = new RelayCommand(parameter =>
         {
-            if (parameter is TaskbarGroupItemViewModel group && group.Windows.Count > 0)
+            if (parameter is TaskbarGroupItemViewModel { IsPinnedOnly: true, PinnedPath: { } pinnedPath })
+            {
+                try
+                {
+                    Process.Start(new ProcessStartInfo(pinnedPath) { UseShellExecute = true });
+                }
+                catch (Exception ex) when (ex is InvalidOperationException or System.ComponentModel.Win32Exception)
+                {
+                    DxLog.Exception("Failed to launch pinned app '{pinnedPath}'.", ex);
+                }
+            }
+            else if (parameter is TaskbarGroupItemViewModel group && group.Windows.Count > 0)
             {
                 var windows = group.Windows;
                 var activeIndex = -1;
@@ -117,10 +133,22 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
             .OrderBy(group => group.Windows[0].Title, StringComparer.CurrentCultureIgnoreCase)
             .ToList();
 
+        var runningKeys = groups
+            .Select(group => group.Key)
+            .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+        var pinnedGroups = _pinnedApps
+            .Where(app => !string.IsNullOrWhiteSpace(app.Path) && File.Exists(app.Path))
+            .Where(app => !runningKeys.Contains(app.Path))
+            .GroupBy(app => app.Path, StringComparer.OrdinalIgnoreCase)
+            .Select(group => group.First())
+            .ToList();
+
         var signature = string.Join(
             "|",
-            groups.Select(group => $"{group.Key}:{string.Join(",", group.Windows.Select(
-                window => $"{window.Handle}:{window.Title}:{window.IsForeground}:{window.IsMinimized}"))}"));
+            pinnedGroups.Select(app => $"pinned:{app.Path}").Concat(
+                groups.Select(group => $"{group.Key}:{string.Join(",", group.Windows.Select(
+                    window => $"{window.Handle}:{window.Title}:{window.IsForeground}:{window.IsMinimized}"))}")));
 
         if (string.Equals(signature, _signature, StringComparison.Ordinal))
         {
@@ -129,6 +157,25 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
 
         var existing = Windows.ToDictionary(item => item.Key, StringComparer.OrdinalIgnoreCase);
         Windows.Clear();
+
+        foreach (var app in pinnedGroups)
+        {
+            if (existing.TryGetValue(app.Path, out var pinnedItem))
+            {
+                Windows.Add(pinnedItem);
+            }
+            else
+            {
+                var title = string.IsNullOrWhiteSpace(app.Name)
+                    ? Path.GetFileNameWithoutExtension(app.Path)
+                    : app.Name;
+
+                Windows.Add(new TaskbarGroupItemViewModel(
+                    title,
+                    app.Path,
+                    _icons.GetIcon(app.Path)));
+            }
+        }
 
         foreach (var group in groups)
         {

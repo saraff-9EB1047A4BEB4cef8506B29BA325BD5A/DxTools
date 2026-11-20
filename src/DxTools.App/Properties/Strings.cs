@@ -160,6 +160,10 @@ public static class Strings
     public static string HotkeyCaptureHint => Get(nameof(HotkeyCaptureHint));
     public static string HotkeyCaptureInvalid => Get(nameof(HotkeyCaptureInvalid));
     public static string Cancel => Get(nameof(Cancel));
+    public static string PinnedAppsTitle => Get(nameof(PinnedAppsTitle));
+    public static string PinnedAppsHint => Get(nameof(PinnedAppsHint));
+    public static string AddPinnedApp => Get(nameof(AddPinnedApp));
+    public static string NoPinnedApps => Get(nameof(NoPinnedApps));
 }
 
 

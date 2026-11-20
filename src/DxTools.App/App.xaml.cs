@@ -121,6 +121,7 @@ public partial class App : System.Windows.Application
 
         _engine = new EngineHost(options.SafeMode);
         _engine.Start();
+        ApplyCommandLineActions(options);
 
         var viewModel = new MainViewModel(settingsStore, _settings, _engine, autostart, DisplayConfirmationWindow.Confirm);
         _viewModel = viewModel;
@@ -151,6 +152,7 @@ public partial class App : System.Windows.Application
                 safeMode: false);
             viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
+            viewModel.PinnedAppsChanged += () => _taskbarManager?.Rebuild();
 
             _displayWatcher = new DisplayChangeWatcher(
                 windowHandle,
@@ -178,6 +180,55 @@ public partial class App : System.Windows.Application
             _settings.FirstRunCompleted = true;
             SaveSettings();
             _tray.ShowFirstRunBalloon();
+        }
+    }
+
+    private void ApplyCommandLineActions(CommandLineOptions options)
+    {
+        if (!string.IsNullOrWhiteSpace(options.ApplyDisplayProfile) && _engine is not null)
+        {
+            var profile = _engine.Profiles.Profiles.FirstOrDefault(item =>
+                string.Equals(item.Id, options.ApplyDisplayProfile, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(item.Name, options.ApplyDisplayProfile, StringComparison.CurrentCultureIgnoreCase));
+
+            if (profile is null)
+            {
+                DxLog.Warn($"Display profile '{options.ApplyDisplayProfile}' was not found.");
+            }
+            else
+            {
+                var result = _engine.Profiles.Apply(profile);
+                DxLog.Info(result.Success
+                    ? $"Display profile '{profile.Name}' applied from the command line."
+                    : $"Display profile '{profile.Name}' failed: {result.Error}");
+            }
+        }
+
+        if (!string.IsNullOrWhiteSpace(options.ApplyWindowProfile) && _engine is not null)
+        {
+            var profile = _engine.WindowPlacements.Profiles.FirstOrDefault(item =>
+                string.Equals(item.Id, options.ApplyWindowProfile, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(item.Name, options.ApplyWindowProfile, StringComparison.CurrentCultureIgnoreCase));
+
+            if (profile is null)
+            {
+                DxLog.Warn($"Window profile '{options.ApplyWindowProfile}' was not found.");
+            }
+            else
+            {
+                var result = _engine.WindowPlacements.Apply(profile);
+                DxLog.Info(result.Success
+                    ? $"Window profile '{profile.Name}' applied from the command line: {result.Applied}/{result.Total}."
+                    : $"Window profile '{profile.Name}' failed: {result.Error}");
+            }
+        }
+
+        if (options.ApplyWallpaper && _settings is not null && _engine is not null)
+        {
+            var result = _engine.Wallpaper.Apply(_settings.Wallpaper);
+            DxLog.Info(result.Success
+                ? "Wallpaper applied from the command line."
+                : $"Wallpaper command failed: {result.Error}");
         }
     }
 

@@ -54,6 +54,27 @@ public sealed class CommandLineOptionsTests
     }
 
     [Fact]
+    public void Parse_ApplyActions_AreRecognized()
+    {
+        var options = CommandLineOptions.Parse(
+            ["--apply-display", "Desk", "--apply-window=Work", "--apply-wallpaper"]);
+
+        Assert.Equal("Desk", options.ApplyDisplayProfile);
+        Assert.Equal("Work", options.ApplyWindowProfile);
+        Assert.True(options.ApplyWallpaper);
+        Assert.Empty(options.Errors);
+    }
+
+    [Fact]
+    public void Parse_MissingApplyDisplayValue_ProducesError()
+    {
+        var options = CommandLineOptions.Parse(["--apply-display"]);
+
+        Assert.Null(options.ApplyDisplayProfile);
+        Assert.Single(options.Errors);
+    }
+
+    [Fact]
     public void Parse_Null_ReturnsDefaults()
     {
         var options = CommandLineOptions.Parse(null);
