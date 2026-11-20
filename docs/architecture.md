@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2D и границы модулей.
+Документ описывает архитектуру Phase 2E и границы модулей.
 
 ## Процессная модель
 
@@ -25,7 +25,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   собственный host).
 - Single instance, crash handler, безопасный режим.
 - `HotkeyService` на `RegisterHotKey` + `HwndSource`; сочетания хранятся в
-  настройках и меняются через `HotkeyCaptureWindow` (LL-hook — Phase 2C).
+  настройках и меняются через `HotkeyCaptureWindow` (LL-hook — Phase 2F/3).
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
 - `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
@@ -59,8 +59,11 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `WindowCatalog`: перечисление top-level окон, фильтрация, монитор,
   активация/сворачивание.
 - `WindowPlacementService`: сохранение/восстановление позиций окон.
+- `TriggerService`: события, условия, действия и Roslyn-скрипты `.csx`.
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
-- В Phase 2E/3: LL-hook, titlebar, triggers, scripts, splits, системный трей.
+- Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
+  таймером раз в 2 секунды.
+- В Phase 2F/3: LL-hook, titlebar, splits, системный трей.
 
 ### DxTools.Interop
 
@@ -100,6 +103,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 | Настройки | `%AppData%\DxTools\settings.json` |
 | Профили дисплеев | `%AppData%\DxTools\display-profiles.json` |
 | Профили окон | `%AppData%\DxTools\window-profiles.json` |
+| Триггеры | `%AppData%\DxTools\triggers.json` |
+| C#-скрипты | `%AppData%\DxTools\scripts\*.csx` |
 | Композит обоев | `%LocalAppData%\DxTools\wallpaper\` |
 | Логи | `%LocalAppData%\DxTools\logs\DxTools-YYYYMMDD.log` |
 | Автозапуск | `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` |

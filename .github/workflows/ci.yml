@@ -34,7 +34,7 @@ jobs:
 
       - name: Build, test and package
         shell: powershell
-        run: .\build\build.ps1 -Configuration Release -ProductVersion 0.6.0
+        run: .\build\build.ps1 -Configuration Release -ProductVersion 0.7.0
 
       - name: Upload MSI
         uses: actions/upload-artifact@v4

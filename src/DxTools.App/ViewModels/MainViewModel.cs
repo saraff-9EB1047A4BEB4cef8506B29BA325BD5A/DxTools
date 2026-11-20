@@ -45,6 +45,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
             confirmDisplayChange ?? (_ => true));
         Wallpaper = new WallpaperViewModel(engine.Display, engine.Wallpaper, settingsStore, settings);
         WindowProfiles = new WindowProfilesViewModel(engine.WindowPlacements, engine.Display);
+        Triggers = new TriggersViewModel(engine.Triggers);
 
         _native = engine.Status.Native;
         _safeMode = engine.Status.SafeMode;
@@ -82,6 +83,8 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public WallpaperViewModel Wallpaper { get; }
 
     public WindowProfilesViewModel WindowProfiles { get; }
+
+    public TriggersViewModel Triggers { get; }
 
     public IReadOnlyList<HotkeyInfo> Hotkeys { get; private set; } = Array.Empty<HotkeyInfo>();
 

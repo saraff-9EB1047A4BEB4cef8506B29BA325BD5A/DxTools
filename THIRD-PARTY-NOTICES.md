@@ -10,6 +10,7 @@ DxTools распространяется по GNU GPL v2. Ниже перечи�
 |---|---|---|
 | .NET 10 Runtime / WPF | MIT | поставляется self-contained |
 | System.Drawing.Common 10 | MIT | композиция обоев |
+| Microsoft.CodeAnalysis.CSharp.Scripting | MIT | выполнение C#-скриптов |
 | Windows SDK headers/libs | Microsoft license | компиляция native-кода |
 
 ## Build and test only (не входят в поставку)

@@ -14,7 +14,7 @@ public sealed class EngineHost
 {
     private readonly bool _safeMode;
 
-    public EngineHost(bool safeMode)
+    public EngineHost(bool safeMode, AppSettings settings)
     {
         _safeMode = safeMode;
         Status = EngineStatus.Unknown with { SafeMode = safeMode };
@@ -24,6 +24,7 @@ public sealed class EngineHost
         Windows = new WindowManager(Display);
         Wallpaper = new WallpaperService(Display);
         WindowPlacements = new WindowPlacementService(Display);
+        Triggers = new TriggerService(Display, Profiles, WindowPlacements, Wallpaper, settings);
     }
 
     public EngineStatus Status { get; private set; }
@@ -37,6 +38,8 @@ public sealed class EngineHost
     public WallpaperService Wallpaper { get; }
 
     public WindowPlacementService WindowPlacements { get; }
+
+    public TriggerService Triggers { get; }
 
     public event EventHandler<EngineStatus>? StatusChanged;
 

@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 2D (ядро) завершён, ожидает подтверждения
+Статус: Phase 2E (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -236,6 +236,29 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - сплиты мониторов;
 - LL-hook и многошаговые цепочки.
 
+### Phase 2E — триггеры и C#-скрипты 0.7 (ядро завершено)
+
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-2e.md`.
+
+Реализовано:
+
+- триггеры: startup, display change, window created, process started;
+- условия по имени процесса;
+- действия: display profile, window profile, wallpaper, run program,
+  C# script;
+- C#-скрипты `.csx` с глобальными API `Monitors`, `ApplyDisplayProfile`,
+  `ApplyWindowProfile`, `ApplyWallpaper`, `Run`, `Log`;
+- UI вкладки «Триггеры», папка скриптов;
+- 25 unit-тестов; MSI 0.7.0.
+
+Перенесено в Phase 2F/3:
+
+- системный трей;
+- titlebar-кнопки;
+- сплиты мониторов;
+- LL-hook и многошаговые цепочки.
+
 ### Phase 3 — паритет и hardening 1.0 (10–14 недель)
 
 - виртуальные десктопы (undocumented COM + адаптеры по сборкам);
@@ -266,8 +289,8 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Зеркало трея | C++/UIA | 2E (риск) |
 | Обои per-monitor/span | C# + System.Drawing, composite + span | 1 |
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
-| Триггеры | C# | 2C |
-| Скрипты | C# Roslyn | 2C |
+| Триггеры | C# event engine | 2E (готово) |
+| C#-скрипты | Roslyn Scripting | 2E (готово) |
 | Виртуальные десктопы | C++ undocumented | 3 |
 | Screensaver | C# | 3 |
 | Иконки рабочего стола | C++ | 3 |

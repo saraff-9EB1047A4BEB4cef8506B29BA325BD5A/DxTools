@@ -119,8 +119,13 @@ public partial class App : System.Windows.Application
 
         ThemeManager.Apply(_settings.Theme);
 
-        _engine = new EngineHost(options.SafeMode);
+        _engine = new EngineHost(options.SafeMode, _settings);
         _engine.Start();
+
+        if (!options.SafeMode)
+        {
+            _engine.Triggers.Start();
+        }
         ApplyCommandLineActions(options);
 
         var viewModel = new MainViewModel(settingsStore, _settings, _engine, autostart, DisplayConfirmationWindow.Confirm);
@@ -160,6 +165,7 @@ public partial class App : System.Windows.Application
                 {
                     viewModel.Display.NotifyTopologyChanged();
                     _taskbarManager?.Rebuild();
+                    _engine?.Triggers.Raise(TriggerEventType.DisplayChanged);
                 });
 
             _taskbarManager.Rebuild();
@@ -374,6 +380,7 @@ public partial class App : System.Windows.Application
         _tray?.Dispose();
         _hotkeys?.Dispose();
         _displayWatcher?.Dispose();
+        _engine?.Triggers.Dispose();
         _taskbarManager?.Dispose();
         _viewModel?.Dispose();
         _engine?.Stop();

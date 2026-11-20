@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [0.7.0-alpha.1] - 2026-11-20
+
+### Added
+
+- вкладка «Триггеры»: startup, display change, window created, process started;
+- действия: display profile, window profile, wallpaper, run program, C# script;
+- C#-скрипты `.csx` с API `Monitors`, `ApplyDisplayProfile`,
+  `ApplyWindowProfile`, `ApplyWallpaper`, `Run`, `Log`;
+- 2 новых unit-теста (всего 25).
+
+### Changed
+
+- версия приложения 0.7.0-alpha.1; native DLL 0.3.0, API v2;
+- добавлена зависимость Microsoft.CodeAnalysis.CSharp.Scripting (MIT);
+- MSI 0.7.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2E.
+
 ## [0.6.0-alpha.1] - 2026-11-20
 
 ### Added

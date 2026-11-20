@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2D · Previews &amp; auto-hide</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2E · Triggers &amp; scripts</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -166,4 +166,27 @@
   <data name="NoPinnedApps" xml:space="preserve"><value>No pinned apps.</value></data>
   <data name="TaskbarAutoHide" xml:space="preserve"><value>Auto-hide taskbar</value></data>
   <data name="TaskbarAutoHideHint" xml:space="preserve"><value>Hide the taskbar when the mouse leaves it; move the pointer to the bottom edge to reveal it.</value></data>
+  <data name="TriggersTab" xml:space="preserve"><value>Triggers</value></data>
+  <data name="TriggerAdd" xml:space="preserve"><value>Add trigger</value></data>
+  <data name="TriggerHint" xml:space="preserve"><value>Run an action when a display, window or process event occurs.</value></data>
+  <data name="TriggerName" xml:space="preserve"><value>Name</value></data>
+  <data name="TriggerEvent" xml:space="preserve"><value>Event</value></data>
+  <data name="TriggerAction" xml:space="preserve"><value>Action</value></data>
+  <data name="TriggerCondition" xml:space="preserve"><value>Process condition</value></data>
+  <data name="TriggerParameter" xml:space="preserve"><value>Parameter (profile name/id, program, script)</value></data>
+  <data name="TriggerEventStartup" xml:space="preserve"><value>DxTools startup</value></data>
+  <data name="TriggerEventDisplay" xml:space="preserve"><value>Display configuration changed</value></data>
+  <data name="TriggerEventWindow" xml:space="preserve"><value>Window created</value></data>
+  <data name="TriggerEventProcess" xml:space="preserve"><value>Process started</value></data>
+  <data name="TriggerActionDisplay" xml:space="preserve"><value>Apply display profile</value></data>
+  <data name="TriggerActionWindow" xml:space="preserve"><value>Apply window profile</value></data>
+  <data name="TriggerActionWallpaper" xml:space="preserve"><value>Apply wallpaper</value></data>
+  <data name="TriggerActionProgram" xml:space="preserve"><value>Run program</value></data>
+  <data name="TriggerActionScript" xml:space="preserve"><value>Run C# script</value></data>
+  <data name="NewTrigger" xml:space="preserve"><value>New trigger</value></data>
+  <data name="TriggerScriptsTitle" xml:space="preserve"><value>C# scripts</value></data>
+  <data name="TriggerScriptsHint" xml:space="preserve"><value>Place .csx scripts in the scripts folder. The script can use Monitors, ApplyDisplayProfile, ApplyWindowProfile, ApplyWallpaper, Run and Log.</value></data>
+  <data name="OpenScriptsFolder" xml:space="preserve"><value>Open scripts folder</value></data>
+  <data name="TriggerEnabled" xml:space="preserve"><value>Enabled</value></data>
+  <data name="NoTriggers" xml:space="preserve"><value>No triggers yet.</value></data>
 </root>

@@ -688,6 +688,131 @@
         </ScrollViewer>
       </TabItem>
 
+      <TabItem Header="{x:Static props:Strings.TriggersTab}">
+        <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
+          <StackPanel>
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <DockPanel>
+                  <TextBlock Text="{x:Static props:Strings.TriggersTab}"
+                             Style="{StaticResource SectionTitleStyle}"
+                             Margin="0" />
+                  <Button Content="{x:Static props:Strings.TriggerAdd}"
+                          Command="{Binding Triggers.AddCommand}"
+                          DockPanel.Dock="Right"
+                          Style="{StaticResource SecondaryButtonStyle}"
+                          HorizontalAlignment="Right" />
+                </DockPanel>
+                <TextBlock Text="{x:Static props:Strings.TriggerHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,8,0,8" />
+                <TextBlock Text="{x:Static props:Strings.NoTriggers}">
+                  <TextBlock.Style>
+                    <Style TargetType="TextBlock" BasedOn="{StaticResource HintStyle}">
+                      <Setter Property="Visibility" Value="Collapsed" />
+                      <Style.Triggers>
+                        <DataTrigger Binding="{Binding Triggers.HasTriggers}" Value="False">
+                          <Setter Property="Visibility" Value="Visible" />
+                        </DataTrigger>
+                      </Style.Triggers>
+                    </Style>
+                  </TextBlock.Style>
+                </TextBlock>
+
+                <ItemsControl ItemsSource="{Binding Triggers.Triggers}">
+                  <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                      <Border Background="{DynamicResource SurfaceAltBrush}"
+                              CornerRadius="8"
+                              Padding="12"
+                              Margin="0,6,0,0">
+                        <StackPanel>
+                          <Grid>
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="*" />
+                              <ColumnDefinition Width="Auto" />
+                              <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                            <CheckBox Grid.Column="1"
+                                      Content="{x:Static props:Strings.TriggerEnabled}"
+                                      IsChecked="{Binding Enabled, Mode=TwoWay}"
+                                      Margin="12,0" />
+                            <Button Grid.Column="2"
+                                    Content="{x:Static props:Strings.Delete}"
+                                    Command="{Binding DeleteCommand}"
+                                    Style="{StaticResource SecondaryButtonStyle}" />
+                          </Grid>
+
+                          <Grid Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="140" />
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Static props:Strings.TriggerEvent}"
+                                       Style="{StaticResource HintStyle}"
+                                       VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding Events}"
+                                      DisplayMemberPath="Label"
+                                      SelectedValuePath="Value"
+                                      SelectedValue="{Binding Event, Mode=TwoWay}" />
+                          </Grid>
+
+                          <Grid Margin="0,6,0,0">
+                            <Grid.ColumnDefinitions>
+                              <ColumnDefinition Width="140" />
+                              <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Text="{x:Static props:Strings.TriggerAction}"
+                                       Style="{StaticResource HintStyle}"
+                                       VerticalAlignment="Center" />
+                            <ComboBox Grid.Column="1"
+                                      ItemsSource="{Binding Actions}"
+                                      DisplayMemberPath="Label"
+                                      SelectedValuePath="Value"
+                                      SelectedValue="{Binding Action, Mode=TwoWay}" />
+                          </Grid>
+
+                          <TextBlock Text="{x:Static props:Strings.TriggerCondition}"
+                                     Style="{StaticResource HintStyle}"
+                                     Margin="0,8,0,2" />
+                          <TextBox Text="{Binding Condition, UpdateSourceTrigger=PropertyChanged}" />
+
+                          <TextBlock Text="{x:Static props:Strings.TriggerParameter}"
+                                     Style="{StaticResource HintStyle}"
+                                     Margin="0,8,0,2" />
+                          <TextBox Text="{Binding Parameter, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                      </Border>
+                    </DataTemplate>
+                  </ItemsControl.ItemTemplate>
+                </ItemsControl>
+              </StackPanel>
+            </Border>
+
+            <Border Style="{StaticResource CardStyle}">
+              <StackPanel>
+                <TextBlock Text="{x:Static props:Strings.TriggerScriptsTitle}"
+                           Style="{StaticResource SectionTitleStyle}" />
+                <TextBlock Text="{x:Static props:Strings.TriggerScriptsHint}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,0,0,8" />
+                <TextBlock Text="{Binding Triggers.ScriptsDirectory}"
+                           Style="{StaticResource HintStyle}"
+                           Margin="0,0,0,8" />
+                <Button Content="{x:Static props:Strings.OpenScriptsFolder}"
+                        Command="{Binding Triggers.OpenScriptsFolderCommand}"
+                        Style="{StaticResource SecondaryButtonStyle}" />
+              </StackPanel>
+            </Border>
+
+            <TextBlock Text="{Binding Triggers.StatusMessage}"
+                       Style="{StaticResource HintStyle}"
+                       Margin="2,0,0,0" />
+          </StackPanel>
+        </ScrollViewer>
+      </TabItem>
       <TabItem Header="{x:Static props:Strings.DiagnosticsTab}">
         <ScrollViewer VerticalScrollBarVisibility="Auto" Padding="0,14,4,0">
           <StackPanel>

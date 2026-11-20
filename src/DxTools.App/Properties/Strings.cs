@@ -166,6 +166,29 @@ public static class Strings
     public static string NoPinnedApps => Get(nameof(NoPinnedApps));
     public static string TaskbarAutoHide => Get(nameof(TaskbarAutoHide));
     public static string TaskbarAutoHideHint => Get(nameof(TaskbarAutoHideHint));
+    public static string TriggersTab => Get(nameof(TriggersTab));
+    public static string TriggerAdd => Get(nameof(TriggerAdd));
+    public static string TriggerHint => Get(nameof(TriggerHint));
+    public static string TriggerName => Get(nameof(TriggerName));
+    public static string TriggerEvent => Get(nameof(TriggerEvent));
+    public static string TriggerAction => Get(nameof(TriggerAction));
+    public static string TriggerCondition => Get(nameof(TriggerCondition));
+    public static string TriggerParameter => Get(nameof(TriggerParameter));
+    public static string TriggerEventStartup => Get(nameof(TriggerEventStartup));
+    public static string TriggerEventDisplay => Get(nameof(TriggerEventDisplay));
+    public static string TriggerEventWindow => Get(nameof(TriggerEventWindow));
+    public static string TriggerEventProcess => Get(nameof(TriggerEventProcess));
+    public static string TriggerActionDisplay => Get(nameof(TriggerActionDisplay));
+    public static string TriggerActionWindow => Get(nameof(TriggerActionWindow));
+    public static string TriggerActionWallpaper => Get(nameof(TriggerActionWallpaper));
+    public static string TriggerActionProgram => Get(nameof(TriggerActionProgram));
+    public static string TriggerActionScript => Get(nameof(TriggerActionScript));
+    public static string NewTrigger => Get(nameof(NewTrigger));
+    public static string TriggerScriptsTitle => Get(nameof(TriggerScriptsTitle));
+    public static string TriggerScriptsHint => Get(nameof(TriggerScriptsHint));
+    public static string OpenScriptsFolder => Get(nameof(OpenScriptsFolder));
+    public static string TriggerEnabled => Get(nameof(TriggerEnabled));
+    public static string NoTriggers => Get(nameof(NoTriggers));
 }
 
 

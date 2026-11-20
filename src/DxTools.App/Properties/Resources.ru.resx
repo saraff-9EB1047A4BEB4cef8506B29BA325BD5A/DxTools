@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2D · Превью и автоскрытие</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2E · Триггеры и скрипты</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -166,4 +166,27 @@
   <data name="NoPinnedApps" xml:space="preserve"><value>Закреплённых приложений нет.</value></data>
   <data name="TaskbarAutoHide" xml:space="preserve"><value>Автоскрытие панели задач</value></data>
   <data name="TaskbarAutoHideHint" xml:space="preserve"><value>Скрывать панель, когда курсор уходит с неё; для показа подведите курсор к нижнему краю.</value></data>
+  <data name="TriggersTab" xml:space="preserve"><value>Триггеры</value></data>
+  <data name="TriggerAdd" xml:space="preserve"><value>Добавить триггер</value></data>
+  <data name="TriggerHint" xml:space="preserve"><value>Выполнять действие при событии дисплея, окна или процесса.</value></data>
+  <data name="TriggerName" xml:space="preserve"><value>Имя</value></data>
+  <data name="TriggerEvent" xml:space="preserve"><value>Событие</value></data>
+  <data name="TriggerAction" xml:space="preserve"><value>Действие</value></data>
+  <data name="TriggerCondition" xml:space="preserve"><value>Условие по процессу</value></data>
+  <data name="TriggerParameter" xml:space="preserve"><value>Параметр (профиль, программа, скрипт)</value></data>
+  <data name="TriggerEventStartup" xml:space="preserve"><value>Запуск DxTools</value></data>
+  <data name="TriggerEventDisplay" xml:space="preserve"><value>Изменение конфигурации дисплея</value></data>
+  <data name="TriggerEventWindow" xml:space="preserve"><value>Создано окно</value></data>
+  <data name="TriggerEventProcess" xml:space="preserve"><value>Запущен процесс</value></data>
+  <data name="TriggerActionDisplay" xml:space="preserve"><value>Применить профиль дисплея</value></data>
+  <data name="TriggerActionWindow" xml:space="preserve"><value>Применить профиль окон</value></data>
+  <data name="TriggerActionWallpaper" xml:space="preserve"><value>Применить обои</value></data>
+  <data name="TriggerActionProgram" xml:space="preserve"><value>Запустить программу</value></data>
+  <data name="TriggerActionScript" xml:space="preserve"><value>Запустить C#-скрипт</value></data>
+  <data name="NewTrigger" xml:space="preserve"><value>Новый триггер</value></data>
+  <data name="TriggerScriptsTitle" xml:space="preserve"><value>C#-скрипты</value></data>
+  <data name="TriggerScriptsHint" xml:space="preserve"><value>Поместите .csx-скрипты в папку scripts. Доступны Monitors, ApplyDisplayProfile, ApplyWindowProfile, ApplyWallpaper, Run и Log.</value></data>
+  <data name="OpenScriptsFolder" xml:space="preserve"><value>Открыть папку скриптов</value></data>
+  <data name="NoTriggers" xml:space="preserve"><value>Триггеров пока нет.</value></data>
+  <data name="TriggerEnabled" xml:space="preserve"><value>Включён</value></data>
 </root>
