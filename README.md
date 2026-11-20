@@ -6,15 +6,15 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 2C (ядро) завершён, ожидает подтверждения
+- Статус: Phase 2D (ядро) завершён, ожидает подтверждения
 
-![DxTools, сгруппированные кнопки на панели задач](docs/images/phase2c-taskbar.png)
+![DxTools, сгруппированные кнопки на панели задач](docs/images/phase2d-preview.png)
 
 ![DxTools, профили окон](docs/images/phase2b-windows.png)
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.5.0-alpha)
+## Возможности текущей версии (0.6.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -22,7 +22,8 @@ DisplayFusion: профили мониторов, мультимониторны
   подтверждение с автоматическим откатом, авто-применение по набору мониторов;
 - панель задач на дополнительных мониторах: AppBar, группировка окон по
   приложению, кнопки с иконками, активация/сворачивание, часы, замена панели
-  задач Windows, скрытие для fullscreen, закреплённые приложения;
+  задач Windows, скрытие для fullscreen, закреплённые приложения,
+  DWM live-превью при наведении, автоскрытие;
 - профили позиций окон: сохранение, применение и удаление;
 - перенос активного окна между мониторами с учётом DPI и always-on-top;
 - настраиваемые горячие клавиши с диалогом захвата сочетания;
@@ -41,8 +42,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Сплиты мониторов, titlebar-кнопки, системный трей, DWM live-превью,
-auto-hide, триггеры, C#-скрипты, LL-hook и цепочки горячих клавиш — Phase 2D/3.
+Сплиты мониторов, titlebar-кнопки, системный трей, триггеры, C#-скрипты,
+LL-hook и цепочки горячих клавиш — Phase 2E/3.
 Подробный план: [spec.md](spec.md).
 
 ## Требования для сборки
@@ -63,7 +64,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.5.0-x64.msi`.
+`artifacts/DxTools-0.6.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -89,6 +90,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-2.md](docs/reports/phase-2.md) — отчёт Phase 2;
 - [docs/reports/phase-2b.md](docs/reports/phase-2b.md) — отчёт Phase 2B;
 - [docs/reports/phase-2c.md](docs/reports/phase-2c.md) — отчёт Phase 2C;
+- [docs/reports/phase-2d.md](docs/reports/phase-2d.md) — отчёт Phase 2D;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.

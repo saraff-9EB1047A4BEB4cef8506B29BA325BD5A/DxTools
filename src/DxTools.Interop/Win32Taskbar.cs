@@ -48,6 +48,8 @@ public static class Win32Taskbar
     public const uint GwOwner = 4;
     public const uint ProcessQueryLimitedInformation = 0x1000;
     public const int SwMinimize = 6;
+    public const int SwHide = 0;
+    public const int SwShowNoActivate = 8;
     public const int SwRestore = 9;
 
     public delegate bool EnumWindowsProc(IntPtr hwnd, IntPtr lParam);
@@ -80,6 +82,10 @@ public static class Win32Taskbar
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static extern bool SetForegroundWindow(IntPtr hwnd);
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool GetCursorPos(out NativePoint point);
 
     [DllImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]

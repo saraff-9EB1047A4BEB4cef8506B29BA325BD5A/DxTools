@@ -30,7 +30,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         int monitorIndex,
         TaskbarIconCache icons,
         Action showSettings,
-        IReadOnlyList<PinnedApp> pinnedApps)
+        IReadOnlyList<PinnedApp> pinnedApps,
+        bool autoHide)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
         _monitors = monitors ?? throw new ArgumentNullException(nameof(monitors));
@@ -38,6 +39,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         _icons = icons ?? throw new ArgumentNullException(nameof(icons));
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
         _pinnedApps = pinnedApps ?? throw new ArgumentNullException(nameof(pinnedApps));
+        AutoHide = autoHide;
 
         ActivateCommand = new RelayCommand(parameter =>
         {
@@ -94,6 +96,8 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     public ICommand OpenSettingsCommand { get; }
 
     public MonitorInfo Monitor { get; }
+
+    public bool AutoHide { get; }
 
     public string MonitorLabel => Monitor.DisplayName;
 

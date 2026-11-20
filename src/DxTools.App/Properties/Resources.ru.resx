@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Управление мультимониторной конфигурацией Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2C · Закреплённые и автоматизация</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2D · Превью и автоскрытие</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>Общие</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Диагностика</value></data>
   <data name="AboutTab" xml:space="preserve"><value>О программе</value></data>
@@ -164,4 +164,6 @@
   <data name="PinnedAppsHint" xml:space="preserve"><value>Закреплённые приложения отображаются на каждой панели задач DxTools.</value></data>
   <data name="AddPinnedApp" xml:space="preserve"><value>Добавить приложение</value></data>
   <data name="NoPinnedApps" xml:space="preserve"><value>Закреплённых приложений нет.</value></data>
+  <data name="TaskbarAutoHide" xml:space="preserve"><value>Автоскрытие панели задач</value></data>
+  <data name="TaskbarAutoHideHint" xml:space="preserve"><value>Скрывать панель, когда курсор уходит с неё; для показа подведите курсор к нижнему краю.</value></data>
 </root>

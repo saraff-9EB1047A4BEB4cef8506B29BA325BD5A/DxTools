@@ -166,6 +166,23 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool TaskbarAutoHide
+    {
+        get => _settings.TaskbarAutoHide;
+        set
+        {
+            if (_settings.TaskbarAutoHide == value)
+            {
+                return;
+            }
+
+            _settings.TaskbarAutoHide = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TaskbarSettingsChanged?.Invoke();
+        }
+    }
+
     public bool EnableSecondaryTaskbar
     {
         get => _settings.EnableSecondaryTaskbar;

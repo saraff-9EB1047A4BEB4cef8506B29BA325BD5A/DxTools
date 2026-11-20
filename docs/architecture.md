@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2C и границы модулей.
+Документ описывает архитектуру Phase 2D и границы модулей.
 
 ## Процессная модель
 
@@ -32,6 +32,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   временное скрытие `Shell_SecondaryTrayWnd` и восстановление при выходе.
 - `TaskbarWindow`: WPF-панель 48 DIP, группировка окон по exe, кнопки с
   иконками и счётчиком, pinned apps, часы, fullscreen-скрытие,
+  DWM live-превью в topmost-окне, автоскрытие с управлением AppBar,
   `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - Никакой бизнес-логики: только представление и композиция.
@@ -59,7 +60,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   активация/сворачивание.
 - `WindowPlacementService`: сохранение/восстановление позиций окон.
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
-- В Phase 2D/3: LL-hook, titlebar, triggers, scripts, splits, tray/превью.
+- В Phase 2E/3: LL-hook, titlebar, triggers, scripts, splits, системный трей.
 
 ### DxTools.Interop
 
@@ -82,7 +83,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - UI-поток WPF: представление, команды, горячие клавиши и watcher.
 - Apply DisplayConfig и композиция обоев выполняются в `Task.Run`, чтобы
   не блокировать UI; подтверждение отката показывает модальное окно.
-- Панель задач обновляет окна раз в секунду; скрытая панель Windows
+- Панель задач обновляет окна раз в секунду; auto-hide опрашивает курсор
+  каждые 250 мс и снимает/возвращает AppBar; скрытая панель Windows
   восстанавливается при нормальном выходе и в `ProcessExit`.
 - Слайдшоу использует `DispatcherTimer` и выбирает следующее изображение
   для каждого монитора.

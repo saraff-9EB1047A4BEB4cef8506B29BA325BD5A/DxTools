@@ -164,6 +164,8 @@ public static class Strings
     public static string PinnedAppsHint => Get(nameof(PinnedAppsHint));
     public static string AddPinnedApp => Get(nameof(AddPinnedApp));
     public static string NoPinnedApps => Get(nameof(NoPinnedApps));
+    public static string TaskbarAutoHide => Get(nameof(TaskbarAutoHide));
+    public static string TaskbarAutoHideHint => Get(nameof(TaskbarAutoHideHint));
 }
 
 

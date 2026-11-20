@@ -49,6 +49,10 @@ public sealed class TaskbarGroupItemViewModel : ObservableObject
         private set => SetProperty(ref _isActive, value);
     }
 
+    public IntPtr PreviewHandle => IsMinimized
+        ? IntPtr.Zero
+        : (_windows.FirstOrDefault(window => window.IsForeground) ?? _windows.FirstOrDefault())?.Handle ?? IntPtr.Zero;
+
     public bool IsMinimized
     {
         get => _isMinimized;

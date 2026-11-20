@@ -14,7 +14,7 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2C · Pinned &amp; automation</value></data>
+  <data name="PhaseLabel" xml:space="preserve"><value>Phase 2D · Previews &amp; auto-hide</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -164,4 +164,6 @@
   <data name="PinnedAppsHint" xml:space="preserve"><value>Pinned applications are shown on every DxTools taskbar.</value></data>
   <data name="AddPinnedApp" xml:space="preserve"><value>Add app</value></data>
   <data name="NoPinnedApps" xml:space="preserve"><value>No pinned apps.</value></data>
+  <data name="TaskbarAutoHide" xml:space="preserve"><value>Auto-hide taskbar</value></data>
+  <data name="TaskbarAutoHideHint" xml:space="preserve"><value>Hide the taskbar when the mouse leaves it; move the pointer to the bottom edge to reveal it.</value></data>
 </root>
