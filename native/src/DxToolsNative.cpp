@@ -3,6 +3,9 @@
 #include <windows.h>
 
 #include <algorithm>
+#include <atomic>
+#include <mutex>
+#include <thread>
 #include <cstdlib>
 #include <cstring>
 #include <string>
@@ -290,6 +293,77 @@ std::vector<DxTools_MonitorInfo> EnumerateMonitors()
 }
 }
 
+namespace
+{
+std::thread g_hotkeyThread;
+std::mutex g_hotkeyMutex;
+std::vector<DxTools_HotkeyBinding> g_hotkeyBindings;
+HWND g_hotkeyTarget = nullptr;
+UINT g_hotkeyMessage = 0;
+HHOOK g_hotkey = nullptr;
+DWORD g_hotkeyThreadId = 0;
+HANDLE g_hotkeyReady = nullptr;
+std::atomic<bool> g_hotkeyRunning{false};
+
+uint32_t CurrentModifiers()
+{
+    uint32_t modifiers = 0;
+    if ((GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0) modifiers |= 0x0002;
+    if ((GetAsyncKeyState(VK_MENU) & 0x8000) != 0) modifiers |= 0x0001;
+    if ((GetAsyncKeyState(VK_SHIFT) & 0x8000) != 0) modifiers |= 0x0004;
+    if ((GetAsyncKeyState(VK_LWIN) & 0x8000) != 0 || (GetAsyncKeyState(VK_RWIN) & 0x8000) != 0) modifiers |= 0x0008;
+    return modifiers;
+}
+
+LRESULT CALLBACK HotkeyHookProc(int code, WPARAM wParam, LPARAM lParam)
+{
+    if (code == HC_ACTION && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
+    {
+        const auto* info = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
+        const uint32_t modifiers = CurrentModifiers();
+
+        {
+            std::lock_guard<std::mutex> lock(g_hotkeyMutex);
+            for (const auto& binding : g_hotkeyBindings)
+            {
+                if ((binding.modifiers & 0x000Fu) == modifiers && binding.virtualKey == info->vkCode)
+                {
+                    PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(binding.id), 0);
+                    return 1;
+                }
+            }
+        }
+    }
+
+    return CallNextHookEx(g_hotkey, code, wParam, lParam);
+}
+
+void HotkeyThreadProc()
+{
+    g_hotkeyThreadId = GetCurrentThreadId();
+    g_hotkey = SetWindowsHookExW(WH_KEYBOARD_LL, HotkeyHookProc, GetModuleHandleW(nullptr), 0);
+    if (g_hotkeyReady != nullptr)
+    {
+        SetEvent(g_hotkeyReady);
+    }
+
+    if (g_hotkey == nullptr)
+    {
+        g_hotkeyRunning = false;
+        return;
+    }
+
+    MSG message{};
+    while (GetMessageW(&message, nullptr, 0, 0) > 0)
+    {
+        TranslateMessage(&message);
+        DispatchMessageW(&message);
+    }
+
+    UnhookWindowsHookEx(g_hotkey);
+    g_hotkey = nullptr;
+}
+}
 extern "C" {
 
 DXTOOLS_NATIVE_EXPORT uint32_t __cdecl DxTools_GetApiVersion(void)
@@ -312,6 +386,82 @@ DXTOOLS_NATIVE_EXPORT void __cdecl DxTools_FreeMemory(void* ptr)
     free(ptr);
 }
 
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t message)
+{
+    if (hwnd == nullptr || message == 0)
+    {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    if (g_hotkeyRunning.exchange(true))
+    {
+        return ERROR_ALREADY_EXISTS;
+    }
+
+    g_hotkeyTarget = static_cast<HWND>(hwnd);
+    g_hotkeyMessage = message;
+    g_hotkeyReady = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_hotkeyThread = std::thread(HotkeyThreadProc);
+
+    if (g_hotkeyReady != nullptr)
+    {
+        WaitForSingleObject(g_hotkeyReady, 3000);
+        CloseHandle(g_hotkeyReady);
+        g_hotkeyReady = nullptr;
+    }
+
+    if (g_hotkey == nullptr)
+    {
+        g_hotkeyRunning = false;
+        if (g_hotkeyThread.joinable())
+        {
+            g_hotkeyThread.join();
+        }
+
+        return ERROR_INVALID_HOOK_HANDLE;
+    }
+
+    return ERROR_SUCCESS;
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Stop(void)
+{
+    if (g_hotkeyRunning.exchange(false))
+    {
+        if (g_hotkeyThreadId != 0)
+        {
+            PostThreadMessageW(g_hotkeyThreadId, WM_QUIT, 0, 0);
+        }
+    }
+
+    if (g_hotkeyThread.joinable())
+    {
+        g_hotkeyThread.join();
+    }
+
+    g_hotkeyThreadId = 0;
+    g_hotkeyTarget = nullptr;
+    return ERROR_SUCCESS;
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
+    const DxTools_HotkeyBinding* bindings,
+    uint32_t count)
+{
+    if (bindings == nullptr && count > 0)
+    {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    std::lock_guard<std::mutex> lock(g_hotkeyMutex);
+    g_hotkeyBindings.clear();
+    for (uint32_t index = 0; index < count; ++index)
+    {
+        g_hotkeyBindings.push_back(bindings[index]);
+    }
+
+    return ERROR_SUCCESS;
+}
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetMonitorCount(uint32_t* count)
 {
     if (count == nullptr)

@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: Phase 2E (ядро) завершён, ожидает подтверждения
+- Статус: Phase 2F (ядро) завершён, ожидает подтверждения
 
 ![DxTools, редактор триггеров](docs/images/phase2e-triggers.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (0.7.0-alpha)
+## Возможности текущей версии (0.8.0-alpha)
 
 - установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -26,7 +26,8 @@ DisplayFusion: профили мониторов, мультимониторны
   DWM live-превью при наведении, автоскрытие;
 - профили позиций окон: сохранение, применение и удаление;
 - перенос активного окна между мониторами с учётом DPI и always-on-top;
-- настраиваемые горячие клавиши с диалогом захвата сочетания;
+- настраиваемые горячие клавиши через низкоуровневый keyboard hook,
+  включая сочетания с Win, с диалогом захвата;
 - CLI-применение профилей дисплеев/окон и обоев;
 - триггеры: запуск, смена дисплея, создание окна/процесса → профиль,
   обои, программа или C#-скрипт;
@@ -44,8 +45,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
 
-Сплиты мониторов, titlebar-кнопки, системный трей, LL-hook и цепочки
-горячих клавиш — Phase 2F/3. Подробный план: [spec.md](spec.md).
+Сплиты мониторов, titlebar-кнопки, системный трей и многошаговые цепочки
+горячих клавиш — Phase 2G/3. Подробный план: [spec.md](spec.md).
 
 ## Требования для сборки
 
@@ -65,7 +66,7 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 -Configuration Release
 ```
 
 Результат: `artifacts/publish/` (self-contained приложение) и
-`artifacts/DxTools-0.7.0-x64.msi`.
+`artifacts/DxTools-0.8.0-x64.msi`.
 
 Локальная сборка нативной библиотеки без MSVC возможна через portable Zig
 (см. `build/build.ps1`), но эталонной считается сборка MSVC в CI.
@@ -93,6 +94,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-2c.md](docs/reports/phase-2c.md) — отчёт Phase 2C;
 - [docs/reports/phase-2d.md](docs/reports/phase-2d.md) — отчёт Phase 2D;
 - [docs/reports/phase-2e.md](docs/reports/phase-2e.md) — отчёт Phase 2E;
+- [docs/reports/phase-2f.md](docs/reports/phase-2f.md) — отчёт Phase 2F;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.

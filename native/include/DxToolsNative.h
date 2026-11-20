@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <wchar.h>
 
-#define DXTOOLS_NATIVE_API_VERSION 2u
-#define DXTOOLS_NATIVE_VERSION 0x00000300u
+#define DXTOOLS_NATIVE_API_VERSION 3u
+#define DXTOOLS_NATIVE_VERSION 0x00000400u
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,6 +39,20 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetMonitors(
     uint32_t* written);
 
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetState(uint8_t** data, uint32_t* size);
+typedef struct DxTools_HotkeyBinding
+{
+    uint32_t id;
+    uint32_t modifiers;
+    uint32_t virtualKey;
+    uint32_t reserved;
+} DxTools_HotkeyBinding;
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t message);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Stop(void);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
+    const DxTools_HotkeyBinding* bindings,
+    uint32_t count);
+
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_ApplyState(
     const uint8_t* data,
     uint32_t size,

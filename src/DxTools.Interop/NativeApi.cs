@@ -7,7 +7,7 @@ public static class NativeLibraryInfo
 {
     public const string FileName = "DxTools.Native.dll";
     public const string LibraryName = "DxTools.Native";
-    public const uint ExpectedApiVersion = 2;
+    public const uint ExpectedApiVersion = 3;
     public const uint ExpectedPing = 0x4458544F;
 }
 

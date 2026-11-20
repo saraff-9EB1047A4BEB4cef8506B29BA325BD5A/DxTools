@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 2E и границы модулей.
+Документ описывает архитектуру Phase 2F и границы модулей.
 
 ## Процессная модель
 
@@ -24,8 +24,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - Трей через `System.Windows.Forms.NotifyIcon` (временно; позже возможен
   собственный host).
 - Single instance, crash handler, безопасный режим.
-- `HotkeyService` на `RegisterHotKey` + `HwndSource`; сочетания хранятся в
-  настройках и меняются через `HotkeyCaptureWindow` (LL-hook — Phase 2F/3).
+- `HotkeyService` на native `WH_KEYBOARD_LL` + `HwndSource`; сочетания
+  хранятся в настройках и меняются через `HotkeyCaptureWindow`.
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
 - `TaskbarManager`: панели задач для неосновных мониторов, AppBar,
@@ -63,7 +63,7 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - CLI-действия (`--apply-display/window/wallpaper`) выполняются при старте.
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
-- В Phase 2F/3: LL-hook, titlebar, splits, системный трей.
+- В Phase 2G/3: titlebar, splits, системный трей, цепочки hotkeys.
 
 ### DxTools.Interop
 
@@ -74,18 +74,20 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ### DxTools.Native
 
 - C++20, Win32, без сторонних runtime-зависимостей.
-- C ABI v2: версия/ ping, `DxTools_FreeMemory`,
-  `DxTools_Display_GetMonitorCount`, `DxTools_Display_GetMonitors`,
-  `DxTools_Display_GetState`, `DxTools_Display_ApplyState`.
+- C ABI v3: версия/ ping, `DxTools_FreeMemory`, DisplayConfig API,
+  `DxTools_Hotkey_Start/Stop/SetBindings` (LL keyboard hook на отдельном
+  потоке, подавление совпавших сочетаний).
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
-- В следующих фазах: AppBar, LL-hook, DWM thumbnails, виртуальные десктопы.
+- В следующих фазах: titlebar-кнопки, splits, виртуальные десктопы.
 
 ## Потоки и отказоустойчивость
 
 - UI-поток WPF: представление, команды, горячие клавиши и watcher.
 - Apply DisplayConfig и композиция обоев выполняются в `Task.Run`, чтобы
   не блокировать UI; подтверждение отката показывает модальное окно.
+- Native LL-hook работает на выделенном потоке с message loop и передаёт
+  события в UI через `PostMessage`.
 - Панель задач обновляет окна раз в секунду; auto-hide опрашивает курсор
   каждые 250 мс и снимает/возвращает AppBar; скрытая панель Windows
   восстанавливается при нормальном выходе и в `ProcessExit`.

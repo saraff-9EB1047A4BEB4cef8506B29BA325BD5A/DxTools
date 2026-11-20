@@ -1,18 +1,19 @@
-using System.Runtime.InteropServices;
 using System.Windows.Interop;
 using DxTools.App.Properties;
 using DxTools.Core;
+using DxTools.Interop;
 
 namespace DxTools.App.Services;
 
 public sealed class HotkeyService : IDisposable
 {
-    private const int WmHotkey = 0x0312;
+    public const int HookMessage = 0x8000 + 77;
 
     private readonly IntPtr _windowHandle;
     private readonly HwndSource? _source;
     private readonly AppSettings _settings;
-    private readonly List<HotkeyBinding> _bindings = [];
+    private List<HotkeyBinding> _bindings = [];
+    private bool _hookActive;
     private bool _disposed;
 
     public HotkeyService(IntPtr windowHandle, AppSettings settings)
@@ -28,7 +29,7 @@ public sealed class HotkeyService : IDisposable
         }
 
         _source.AddHook(WindowProcedure);
-        RegisterAll();
+        Reload();
     }
 
     public event Action<HotkeyAction>? Pressed;
@@ -39,54 +40,57 @@ public sealed class HotkeyService : IDisposable
                 binding.Setting.Action,
                 binding.Setting.Gesture,
                 Describe(binding.Setting.Action),
-                binding.Registered))
+                _hookActive))
             .ToList();
 
     public void Reload()
-    {
-        foreach (var binding in _bindings.Where(item => item.Registered))
-        {
-            _ = UnregisterHotKey(_windowHandle, binding.Id);
-        }
-
-        _bindings.Clear();
-        RegisterAll();
-    }
-
-    private void RegisterAll()
     {
         var settings = _settings.Hotkeys.Count > 0
             ? _settings.Hotkeys
             : HotkeySetting.CreateDefaults();
 
-        var id = 1;
-        foreach (var setting in settings)
-        {
-            var registered = RegisterHotKey(
-                _windowHandle,
-                id,
-                setting.Modifiers,
-                setting.VirtualKey);
+        var next = settings
+            .Select((setting, index) => new HotkeyBinding((uint)(index + 1), setting))
+            .ToList();
 
-            if (!registered)
+        var nativeBindings = next
+            .Select(binding => new NativeHotkeyBinding
             {
-                DxLog.Warn($"Hotkey registration failed: {setting.Gesture}.");
-            }
+                Id = binding.Id,
+                Modifiers = binding.Setting.Modifiers,
+                VirtualKey = binding.Setting.VirtualKey,
+            })
+            .ToList();
 
-            _bindings.Add(new HotkeyBinding(id, setting, registered));
-            id++;
+        if (!_hookActive)
+        {
+            _hookActive = NativeHotkey.TryStart(_windowHandle, HookMessage, nativeBindings, out var error);
+            if (!_hookActive)
+            {
+                DxLog.Warn($"Low-level hotkey hook could not be started: {error}");
+            }
         }
+        else
+        {
+            var result = NativeHotkey.SetBindings(nativeBindings);
+            if (result != 0)
+            {
+                DxLog.Warn($"Hotkey bindings could not be updated: {result}.");
+            }
+        }
+
+        _bindings = next;
     }
 
     private IntPtr WindowProcedure(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)
     {
-        if (message != WmHotkey)
+        if (message != HookMessage)
         {
             return IntPtr.Zero;
         }
 
-        var id = wParam.ToInt32();
-        var binding = _bindings.FirstOrDefault(item => item.Id == id && item.Registered);
+        var id = (uint)wParam.ToInt64();
+        var binding = _bindings.FirstOrDefault(item => item.Id == id);
         if (binding is null)
         {
             return IntPtr.Zero;
@@ -122,22 +126,9 @@ public sealed class HotkeyService : IDisposable
         }
 
         _disposed = true;
-
-        foreach (var binding in _bindings.Where(item => item.Registered))
-        {
-            _ = UnregisterHotKey(_windowHandle, binding.Id);
-        }
-
+        NativeHotkey.Stop();
         _source?.RemoveHook(WindowProcedure);
     }
 
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool RegisterHotKey(IntPtr hwnd, int id, uint modifiers, uint virtualKey);
-
-    [DllImport("user32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool UnregisterHotKey(IntPtr hwnd, int id);
-
-    private sealed record HotkeyBinding(int Id, HotkeySetting Setting, bool Registered);
+    private sealed record HotkeyBinding(uint Id, HotkeySetting Setting);
 }

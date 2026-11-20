@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.8.0-alpha.1] - 2026-11-20
+
+### Added
+
+- нативный `WH_KEYBOARD_LL` hook (API v3) с отдельным потоком и подавлением
+  совпавших комбинаций;
+- поддержка сочетаний с Win;
+- native `Hotkey_Start/Stop/SetBindings` и managed `HotkeyService`.
+
+### Changed
+
+- версия приложения 0.8.0-alpha.1; native DLL 0.4.0, API v3;
+- MSI 0.8.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2F.
+
 ## [0.7.0-alpha.1] - 2026-11-20
 
 ### Added
