@@ -158,6 +158,8 @@ public partial class App : System.Windows.Application
                 safeMode: false);
             viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
+            viewModel.HotkeyPrefixChangeRequested += OnHotkeyPrefixChangeRequested;
+            viewModel.HotkeyPrefixClearRequested += OnHotkeyPrefixClearRequested;
             viewModel.PinnedAppsChanged += () => _taskbarManager?.Rebuild();
 
             _titleBarOverlay = new TitleBarOverlayManager(_engine.Windows, _settings);
@@ -284,6 +286,56 @@ public partial class App : System.Windows.Application
         setting.Modifiers = result.Modifiers;
         setting.VirtualKey = result.VirtualKey;
         setting.Gesture = result.Gesture;
+
+        SaveSettings();
+        _hotkeys?.Reload();
+        _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
+    }
+
+    private void OnHotkeyPrefixChangeRequested(HotkeyAction action)
+    {
+        if (_settings is null)
+        {
+            return;
+        }
+
+        var setting = _settings.Hotkeys.FirstOrDefault(hotkey => hotkey.Action == action);
+        if (setting is null)
+        {
+            return;
+        }
+
+        var result = HotkeyCaptureWindow.CapturePrefix(action, setting.PrefixGesture);
+        if (result is null)
+        {
+            return;
+        }
+
+        setting.PrefixModifiers = result.PrefixModifiers;
+        setting.PrefixVirtualKey = result.PrefixVirtualKey;
+        setting.PrefixGesture = result.PrefixGesture;
+
+        SaveSettings();
+        _hotkeys?.Reload();
+        _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
+    }
+
+    private void OnHotkeyPrefixClearRequested(HotkeyAction action)
+    {
+        if (_settings is null)
+        {
+            return;
+        }
+
+        var setting = _settings.Hotkeys.FirstOrDefault(hotkey => hotkey.Action == action);
+        if (setting is null)
+        {
+            return;
+        }
+
+        setting.PrefixModifiers = 0;
+        setting.PrefixVirtualKey = 0;
+        setting.PrefixGesture = string.Empty;
 
         SaveSettings();
         _hotkeys?.Reload();

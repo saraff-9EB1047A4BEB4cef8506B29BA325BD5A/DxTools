@@ -85,6 +85,12 @@ public sealed class AppSettings
             {
                 hotkey.Gesture = defaults.First(item => item.Action == hotkey.Action).Gesture;
             }
+
+            if (hotkey.PrefixVirtualKey == 0)
+            {
+                hotkey.PrefixModifiers = 0;
+                hotkey.PrefixGesture = string.Empty;
+            }
         }
 
         PinnedApps ??= new List<PinnedApp>();

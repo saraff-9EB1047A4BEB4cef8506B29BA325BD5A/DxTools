@@ -524,8 +524,10 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
                           </Grid.ColumnDefinitions>
-                          <TextBlock Text="{Binding Gesture}" FontWeight="SemiBold" />
+                          <TextBlock Text="{Binding DisplayGesture}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
                           <TextBlock Grid.Column="1"
                                      Text="{Binding Description}"
                                      Margin="12,0"
@@ -550,6 +552,18 @@
                                   CommandParameter="{Binding}"
                                   Style="{StaticResource SecondaryButtonStyle}"
                                   Margin="8,0,0,0" />
+                          <Button Grid.Column="4"
+                                  Content="{x:Static props:Strings.HotkeyPrefix}"
+                                  Command="{Binding DataContext.ChangeHotkeyPrefixCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  CommandParameter="{Binding}"
+                                  Style="{StaticResource SecondaryButtonStyle}"
+                                  Margin="6,0,0,0" />
+                          <Button Grid.Column="5"
+                                  Content="{x:Static props:Strings.HotkeyClearPrefix}"
+                                  Command="{Binding DataContext.ClearHotkeyPrefixCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  CommandParameter="{Binding}"
+                                  Style="{StaticResource SecondaryButtonStyle}"
+                                  Margin="6,0,0,0" />
                         </Grid>
                       </Border>
                     </DataTemplate>

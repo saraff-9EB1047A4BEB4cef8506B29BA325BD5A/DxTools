@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 2G (ядро) завершён, ожидает подтверждения
+Статус: Phase 2H (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -302,6 +302,25 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - сплиты мониторов;
 - многошаговые цепочки hotkeys.
 
+### Phase 2H — двухшаговые цепочки hotkeys 0.10 (ядро завершено)
+
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-2h.md`.
+
+Реализовано:
+
+- native hook поддерживает prefix + main combo с таймаутом 1,5 секунды;
+- поля prefix в `HotkeySetting` и native `DxTools_HotkeyBinding`;
+- диалог захвата префикса, кнопки «Префикс»/«Сбросить префикс»;
+- UI показывает `prefix → основное сочетание`;
+- 25 unit-тестов; MSI 0.10.0.
+
+Перенесено в Phase 2I/3:
+
+- системный трей;
+- сплиты мониторов;
+- цепочки длиннее двух шагов.
+
 ### Phase 3 — паритет и hardening 1.0 (10–14 недель)
 
 - виртуальные десктопы (undocumented COM + адаптеры по сборкам);
@@ -319,8 +338,8 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 |---|---|---|
 | Профили дисплеев, режимы, primary, вкл/выкл | C++ DisplayConfig | 1 |
 | DPI scaling | C++ (spike) | 2 |
-| Сплиты мониторов | C# + C++ | 2H |
-| Горячие клавиши | LL-hook + редактор (2F); цепочки (2H) | 1–2H |
+| Сплиты мониторов | C# + C++ | 2I |
+| Горячие клавиши | LL-hook + редактор + 2-step chains | 1–2H (готово) |
 | Move/topmost | C# Win32 | 1 |
 | Snap/transparency/roll-up/span | C# Win32 | 2 |
 | Профили позиций окон | C# | 2B (готово) |
@@ -329,7 +348,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Pinned apps | C# + taskbar | 2C (готово) |
 | DWM live-превью | HwndHost/DWM | 2D (готово) |
 | Автоскрытие панели | AppBar + timer | 2D (готово) |
-| Зеркало трея | C++/UIA | 2H (риск) |
+| Зеркало трея | C++/UIA | 2I (риск) |
 | Обои per-monitor/span | C# + System.Drawing, composite + span | 1 |
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |

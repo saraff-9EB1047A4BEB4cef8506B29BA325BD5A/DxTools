@@ -58,6 +58,20 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         SelfCheckCommand = new RelayCommand(RunSelfCheck);
         ExportBackupCommand = new RelayCommand(ExportBackup);
         AddPinnedAppCommand = new RelayCommand(AddPinnedApp);
+        ChangeHotkeyPrefixCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is HotkeyInfo hotkey)
+            {
+                HotkeyPrefixChangeRequested?.Invoke(hotkey.Action);
+            }
+        });
+        ClearHotkeyPrefixCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is HotkeyInfo hotkey)
+            {
+                HotkeyPrefixClearRequested?.Invoke(hotkey.Action);
+            }
+        });
         ChangeHotkeyCommand = new RelayCommand(parameter =>
         {
             if (parameter is HotkeyInfo hotkey)
@@ -77,6 +91,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public event Action? TitleBarSettingsChanged;
 
     public event Action<HotkeyAction>? HotkeyChangeRequested;
+
+    public event Action<HotkeyAction>? HotkeyPrefixChangeRequested;
+
+    public event Action<HotkeyAction>? HotkeyPrefixClearRequested;
 
     public event Action? PinnedAppsChanged;
 
@@ -105,6 +123,10 @@ public sealed class MainViewModel : ObservableObject, IDisposable
     public ICommand ExportBackupCommand { get; }
 
     public ICommand ChangeHotkeyCommand { get; }
+
+    public ICommand ChangeHotkeyPrefixCommand { get; }
+
+    public ICommand ClearHotkeyPrefixCommand { get; }
 
     public ICommand AddPinnedAppCommand { get; }
 

@@ -17,6 +17,12 @@ public sealed class HotkeySetting
 
     public string Gesture { get; set; } = string.Empty;
 
+    public uint PrefixModifiers { get; set; }
+
+    public uint PrefixVirtualKey { get; set; }
+
+    public string PrefixGesture { get; set; } = string.Empty;
+
     public static List<HotkeySetting> CreateDefaults() =>
     [
         new() { Action = HotkeyAction.MoveWindowPrevious, Modifiers = 0x4003, VirtualKey = 0x25, Gesture = "Ctrl+Alt+Left" },

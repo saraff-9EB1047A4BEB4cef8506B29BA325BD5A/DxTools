@@ -4,7 +4,7 @@
 #include <wchar.h>
 
 #define DXTOOLS_NATIVE_API_VERSION 3u
-#define DXTOOLS_NATIVE_VERSION 0x00000400u
+#define DXTOOLS_NATIVE_VERSION 0x00000500u
 
 #ifdef __cplusplus
 extern "C" {
@@ -44,6 +44,8 @@ typedef struct DxTools_HotkeyBinding
     uint32_t id;
     uint32_t modifiers;
     uint32_t virtualKey;
+    uint32_t prefixModifiers;
+    uint32_t prefixVirtualKey;
     uint32_t reserved;
 } DxTools_HotkeyBinding;
 

@@ -193,6 +193,10 @@ public static class Strings
     public static string TitleBarButtonsHint => Get(nameof(TitleBarButtonsHint));
     public static string TitleBarMoveNext => Get(nameof(TitleBarMoveNext));
     public static string TitleBarTopmost => Get(nameof(TitleBarTopmost));
+    public static string HotkeyCapturePrefixTitle => Get(nameof(HotkeyCapturePrefixTitle));
+    public static string HotkeyCapturePrefixHint => Get(nameof(HotkeyCapturePrefixHint));
+    public static string HotkeyPrefix => Get(nameof(HotkeyPrefix));
+    public static string HotkeyClearPrefix => Get(nameof(HotkeyClearPrefix));
 }
 
 

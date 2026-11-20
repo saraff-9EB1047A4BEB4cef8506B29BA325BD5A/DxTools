@@ -39,6 +39,7 @@ public sealed class HotkeyService : IDisposable
             .Select(binding => new HotkeyInfo(
                 binding.Setting.Action,
                 binding.Setting.Gesture,
+                binding.Setting.PrefixGesture,
                 Describe(binding.Setting.Action),
                 _hookActive))
             .ToList();
@@ -59,6 +60,8 @@ public sealed class HotkeyService : IDisposable
                 Id = binding.Id,
                 Modifiers = binding.Setting.Modifiers,
                 VirtualKey = binding.Setting.VirtualKey,
+                PrefixModifiers = binding.Setting.PrefixModifiers,
+                PrefixVirtualKey = binding.Setting.PrefixVirtualKey,
             })
             .ToList();
 
@@ -80,6 +83,7 @@ public sealed class HotkeyService : IDisposable
         }
 
         _bindings = next;
+        DxLog.Info("Hotkey bindings: " + string.Join(", ", next.Select(binding => binding.Setting.Gesture + " (prefix: " + binding.Setting.PrefixGesture + ")")));
     }
 
     private IntPtr WindowProcedure(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)

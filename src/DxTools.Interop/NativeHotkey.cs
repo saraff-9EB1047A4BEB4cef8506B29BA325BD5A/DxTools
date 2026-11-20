@@ -9,6 +9,8 @@ public struct NativeHotkeyBinding
     public uint Id;
     public uint Modifiers;
     public uint VirtualKey;
+    public uint PrefixModifiers;
+    public uint PrefixVirtualKey;
     public uint Reserved;
 }
 

@@ -8,12 +8,20 @@ namespace DxTools.App;
 public partial class HotkeyCaptureWindow : System.Windows.Window
 {
     private readonly HotkeyAction _action;
+    private readonly bool _capturePrefix;
 
-    public HotkeyCaptureWindow(HotkeyAction action, string currentGesture)
+    public HotkeyCaptureWindow(HotkeyAction action, string currentGesture, bool capturePrefix = false)
     {
         InitializeComponent();
         _action = action;
-        GestureText.Text = currentGesture;
+        _capturePrefix = capturePrefix;
+        GestureText.Text = string.IsNullOrWhiteSpace(currentGesture) ? Strings.HotkeyCaptureHint : currentGesture;
+
+        if (capturePrefix)
+        {
+            Title = Strings.HotkeyCapturePrefixTitle;
+            HintText.Text = Strings.HotkeyCapturePrefixHint;
+        }
         Loaded += (_, _) => Focus();
     }
 
@@ -22,6 +30,13 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
     public static HotkeySetting? Capture(HotkeyAction action, string currentGesture)
     {
         var window = new HotkeyCaptureWindow(action, currentGesture);
+        _ = window.ShowDialog();
+        return window.Result;
+    }
+
+    public static HotkeySetting? CapturePrefix(HotkeyAction action, string currentGesture)
+    {
+        var window = new HotkeyCaptureWindow(action, currentGesture, capturePrefix: true);
         _ = window.ShowDialog();
         return window.Result;
     }
@@ -84,9 +99,12 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
         Result = new HotkeySetting
         {
             Action = _action,
-            Modifiers = registerModifiers,
-            VirtualKey = (uint)virtualKey,
-            Gesture = gesture,
+            Modifiers = _capturePrefix ? 0 : registerModifiers,
+            VirtualKey = _capturePrefix ? 0 : (uint)virtualKey,
+            Gesture = _capturePrefix ? string.Empty : gesture,
+            PrefixModifiers = _capturePrefix ? registerModifiers : 0,
+            PrefixVirtualKey = _capturePrefix ? (uint)virtualKey : 0,
+            PrefixGesture = _capturePrefix ? gesture : string.Empty,
         };
 
         DialogResult = true;

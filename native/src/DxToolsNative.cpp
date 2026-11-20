@@ -304,6 +304,8 @@ HHOOK g_hotkey = nullptr;
 DWORD g_hotkeyThreadId = 0;
 HANDLE g_hotkeyReady = nullptr;
 std::atomic<bool> g_hotkeyRunning{false};
+std::atomic<uint32_t> g_hotkeyPendingId{0};
+std::atomic<ULONGLONG> g_hotkeyPendingTick{0};
 
 uint32_t CurrentModifiers()
 {
@@ -322,11 +324,61 @@ LRESULT CALLBACK HotkeyHookProc(int code, WPARAM wParam, LPARAM lParam)
         const auto* info = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
         const uint32_t modifiers = CurrentModifiers();
 
+        const bool isModifierKey = info->vkCode == VK_CONTROL
+            || info->vkCode == VK_LCONTROL
+            || info->vkCode == VK_RCONTROL
+            || info->vkCode == VK_MENU
+            || info->vkCode == VK_LMENU
+            || info->vkCode == VK_RMENU
+            || info->vkCode == VK_SHIFT
+            || info->vkCode == VK_LSHIFT
+            || info->vkCode == VK_RSHIFT
+            || info->vkCode == VK_LWIN
+            || info->vkCode == VK_RWIN;
+
+        if (g_hotkeyPendingId != 0 && isModifierKey)
+        {
+            return CallNextHookEx(g_hotkey, code, wParam, lParam);
+        }
+
+        const ULONGLONG now = GetTickCount64();
+        if (g_hotkeyPendingId != 0 && now - g_hotkeyPendingTick <= 1500)
         {
             std::lock_guard<std::mutex> lock(g_hotkeyMutex);
             for (const auto& binding : g_hotkeyBindings)
             {
-                if ((binding.modifiers & 0x000Fu) == modifiers && binding.virtualKey == info->vkCode)
+                if (binding.id == g_hotkeyPendingId
+                    && (binding.modifiers & 0x000Fu) == modifiers
+                    && binding.virtualKey == info->vkCode)
+                {
+                    PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(binding.id), 0);
+                    g_hotkeyPendingId = 0;
+                    return 1;
+                }
+            }
+        }
+
+        g_hotkeyPendingId = 0;
+
+        {
+            std::lock_guard<std::mutex> lock(g_hotkeyMutex);
+            for (const auto& binding : g_hotkeyBindings)
+            {
+                if (binding.prefixVirtualKey != 0
+                    && (binding.prefixModifiers & 0x000Fu) == modifiers
+                    && binding.prefixVirtualKey == info->vkCode)
+                {
+                    g_hotkeyPendingId = binding.id;
+                    g_hotkeyPendingTick = now;
+                    return 1;
+                }
+            }
+
+            for (const auto& binding : g_hotkeyBindings)
+            {
+                if (binding.prefixVirtualKey == 0
+                    && (binding.modifiers & 0x000Fu) == modifiers
+                    && binding.virtualKey == info->vkCode)
                 {
                     PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(binding.id), 0);
                     return 1;
@@ -400,6 +452,7 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t 
 
     g_hotkeyTarget = static_cast<HWND>(hwnd);
     g_hotkeyMessage = message;
+    g_hotkeyPendingId = 0;
     g_hotkeyReady = CreateEventW(nullptr, TRUE, FALSE, nullptr);
     g_hotkeyThread = std::thread(HotkeyThreadProc);
 
@@ -455,6 +508,7 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
 
     std::lock_guard<std::mutex> lock(g_hotkeyMutex);
     g_hotkeyBindings.clear();
+    g_hotkeyPendingId = 0;
     for (uint32_t index = 0; index < count; ++index)
     {
         g_hotkeyBindings.push_back(bindings[index]);

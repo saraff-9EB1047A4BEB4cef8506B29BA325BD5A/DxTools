@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [0.10.0-alpha.1] - 2026-11-20
+
+### Added
+
+- двухшаговые цепочки hotkeys (prefix + main, таймаут 1,5 секунды);
+- поля prefix в настройках и native binding, диалог захвата префикса;
+- кнопки «Префикс»/«Сбросить префикс» и отображение цепочки в UI.
+
+### Changed
+
+- версия приложения 0.10.0-alpha.1; native DLL 0.5.0, API v3;
+- MSI 0.10.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 2H.
+
 ## [0.9.0-alpha.1] - 2026-11-20
 
 ### Added
