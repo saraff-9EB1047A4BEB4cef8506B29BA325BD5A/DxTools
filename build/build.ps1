@@ -1,7 +1,7 @@
 param(
     [string]$Configuration = "Release",
     [string]$Runtime = "win-x64",
-    [string]$ProductVersion = "0.15.0",
+    [string]$ProductVersion = "0.16.0",
     [string]$ZigPath = "",
     [switch]$SkipTests,
     [switch]$SkipNative
@@ -59,6 +59,26 @@ if ($LASTEXITCODE -ne 0) {
 
 Copy-Item -LiteralPath (Join-Path $nativeDir "DxTools.Native.dll") `
     -Destination (Join-Path $publishDir "DxTools.Native.dll") `
+    -Force
+
+Write-Output "== Screensaver =="
+$screensaverDir = Join-Path $artifacts "screensaver"
+if (Test-Path -LiteralPath $screensaverDir) {
+    Remove-Item -LiteralPath $screensaverDir -Recurse -Force
+}
+
+& dotnet publish (Join-Path $repoRoot "src\DxTools.Screensaver\DxTools.Screensaver.csproj") `
+    -c $Configuration `
+    -r $Runtime `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -o $screensaverDir
+if ($LASTEXITCODE -ne 0) {
+    throw "Screensaver publish failed with exit code $LASTEXITCODE."
+}
+
+Copy-Item -LiteralPath (Join-Path $screensaverDir "DxTools.Screensaver.exe") `
+    -Destination (Join-Path $publishDir "DxTools.scr") `
     -Force
 
 Write-Output "== WiX fragment =="

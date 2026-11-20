@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: Phase 3B (ядро) завершён, ожидает подтверждения
+Статус: Phase 3C (ядро) завершён, ожидает подтверждения
 Версия документа: 1.0 (2026-11-20)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
@@ -406,9 +406,23 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - проверено: 3 активных устройства найдены;
 - 27 unit-тестов; MSI 0.15.0.
 
-Перенесено в Phase 3C/1.0:
+### Phase 3C — multi-monitor screensaver 0.16 (ядро завершено)
 
-- виртуальные десктопы, screensaver, shell context menu;
+Статус: ядро завершено, ожидает подтверждения. Отчёт:
+`docs/reports/phase-3c.md`.
+
+Реализовано:
+
+- проект `DxTools.Screensaver` (WinExe + WPF);
+- режим `/s` на всех мониторах, `/c` открывает настройки, `/p` завершает;
+- изображения из папки слайдшоу обоев или «Изображения»;
+- смена кадров раз в 10 секунд, выход по мыши/клавише;
+- `.scr` публикуется single-file и входит в MSI;
+- 27 unit-тестов; MSI 0.16.0.
+
+Перенесено в Phase 3D/1.0:
+
+- виртуальные десктопы, shell context menu;
 - UIAccess/elevated helper, ARM64, HDR, accessibility;
 - подпись кода, security review, финальный RC → 1.0.
 
@@ -434,13 +448,13 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |
 | C#-скрипты | Roslyn Scripting | 2E (готово) |
-| Виртуальные десктопы | C++ undocumented | 3C |
-| Screensaver | C# | 3C |
+| Виртуальные десктопы | C++ undocumented | 3D |
+| Screensaver | C# WPF .scr | 3C (готово) |
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
-| Shell extension | C++ | 3C |
-| UIAccess | C++/manifest | 3C |
-| ARM64 | publish + native | 3C |
+| Shell extension | C++ | 3D |
+| UIAccess | C++/manifest | 3D |
+| ARM64 | publish + native | 3D |
 
 ## 6. Критические спайки
 

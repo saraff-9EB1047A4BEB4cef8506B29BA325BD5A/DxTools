@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [0.16.0-alpha.1] - 2026-11-20
+
+### Added
+
+- проект `DxTools.Screensaver` и `.scr` в MSI;
+- multi-monitor screensaver с изображениями из папки слайдшоу;
+- режимы `/s`, `/c`, `/p`;
+- 27 unit-тестов.
+
+### Changed
+
+- версия приложения 0.16.0-alpha.1; native DLL 0.6.0, API v4;
+- MSI 0.16.0;
+- обновлены README, USER_MANUAL, spec, architecture, отчёт Phase 3C.
+
 ## [0.15.0-alpha.1] - 2026-11-20
 
 ### Added

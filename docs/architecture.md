@@ -1,6 +1,6 @@
 # Архитектура DxTools
 
-Документ описывает архитектуру Phase 3B и границы модулей.
+Документ описывает архитектуру Phase 3C и границы модулей.
 
 ## Процессная модель
 
@@ -74,7 +74,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - Триггеры выполняются в `Task.Run`; новые окна/процессы отслеживаются
   таймером раз в 2 секунды.
 - `AudioService`: CoreAudio enumeration и `IPolicyConfig` для default endpoint.
-- В Phase 3C/1.0: VD, screensaver, shell extension, UIAccess, ARM64, signing.
+- `DxTools.Screensaver`: отдельный WPF `.scr`, изображения из папки
+  слайдшоу, одно окно на монитор.
+- В Phase 3D/1.0: VD, shell extension, UIAccess, ARM64, signing.
 
 ### DxTools.Interop
 
