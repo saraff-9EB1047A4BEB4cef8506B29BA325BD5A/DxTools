@@ -3,8 +3,8 @@
 Дата: 2026-11-21
 Статус: **release candidate готов, ожидает подтверждения GA**
 Репозиторий: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools
-Рабочая копия: изменения rc.5 не закоммичены
-CI: для rc.5 не запускался
+Коммит: `4eead74` (`Release 1.0.0-rc.5: titlebar buttons match system caption style`)
+CI: GitHub Actions run `44928485991` — success
 
 ## 1. Артефакты
 
@@ -40,9 +40,10 @@ CI: для rc.5 не запускался
 | Шрифты | глифы E72A/E718 есть в Segoe Fluent Icons и Segoe MDL2 Assets |
 | x64 MSI administrative install | exit 0, 289 файлов, app `1.0.0-rc.5` |
 | ARM64 MSI administrative install | exit 0, 288 файлов, app `1.0.0-rc.5` |
-| CI | не запускался |
+| CI | success: run `44928485991` |
 
-Визуальная проверка на живом окне с light/dark темой остаётся ручной:
+CI-артефакты: `DxTools-msi` 151 190 107 байт, `DxTools-publish` 190 486 134
+байт. Визуальная проверка на живом окне с light/dark темой остаётся ручной:
 в текущей среде нет интерактивного рабочего стола.
 
 ## 4. Известные ограничения
@@ -56,9 +57,9 @@ CI: для rc.5 не запускался
 
 ## 5. Release checklist
 
-См. `docs/release-checklist.md`. Не закрыты: CI для rc.5, подпись,
-UIAccess/elevated-тест, UAC-инсталляция, runtime-тест ARM64, независимый
-security review и публикация GitHub Release.
+См. `docs/release-checklist.md`. Не закрыты: подпись, UIAccess/elevated-тест,
+UAC-инсталляция, runtime-тест ARM64, независимый security review и публикация
+GitHub Release.
 
 ## 6. Запрос подтверждения
 
