@@ -41,7 +41,9 @@ public sealed class TaskbarGroupItemViewModel : ObservableObject
 
     public string DisplayTitle => Count > 1 ? $"{Title} ({Count})" : Title;
 
-    public string ToolTipText => string.Join(Environment.NewLine, _windows.Select(window => window.Title));
+    public string ToolTipText => _windows.Count == 0
+        ? Title
+        : string.Join(Environment.NewLine, _windows.Select(window => window.Title));
 
     public bool IsActive
     {
