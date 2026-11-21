@@ -1,6 +1,6 @@
-# Security review — DxTools 1.0.0-rc.1
+# Security review — DxTools 1.0.0-rc.1/rc.2
 
-Дата: 2026-11-20
+Дата: 2026-11-20 (в rc.2 код приложения не менялся)
 
 ## Область проверки
 

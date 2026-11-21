@@ -4,11 +4,17 @@ param(
     [string]$ProductVersion = "1.0.0",
     [string]$ZigPath = "",
     [string]$Architecture = "x64",
+    [string]$InstallerPlatform = "x64",
     [switch]$SkipTests,
     [switch]$SkipNative
 )
 
 $ErrorActionPreference = "Stop"
+
+if ($InstallerPlatform -eq "arm64") {
+    if ($Architecture -eq "x64") { $Architecture = "arm64" }
+    if ($Runtime -eq "win-x64") { $Runtime = "win-arm64" }
+}
 
 $repoRoot = Split-Path -Parent $PSScriptRoot
 $artifacts = Join-Path $repoRoot "artifacts"
@@ -22,6 +28,8 @@ New-Item -ItemType Directory -Force -Path $artifacts | Out-Null
 Write-Output "== DxTools build =="
 Write-Output "Configuration: $Configuration"
 Write-Output "Runtime:       $Runtime"
+Write-Output "Architecture:  $Architecture"
+Write-Output "Installer:     $InstallerPlatform"
 Write-Output "Version:       $ProductVersion"
 
 if (-not $SkipNative) {
@@ -91,12 +99,13 @@ Write-Output "== WiX fragment =="
 Write-Output "== MSI =="
 & dotnet build $wixProject `
     -c $Configuration `
-    "-p:ProductVersion=$ProductVersion"
+    "-p:ProductVersion=$ProductVersion" `
+    "-p:InstallerPlatform=$InstallerPlatform"
 if ($LASTEXITCODE -ne 0) {
     throw "WiX build failed with exit code $LASTEXITCODE."
 }
 
-$msiName = "DxTools-$ProductVersion-x64.msi"
+$msiName = "DxTools-$ProductVersion-$InstallerPlatform.msi"
 $msi = Get-ChildItem -LiteralPath $artifacts -Recurse -Filter $msiName -File -ErrorAction SilentlyContinue |
     Select-Object -First 1
 

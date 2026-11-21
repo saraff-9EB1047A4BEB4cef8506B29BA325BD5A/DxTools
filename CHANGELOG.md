@@ -4,6 +4,20 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.2] - 2026-11-21
+
+### Added
+
+- ARM64 cross-build: native DLL, self-contained publish и
+  `DxTools-1.0.0-arm64.msi`;
+- проверка ARM64 MSI административной установкой;
+- docs/arm64.md и docs/signing.md.
+
+### Changed
+
+- версия приложения 1.0.0-rc.2; x64 и ARM64 MSI;
+- README, USER_MANUAL, spec и release checklist обновлены для rc.2.
+
 ## [1.0.0-rc.1] - 2026-11-20
 
 ### Added

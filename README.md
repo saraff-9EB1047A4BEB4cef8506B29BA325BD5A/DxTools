@@ -5,8 +5,8 @@ DisplayFusion: профили мониторов, мультимониторны
 окнами, обои, горячие клавиши, триггеры и скрипты.
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
-- Платформа: Windows 11 22H2+ (x64), .NET 10
-- Статус: 1.0.0-rc.1 готов, ожидает подтверждения GA
+- Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
+- Статус: 1.0.0-rc.2 готов, ожидает подтверждения GA
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,9 +14,9 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (1.0.0-rc.1)
+## Возможности текущей версии (1.0.0-rc.2)
 
-- установщик MSI (per-machine, x64) с лицензионным диалогом GPLv2;
+- установщик MSI (per-machine, x64 и ARM64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
 - профили мониторов: сохранение текущей конфигурации, применение,
   подтверждение с автоматическим откатом, авто-применение по набору мониторов;
@@ -40,7 +40,9 @@ DisplayFusion: профили мониторов, мультимониторны
 - переключение аудиоустройства по умолчанию;
 - multi-monitor screensaver `DxTools.scr` с изображениями из папки слайдшоу;
 - hotkeys навигации и переноса окон между виртуальными рабочими столами;
-- SECURITY.md и скрипт подписи `build/sign.ps1`;
+- ARM64 cross-build, `DxTools-1.0.0-arm64.msi` и проверка административной
+  установкой;
+- SECURITY.md, `docs/signing.md` и скрипт подписи `build/sign.ps1`;
 - обои на каждый монитор: композитное полотно, режимы Fill/Fit/Stretch/
   Center/Tile;
 - слайдшоу обоев из папки с настраиваемым интервалом;
@@ -53,10 +55,10 @@ DisplayFusion: профили мониторов, мультимониторны
 - единственный экземпляр приложения, команда открытия настроек из второй копии;
 - файловые логи и crash handler;
 - безопасный режим (`--safe-mode`);
-- нативная библиотека `DxTools.Native.dll` с C ABI v2, DisplayConfig и handshake.
+- нативная библиотека `DxTools.Native.dll` с C ABI v4, DisplayConfig и handshake.
 
-В RC не входят: shell extension, UIAccess/elevated helper, ARM64, подпись
-сертификатом и независимый security review. Подробный план:
+В RC не входят: shell extension, UIAccess/elevated helper, подпись
+сертификатом, независимый security review и runtime-тест ARM64. Подробный план:
 [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md),
 security review: [docs/security-review.md](docs/security-review.md),
 release checklist: [docs/release-checklist.md](docs/release-checklist.md).
@@ -117,10 +119,14 @@ build/                 сборочные скрипты
 - [docs/reports/phase-3b.md](docs/reports/phase-3b.md) — отчёт Phase 3B;
 - [docs/reports/phase-3c.md](docs/reports/phase-3c.md) — отчёт Phase 3C;
 - [docs/reports/phase-3d.md](docs/reports/phase-3d.md) — отчёт Phase 3D;
+- [docs/reports/rc-1.0.0-rc.2.md](docs/reports/rc-1.0.0-rc.2.md) — отчёт RC 1.0.0-rc.2;
+- [docs/reports/rc-1.0.0.md](docs/reports/rc-1.0.0.md) — отчёт RC 1.0.0-rc.1;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [SECURITY.md](SECURITY.md) — политика безопасности;
 - [docs/security-review.md](docs/security-review.md) — security review;
 - [docs/release-checklist.md](docs/release-checklist.md) — release checklist;
+- [docs/arm64.md](docs/arm64.md) — ARM64 build;
+- [docs/signing.md](docs/signing.md) — подпись и UIAccess;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
 - [THIRD-PARTY-NOTICES.md](THIRD-PARTY-NOTICES.md) — сторонние компоненты.
 

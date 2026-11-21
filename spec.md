@@ -1,9 +1,9 @@
 # DxTools — спецификация и план реализации
 
-Статус: 1.0.0-rc.1 готов, ожидает подтверждения GA
-Версия документа: 1.0 (2026-11-20)
+Статус: 1.0.0-rc.2 готов, ожидает подтверждения GA
+Версия документа: 1.0 (2026-11-21)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
-Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — Phase 3
+Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — cross-build
 
 ## 1. Продукт и границы
 
@@ -466,7 +466,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
 | Shell extension | C++ | 1.0 |
 | UIAccess | C++/manifest | 1.0 |
-| ARM64 | publish + native | 1.0 |
+| ARM64 | publish + native (cross-build) | 1.0.x (cross-build) |
 
 ## 6. Критические спайки
 
