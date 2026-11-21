@@ -11,7 +11,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ├─ Services      DxTools.Engine
 ├─ Interop       DxTools.Interop
 ├─ Native        DxTools.Native.dll (C++/Win32)
-└─ Shell         DxTools.ShellExt.dll (C++ COM, in-process Explorer)
+├─ Shell         DxTools.ShellExt.dll (C++ COM, in-process Explorer)
+└─ Helper        DxTools.Helper.exe (C#, uiAccess=true, отдельный процесс)
 ```
 
 Один экземпляр приложения на сессию пользователя. Повторный запуск
@@ -108,6 +109,19 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   `InprocServer32` с `ThreadingModel=Apartment`; компонент MSI 64-bit.
 - Ручная регистрация `regsvr32` пишет в `HKCU`; MSI регистрирует per-machine.
 - Не содержит бизнес-логики и сетевых операций.
+
+### DxTools.Helper
+
+- Отдельный WinExe с манифестом `asInvoker/uiAccess=true`; запускается
+  основным приложением в фоне.
+- Named pipe `DxTools.UIAccess.<pid>.<nonce>`; helper проверяет PID клиента
+  и путь родительского `DxTools.exe`.
+- Команды: `move`, `topmost`, `activate`; только top-level HWND, без запуска
+  процессов и сетевых операций.
+- `UIAccessClient` в Engine пробует прямой Win32-вызов, при отказе отправляет
+  команду helper; при отсутствии/неподписанном helper работает fallback.
+- UIAccess активируется Windows только для подписанного helper в Program Files
+  и после согласия пользователя.
 
 ## Потоки и отказоустойчивость
 

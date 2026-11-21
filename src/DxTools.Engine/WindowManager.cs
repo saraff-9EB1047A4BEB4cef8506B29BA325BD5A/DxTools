@@ -6,10 +6,12 @@ namespace DxTools.Engine;
 public sealed class WindowManager
 {
     private readonly DisplayService _display;
+    private readonly UIAccessClient _uiAccess;
 
-    public WindowManager(DisplayService display)
+    public WindowManager(DisplayService display, UIAccessClient uiAccess)
     {
         _display = display ?? throw new ArgumentNullException(nameof(display));
+        _uiAccess = uiAccess ?? throw new ArgumentNullException(nameof(uiAccess));
     }
 
     public bool MoveForegroundWindow(int direction) => MoveWindow(Win32Window.GetForegroundWindow(), direction);
@@ -93,7 +95,18 @@ public sealed class WindowManager
             height,
             Win32Window.SwpNoZOrder | Win32Window.SwpNoActivate);
 
-        if (moved && wasMaximized)
+        if (!moved)
+        {
+            moved = _uiAccess.TryMoveWindow(
+                window,
+                x,
+                y,
+                width,
+                height,
+                restore: wasMaximized,
+                maximize: wasMaximized);
+        }
+        else if (wasMaximized)
         {
             _ = Win32Window.ShowWindow(window, Win32Window.SwMaximize);
         }
@@ -154,19 +167,34 @@ public sealed class WindowManager
         var width = column == columns - 1 ? monitor.Right - x : cellWidth;
         var height = row == rows - 1 ? monitor.Bottom - y : cellHeight;
 
-        if (Win32Window.IsZoomed(window))
+        var wasMaximized = Win32Window.IsZoomed(window);
+        if (wasMaximized)
         {
             _ = Win32Window.ShowWindow(window, Win32Window.SwRestore);
         }
 
+        var snappedWidth = Math.Max(150, width);
+        var snappedHeight = Math.Max(100, height);
         var moved = Win32Window.SetWindowPos(
             window,
             IntPtr.Zero,
             x,
             y,
-            Math.Max(150, width),
-            Math.Max(100, height),
+            snappedWidth,
+            snappedHeight,
             Win32Window.SwpNoZOrder | Win32Window.SwpNoActivate);
+
+        if (!moved)
+        {
+            moved = _uiAccess.TryMoveWindow(
+                window,
+                x,
+                y,
+                snappedWidth,
+                snappedHeight,
+                restore: wasMaximized,
+                maximize: false);
+        }
 
         if (moved)
         {
@@ -204,6 +232,11 @@ public sealed class WindowManager
             0,
             0,
             Win32Window.SwpNoMove | Win32Window.SwpNoSize | Win32Window.SwpNoActivate);
+
+        if (!changed)
+        {
+            changed = _uiAccess.TrySetTopmost(window, !isTopmost);
+        }
 
         if (changed)
         {

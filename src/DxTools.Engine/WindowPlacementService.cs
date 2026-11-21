@@ -12,13 +12,18 @@ public sealed class WindowPlacementService
     private readonly object _gate = new();
     private readonly WindowCatalog _catalog;
     private readonly DisplayService _display;
+    private readonly UIAccessClient? _uiAccess;
     private readonly WindowPlacementStore _store;
     private readonly List<WindowPlacementProfile> _profiles;
 
-    public WindowPlacementService(DisplayService display, WindowPlacementStore? store = null)
+    public WindowPlacementService(
+        DisplayService display,
+        WindowPlacementStore? store = null,
+        UIAccessClient? uiAccess = null)
     {
         _display = display ?? throw new ArgumentNullException(nameof(display));
-        _catalog = new WindowCatalog(display);
+        _uiAccess = uiAccess;
+        _catalog = new WindowCatalog(display, uiAccess);
         _store = store ?? new WindowPlacementStore();
         _profiles = _store.Load().ToList();
     }
@@ -107,28 +112,42 @@ public sealed class WindowPlacementService
 
             used.Add(window.Handle);
 
-            if (window.IsMinimized || entry.IsMaximized)
+            var shouldRestore = window.IsMinimized || entry.IsMaximized;
+            if (shouldRestore)
             {
                 _ = Win32Window.ShowWindow(window.Handle, Win32Taskbar.SwRestore);
             }
 
+            var width = Math.Max(100, entry.Width);
+            var height = Math.Max(80, entry.Height);
             var moved = Win32Window.SetWindowPos(
                 window.Handle,
                 IntPtr.Zero,
                 entry.X,
                 entry.Y,
-                Math.Max(100, entry.Width),
-                Math.Max(80, entry.Height),
+                width,
+                height,
                 Win32Window.SwpNoZOrder | Win32Window.SwpNoActivate);
 
             if (!moved)
             {
-                continue;
+                moved = _uiAccess?.TryMoveWindow(
+                    window.Handle,
+                    entry.X,
+                    entry.Y,
+                    width,
+                    height,
+                    restore: shouldRestore,
+                    maximize: entry.IsMaximized) == true;
             }
-
-            if (entry.IsMaximized)
+            else if (entry.IsMaximized)
             {
                 _ = Win32Window.ShowWindow(window.Handle, Win32Window.SwMaximize);
+            }
+
+            if (!moved)
+            {
+                continue;
             }
 
             applied++;

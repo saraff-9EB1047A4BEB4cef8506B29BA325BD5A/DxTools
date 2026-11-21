@@ -1,6 +1,6 @@
-# Security review — DxTools 1.0.0-rc.1/rc.2/rc.3
+# Security review — DxTools 1.0.0-rc.1/rc.2/rc.3/rc.4
 
-Дата: 2026-11-21 (rc.3: добавлен shell extension)
+Дата: 2026-11-21 (rc.4: добавлен UIAccess helper)
 
 ## Область проверки
 
@@ -9,6 +9,7 @@
 - cross-process доступ к Explorer (иконки рабочего стола);
 - UIA-доступ к области уведомлений;
 - shell extension Explorer (`DxTools.ShellExt.dll`, COM in-process);
+- UIAccess helper (`DxTools.Helper.exe`, отдельный процесс);
 - пользовательские C#-скрипты;
 - настройки, профили и логи;
 - MSI и автозапуск;
@@ -25,6 +26,7 @@
 | Хуки | только `WH_KEYBOARD_LL` и WinEvent, без инъекций |
 | Cross-process | Explorer desktop icon list, только текущий пользователь |
 | Shell extension | COM in-process, без сети; только запуск `DxTools.exe` с аргументами; MSI-регистрация 64-bit в HKLM |
+| UIAccess helper | отдельный процесс, named pipe только local, проверка PID и пути родителя, команды move/topmost/activate без запуска процессов и сети |
 | Скрипты | выполняются с правами пользователя; предупреждение в UI/документации |
 | Логи | локальные, без секретов; путь документирован |
 | Safe mode | отключает хуки, taskbar, триггеры, аудио и native-проверки |
@@ -39,15 +41,18 @@
 2. UIAccess/elevated helper не реализован.
 3. Shell extension загружается в процесс Explorer; ошибка в нём может
    затронуть оболочку. Код минимальный, без сети и сторонних зависимостей.
-4. ARM64 MSI проверен административной установкой, но не запускался на
+4. UIAccess helper в rc.4 не подписан, поэтому Windows не активирует UIAccess;
+   без подписи helper не запускается, приложение использует fallback.
+5. ARM64 MSI проверен административной установкой, но не запускался на
    ARM64 hardware.
-5. Нет независимого пентеста; рекомендуется перед GA.
-6. `IPolicyConfig` и UIA-зеркало трея зависят от внутренних API Windows.
+6. Нет независимого пентеста; рекомендуется перед GA.
+7. `IPolicyConfig` и UIA-зеркало трея зависят от внутренних API Windows.
 
 ## Рекомендации перед GA
 
 - приобрести OV/EV сертификат и подписывать exe/dll/msi, включая
-  `DxTools.ShellExt.dll`;
+  `DxTools.ShellExt.dll` и `DxTools.Helper.exe` (UIAccess);
+- проверить UIAccess prompt и работу elevated-окон на чистой VM;
 - провести аудит native-кода и fuzzing C ABI;
 - проверить MSI на чистой VM с UAC;
 - протестировать на Windows 11 23H2/24H2/25H2 и ARM64;

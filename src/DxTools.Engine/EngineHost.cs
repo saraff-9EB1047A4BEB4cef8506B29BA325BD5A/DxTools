@@ -21,9 +21,10 @@ public sealed class EngineHost
 
         Display = new DisplayService(safeMode);
         Profiles = new DisplayProfileService(Display);
-        Windows = new WindowManager(Display);
+        UIAccess = new UIAccessClient(enabled: !safeMode);
+        Windows = new WindowManager(Display, UIAccess);
         Wallpaper = new WallpaperService(Display);
-        WindowPlacements = new WindowPlacementService(Display);
+        WindowPlacements = new WindowPlacementService(Display, uiAccess: UIAccess);
         DesktopIcons = new DesktopIconManager();
         Audio = new AudioService(safeMode);
         VirtualDesktops = new VirtualDesktopService();
@@ -35,6 +36,8 @@ public sealed class EngineHost
     public DisplayService Display { get; }
 
     public DisplayProfileService Profiles { get; }
+
+    public UIAccessClient UIAccess { get; }
 
     public WindowManager Windows { get; }
 
@@ -55,6 +58,7 @@ public sealed class EngineHost
     public void Start()
     {
         DxLog.Info($"Engine starting. SafeMode={_safeMode}.");
+        _ = Task.Run(UIAccess.Warmup);
         Refresh();
     }
 
@@ -80,6 +84,7 @@ public sealed class EngineHost
 
     public void Stop()
     {
+        UIAccess.Dispose();
         DxLog.Info("Engine stopped.");
     }
 }

@@ -18,10 +18,12 @@ public sealed record AppWindow(
 public sealed class WindowCatalog
 {
     private readonly DisplayService _display;
+    private readonly UIAccessClient? _uiAccess;
 
-    public WindowCatalog(DisplayService display)
+    public WindowCatalog(DisplayService display, UIAccessClient? uiAccess = null)
     {
         _display = display ?? throw new ArgumentNullException(nameof(display));
+        _uiAccess = uiAccess;
     }
 
     public IReadOnlyList<AppWindow> GetWindows()
@@ -155,24 +157,27 @@ public sealed class WindowCatalog
         var foregroundThread = Win32Window.GetWindowThreadProcessId(foreground, out _);
         var targetThread = Win32Window.GetWindowThreadProcessId(hwnd, out _);
 
-        if (foregroundThread == 0 || targetThread == 0 || foregroundThread == targetThread)
+        if (foregroundThread != 0 && targetThread != 0 && foregroundThread != targetThread)
         {
-            return false;
-        }
-
-        var attached = false;
-        try
-        {
-            attached = Win32Taskbar.AttachThreadInput(foregroundThread, targetThread, true);
-            return Win32Taskbar.SetForegroundWindow(hwnd);
-        }
-        finally
-        {
-            if (attached)
+            var attached = false;
+            try
             {
-                _ = Win32Taskbar.AttachThreadInput(foregroundThread, targetThread, false);
+                attached = Win32Taskbar.AttachThreadInput(foregroundThread, targetThread, true);
+                if (Win32Taskbar.SetForegroundWindow(hwnd))
+                {
+                    return true;
+                }
+            }
+            finally
+            {
+                if (attached)
+                {
+                    _ = Win32Taskbar.AttachThreadInput(foregroundThread, targetThread, false);
+                }
             }
         }
+
+        return _uiAccess?.TryActivate(hwnd) ?? false;
     }
 
     private static int FindMonitorIndex(IReadOnlyList<MonitorInfo> monitors, double x, double y)

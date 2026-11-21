@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: 1.0.0-rc.3 готов, ожидает подтверждения GA
+Статус: 1.0.0-rc.4 готов, ожидает подтверждения GA
 Версия документа: 1.0 (2026-11-21)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — cross-build
@@ -68,9 +68,10 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 ├─ DxTools.Engine     сервисы: display, hotkeys, windows, wallpaper, taskbar
 ├─ DxTools.Interop    P/Invoke, загрузка native DLL
 ├─ DxTools.Native.dll C++: DisplayConfig, AppBar, hooks, tray, VD
-└─ DxTools.ShellExt.dll C++ COM: контекстное меню Explorer
+├─ DxTools.ShellExt.dll C++ COM: контекстное меню Explorer
+└─ DxTools.Helper.exe C#: UIAccess helper (uiAccess=true)
 
-Опционально: DxTools.Helper.exe (UIAccess), DxTools.scr
+Опционально: DxTools.scr
 ```
 
 ### 3.1 Ключевые решения
@@ -435,7 +436,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 
 Перенесено в 1.0:
 
-- UIAccess/elevated helper, ARM64, HDR, accessibility;
+- ARM64, HDR, accessibility;
 - подпись кода сертификатом, security review, финальный RC → 1.0.
 
 ### Shell extension 1.0.0-rc.3 (готово)
@@ -450,6 +451,22 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 - CLI `--wallpaper`/`--monitor` и IPC-передача команд запущенному экземпляру;
 - регистрация в MSI для x64 и ARM64, per-machine;
 - 35 unit-тестов.
+
+### UIAccess 1.0.0-rc.4 (готово, требует подписи)
+
+Статус: код и упаковка готовы. Отчёт: `docs/reports/rc-1.0.0-rc.4.md`.
+
+Реализовано:
+
+- `DxTools.Helper.exe` с манифестом `uiAccess="true"`, отдельный процесс;
+- named-pipe протокол с проверкой PID и пути родительского `DxTools.exe`;
+- команды move/topmost/activate и fallback для обычных Win32-вызовов;
+- маршрутизация профилей окон и активации из панели задач;
+- helper включается в MSI x64/ARM64;
+- `build.ps1 -SignThumbprint` подписывает helper до упаковки MSI.
+
+Ограничение: UIAccess активируется только для подписанного доверенным
+сертификатом helper; без подписи работает обычный режим.
 
 ## 5. Матрица функций
 
@@ -478,7 +495,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
 | Shell extension | C++ COM (IContextMenu/IShellExtInit) | rc.3 (готово) |
-| UIAccess | C++/manifest | 1.0 |
+| UIAccess | `DxTools.Helper.exe` (uiAccess=true) + IPC | rc.4 (код; требует подписи) |
 | ARM64 | publish + native (cross-build) | 1.0.x (cross-build) |
 
 ## 6. Критические спайки

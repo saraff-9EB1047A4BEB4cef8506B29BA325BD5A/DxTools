@@ -4,6 +4,23 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.4] - 2026-11-21
+
+### Added
+
+- UIAccess helper `DxTools.Helper.exe` с манифестом `uiAccess="true"`;
+- маршрутизация move/snap/topmost/activate и профилей окон через helper
+  при отказе прямого Win32-вызова;
+- локальный named-pipe протокол с проверкой PID и пути родительского
+  `DxTools.exe`;
+- опциональная подпись helper/app/native/shell extension/MSI в `build.ps1`.
+
+### Changed
+
+- версия приложения 1.0.0-rc.4; helper включён в MSI x64/ARM64;
+- обновлены README, USER_MANUAL, spec, architecture, security review,
+  signing и release checklist.
+
 ## [1.0.0-rc.3] - 2026-11-21
 
 ### Added

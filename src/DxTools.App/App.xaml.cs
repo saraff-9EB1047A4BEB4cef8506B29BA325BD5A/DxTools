@@ -156,7 +156,8 @@ public partial class App : System.Windows.Application
                 _settings,
                 new TaskbarIconCache(),
                 ShowMainWindow,
-                safeMode: false);
+                safeMode: false,
+                uiAccess: _engine.UIAccess);
             viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
             viewModel.HotkeyPrefixChangeRequested += OnHotkeyPrefixChangeRequested;

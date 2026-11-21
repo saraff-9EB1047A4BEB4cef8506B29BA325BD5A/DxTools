@@ -24,14 +24,15 @@ public sealed class TaskbarManager : IDisposable
         AppSettings settings,
         TaskbarIconCache icons,
         Action showSettings,
-        bool safeMode)
+        bool safeMode,
+        UIAccessClient uiAccess)
     {
         _display = display ?? throw new ArgumentNullException(nameof(display));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _icons = icons ?? throw new ArgumentNullException(nameof(icons));
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
         _safeMode = safeMode;
-        _catalog = new WindowCatalog(display);
+        _catalog = new WindowCatalog(display, uiAccess);
     }
 
     public void Rebuild()

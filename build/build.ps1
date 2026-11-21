@@ -5,6 +5,7 @@ param(
     [string]$ZigPath = "",
     [string]$Architecture = "x64",
     [string]$InstallerPlatform = "x64",
+    [string]$SignThumbprint = $env:DXTOOLS_SIGN_THUMBPRINT,
     [switch]$SkipTests,
     [switch]$SkipNative
 )
@@ -104,6 +105,39 @@ Copy-Item -LiteralPath (Join-Path $screensaverDir "DxTools.Screensaver.exe") `
     -Destination (Join-Path $publishDir "DxTools.scr") `
     -Force
 
+Write-Output "== UIAccess helper =="
+$helperDir = Join-Path $artifacts "helper"
+if (Test-Path -LiteralPath $helperDir) {
+    Remove-Item -LiteralPath $helperDir -Recurse -Force
+}
+
+& dotnet publish (Join-Path $repoRoot "src\DxTools.Helper\DxTools.Helper.csproj") `
+    -c $Configuration `
+    -r $Runtime `
+    --self-contained true `
+    -p:PublishSingleFile=true `
+    -o $helperDir
+if ($LASTEXITCODE -ne 0) {
+    throw "UIAccess helper publish failed with exit code $LASTEXITCODE."
+}
+
+Copy-Item -LiteralPath (Join-Path $helperDir "DxTools.Helper.exe") `
+    -Destination (Join-Path $publishDir "DxTools.Helper.exe") `
+    -Force
+
+if (-not [string]::IsNullOrWhiteSpace($SignThumbprint)) {
+    Write-Output "== Sign =="
+    & (Join-Path $PSScriptRoot "sign.ps1") `
+        -Path @(
+            (Join-Path $publishDir "DxTools.exe"),
+            (Join-Path $publishDir "DxTools.Native.dll"),
+            (Join-Path $publishDir "DxTools.Helper.exe"),
+            (Join-Path $publishDir "DxTools.scr"),
+            (Join-Path $shellExtDir "DxTools.ShellExt.dll")
+        ) `
+        -Thumbprint $SignThumbprint
+}
+
 Write-Output "== WiX fragment =="
 & (Join-Path $PSScriptRoot "generate-wix-fragment.ps1") `
     -PublishDir $publishDir `
@@ -129,6 +163,11 @@ if (-not $msi) {
 $targetMsi = Join-Path $artifacts $msiName
 if ($msi.FullName -ne $targetMsi) {
     Copy-Item -LiteralPath $msi.FullName -Destination $targetMsi -Force
+}
+
+if (-not [string]::IsNullOrWhiteSpace($SignThumbprint)) {
+    Write-Output "== Sign MSI =="
+    & (Join-Path $PSScriptRoot "sign.ps1") -Path @($targetMsi) -Thumbprint $SignThumbprint
 }
 
 Write-Output "== Done =="

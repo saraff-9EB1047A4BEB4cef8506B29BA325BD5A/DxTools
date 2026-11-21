@@ -28,6 +28,8 @@ The application intentionally uses:
 - cross-process memory access to the Explorer desktop icon list;
 - in-process COM shell extension loaded by Explorer; it only starts
   `DxTools.exe` with command-line arguments and makes no network calls;
+- UIAccess helper process for elevated windows; local named pipe only, with
+  parent PID/path validation and window-only commands;
 - CoreAudio and display configuration APIs;
 - user-provided C# scripts executed with full user privileges.
 
