@@ -245,4 +245,6 @@
   <data name="TaskbarMenu" xml:space="preserve"><value>Действия с панелью задач</value></data>
   <data name="TaskbarMenuSettings" xml:space="preserve"><value>Настройки DxTools</value></data>
   <data name="ActivateWindow" xml:space="preserve"><value>Активировать</value></data>
+  <data name="TaskbarDxMenu" xml:space="preserve"><value>Меню DxTools</value></data>
+  <data name="NoWindowsOnMonitor" xml:space="preserve"><value>Нет окон на этом мониторе</value></data>
 </root>

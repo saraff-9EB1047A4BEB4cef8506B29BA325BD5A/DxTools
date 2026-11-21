@@ -245,4 +245,6 @@
   <data name="TaskbarMenu" xml:space="preserve"><value>Taskbar actions</value></data>
   <data name="TaskbarMenuSettings" xml:space="preserve"><value>DxTools settings</value></data>
   <data name="ActivateWindow" xml:space="preserve"><value>Activate</value></data>
+  <data name="TaskbarDxMenu" xml:space="preserve"><value>DxTools menu</value></data>
+  <data name="NoWindowsOnMonitor" xml:space="preserve"><value>No windows on this monitor</value></data>
 </root>

@@ -160,6 +160,41 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
 
     public void Start() => _timer.Start();
 
+    public IReadOnlyList<AppWindow> GetAllWindows() => _catalog.GetWindows();
+
+    public bool ActivateWindow(IntPtr handle)
+    {
+        if (handle == IntPtr.Zero || !Win32Window.IsWindow(handle))
+        {
+            return false;
+        }
+
+        var activated = _catalog.Activate(handle, toggleMinimize: false);
+        if (activated)
+        {
+            Refresh();
+            _windowsChanged?.Invoke();
+        }
+
+        return activated;
+    }
+
+    public bool ToggleTopmost(IntPtr handle)
+    {
+        if (handle == IntPtr.Zero)
+        {
+            return false;
+        }
+
+        var toggled = _windowManager.ToggleTopmost(handle);
+        if (toggled)
+        {
+            Refresh();
+        }
+
+        return toggled;
+    }
+
     public bool MoveWindow(IntPtr handle, int targetMonitorIndex)
     {
         if (handle == IntPtr.Zero

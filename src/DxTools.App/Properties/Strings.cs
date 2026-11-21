@@ -245,6 +245,8 @@ public static class Strings
     public static string TaskbarMenu => Get(nameof(TaskbarMenu));
     public static string TaskbarMenuSettings => Get(nameof(TaskbarMenuSettings));
     public static string ActivateWindow => Get(nameof(ActivateWindow));
+    public static string TaskbarDxMenu => Get(nameof(TaskbarDxMenu));
+    public static string NoWindowsOnMonitor => Get(nameof(NoWindowsOnMonitor));
 }
 
 

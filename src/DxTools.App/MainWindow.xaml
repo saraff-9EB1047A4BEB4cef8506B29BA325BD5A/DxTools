@@ -762,7 +762,8 @@
                   <Button Content="{x:Static props:Strings.RefreshMonitors}"
                           DockPanel.Dock="Right"
                           Command="{Binding Audio.RefreshCommand}"
-                          Style="{StaticResource SecondaryButtonStyle}" />
+                          Style="{StaticResource SecondaryButtonStyle}"
+                          HorizontalAlignment="Right" />
                 </DockPanel>
                 <TextBlock Text="{x:Static props:Strings.AudioHint}"
                            Style="{StaticResource HintStyle}"
@@ -816,7 +817,8 @@
                   <Button Content="{x:Static props:Strings.RefreshMonitors}"
                           DockPanel.Dock="Right"
                           Command="{Binding DesktopIcons.RefreshCommand}"
-                          Style="{StaticResource SecondaryButtonStyle}" />
+                          Style="{StaticResource SecondaryButtonStyle}"
+                          HorizontalAlignment="Right" />
                 </DockPanel>
                 <TextBlock Text="{x:Static props:Strings.DesktopIconsHint}"
                            Style="{StaticResource HintStyle}"

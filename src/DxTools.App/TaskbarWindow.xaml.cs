@@ -27,6 +27,7 @@ public partial class TaskbarWindow : System.Windows.Window
     private WindowRect? _bounds;
     private bool _useAppBar;
     private bool _isAutoHidden;
+    private ContextMenu? _dxMenu;
 
     public TaskbarWindow(TaskbarViewModel viewModel)
     {
@@ -118,6 +119,12 @@ public partial class TaskbarWindow : System.Windows.Window
     {
         _autoHideTimer.Stop();
         _viewModel.PropertyChanged -= OnViewModelPropertyChanged;
+
+        if (_dxMenu is { IsOpen: true })
+        {
+            _dxMenu.IsOpen = false;
+        }
+
         ClosePreview();
         _previewWindow.Dispose();
 
@@ -129,6 +136,95 @@ public partial class TaskbarWindow : System.Windows.Window
 
         _viewModel.Dispose();
         base.OnClosed(e);
+    }
+
+    private void OnDxButtonClick(object sender, RoutedEventArgs e)
+    {
+        e.Handled = true;
+        ClosePreview();
+
+        if (_dxMenu is { IsOpen: true })
+        {
+            _dxMenu.IsOpen = false;
+        }
+
+        var menu = BuildDxMenu();
+        _dxMenu = menu;
+        menu.Closed += (_, _) =>
+        {
+            if (ReferenceEquals(_dxMenu, menu))
+            {
+                _dxMenu = null;
+            }
+        };
+
+        menu.PlacementTarget = DxButton;
+        menu.Placement = PlacementMode.Top;
+        menu.IsOpen = true;
+    }
+
+    private ContextMenu BuildDxMenu()
+    {
+        var menu = new ContextMenu();
+        var monitors = _viewModel.Monitors;
+
+        if (monitors.Count == 0)
+        {
+            menu.Items.Add(new MenuItem
+            {
+                Header = Strings.NoMonitorsAvailable,
+                IsEnabled = false,
+            });
+        }
+        else
+        {
+            var windows = _viewModel.GetAllWindows();
+
+            for (var index = 0; index < monitors.Count; index++)
+            {
+                var monitorWindows = windows
+                    .Where(window => window.MonitorIndex == index)
+                    .OrderBy(window => window.Title, StringComparer.CurrentCultureIgnoreCase)
+                    .ToList();
+
+                var monitorItem = new MenuItem
+                {
+                    Header = BuildMonitorLabel(monitors[index], index == _viewModel.MonitorIndex),
+                };
+
+                if (monitorWindows.Count == 0)
+                {
+                    monitorItem.Items.Add(new MenuItem
+                    {
+                        Header = Strings.NoWindowsOnMonitor,
+                        IsEnabled = false,
+                    });
+                }
+                else
+                {
+                    foreach (var window in monitorWindows)
+                    {
+                        var windowItem = new MenuItem { Header = window.Title };
+                        windowItem.Items.Add(CreateMenuItem(
+                            Strings.ActivateWindow,
+                            () => _viewModel.ActivateWindow(window.Handle)));
+                        AddWindowMenuItems(windowItem.Items, window);
+                        windowItem.Items.Add(CreateMenuItem(
+                            Strings.TitleBarTopmost,
+                            () => _viewModel.ToggleTopmost(window.Handle)));
+                        monitorItem.Items.Add(windowItem);
+                    }
+                }
+
+                menu.Items.Add(monitorItem);
+            }
+        }
+
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem(
+            Strings.TaskbarMenuSettings,
+            () => _viewModel.OpenSettingsCommand.Execute(null)));
+        return menu;
     }
 
     private void OnWindowButtonMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
@@ -178,6 +274,12 @@ public partial class TaskbarWindow : System.Windows.Window
             return;
         }
 
+        if (_dxMenu is { IsOpen: true })
+        {
+            ShowTaskbar();
+            return;
+        }
+
         if (IsCursorOnTaskbar())
         {
             ShowTaskbar();
@@ -214,6 +316,11 @@ public partial class TaskbarWindow : System.Windows.Window
         if (_isAutoHidden || _handle == IntPtr.Zero)
         {
             return;
+        }
+
+        if (_dxMenu is { IsOpen: true })
+        {
+            _dxMenu.IsOpen = false;
         }
 
         ClosePreview();
@@ -318,25 +425,10 @@ public partial class TaskbarWindow : System.Windows.Window
         {
             var monitor = _viewModel.Monitors[index];
             var isCurrent = index == window.MonitorIndex;
-            var markers = new List<string>();
-
-            if (monitor.IsPrimary)
-            {
-                markers.Add(Strings.PrimaryMonitor);
-            }
-
-            if (isCurrent)
-            {
-                markers.Add(Strings.CurrentMonitor);
-            }
-
-            var label = markers.Count == 0
-                ? monitor.DisplayName
-                : $"{monitor.DisplayName} ({string.Join(", ", markers)})";
 
             var item = new MenuItem
             {
-                Header = label,
+                Header = BuildMonitorLabel(monitor, isCurrent),
                 IsCheckable = true,
                 IsChecked = isCurrent,
                 IsEnabled = !isCurrent,
@@ -356,6 +448,25 @@ public partial class TaskbarWindow : System.Windows.Window
         };
         returnItem.Click += (_, _) => _viewModel.MoveWindow(window.Handle, _viewModel.MonitorIndex);
         items.Add(returnItem);
+    }
+
+    private static string BuildMonitorLabel(MonitorInfo monitor, bool isCurrent)
+    {
+        var markers = new List<string>();
+
+        if (monitor.IsPrimary)
+        {
+            markers.Add(Strings.PrimaryMonitor);
+        }
+
+        if (isCurrent)
+        {
+            markers.Add(Strings.CurrentMonitor);
+        }
+
+        return markers.Count == 0
+            ? monitor.DisplayName
+            : $"{monitor.DisplayName} ({string.Join(", ", markers)})";
     }
 
     private static MenuItem CreateMenuItem(string header, Action action)

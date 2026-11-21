@@ -130,7 +130,7 @@ public sealed class WindowCatalog
             .ToList();
     }
 
-    public bool Activate(IntPtr hwnd)
+    public bool Activate(IntPtr hwnd, bool toggleMinimize = true)
     {
         if (!Win32Window.IsWindow(hwnd))
         {
@@ -140,7 +140,11 @@ public sealed class WindowCatalog
         var foreground = Win32Window.GetForegroundWindow();
         if (foreground == hwnd)
         {
-            _ = Win32Window.ShowWindow(hwnd, Win32Taskbar.SwMinimize);
+            if (toggleMinimize)
+            {
+                _ = Win32Window.ShowWindow(hwnd, Win32Taskbar.SwMinimize);
+            }
+
             return true;
         }
 

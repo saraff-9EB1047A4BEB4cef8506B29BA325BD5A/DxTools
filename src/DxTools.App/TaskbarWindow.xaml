@@ -27,11 +27,13 @@
         <ColumnDefinition Width="Auto" />
       </Grid.ColumnDefinitions>
 
-      <Button Content="Dx"
+      <Button x:Name="DxButton"
+              Content="Dx"
               Style="{StaticResource TaskbarStartButtonStyle}"
-              Command="{Binding OpenSettingsCommand}"
-              ToolTip="{x:Static props:Strings.TaskbarSettings}"
-              Focusable="False" />
+              ToolTip="{x:Static props:Strings.TaskbarDxMenu}"
+              AutomationProperties.Name="{x:Static props:Strings.TaskbarDxMenu}"
+              Focusable="False"
+              Click="OnDxButtonClick" />
 
       <ScrollViewer x:Name="WindowScroller"
                     Grid.Column="1"

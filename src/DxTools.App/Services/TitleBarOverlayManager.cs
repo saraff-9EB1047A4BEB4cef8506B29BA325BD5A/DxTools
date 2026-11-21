@@ -13,6 +13,11 @@ public sealed class TitleBarOverlayManager : IDisposable
     private readonly DispatcherTimer _timer;
     private bool _visible;
     private bool _disposed;
+    private IntPtr _lastTarget;
+    private int _lastX;
+    private int _lastY;
+    private int _lastWidth;
+    private int _lastHeight;
 
     public TitleBarOverlayManager(WindowManager windowManager, AppSettings settings)
     {
@@ -23,7 +28,7 @@ public sealed class TitleBarOverlayManager : IDisposable
 
         _timer = new DispatcherTimer
         {
-            Interval = TimeSpan.FromMilliseconds(250),
+            Interval = TimeSpan.FromMilliseconds(120),
         };
         _timer.Tick += (_, _) => Update();
         _timer.Start();
@@ -113,20 +118,50 @@ public sealed class TitleBarOverlayManager : IDisposable
         _window.TargetHandle = target;
         _window.SetDarkMode(IsDarkWindow(target));
 
+        var wasVisible = _visible;
         if (!_visible)
         {
             _window.Show();
             _visible = true;
         }
 
-        _ = Win32Window.SetWindowPos(
-            handle,
-            Win32Window.HwndTopmost,
-            x,
-            y,
-            physicalWidth,
-            physicalHeight,
-            Win32Window.SwpNoActivate | Win32Window.SwpShowWindow);
+        var geometryChanged = !wasVisible
+            || target != _lastTarget
+            || x != _lastX
+            || y != _lastY
+            || physicalWidth != _lastWidth
+            || physicalHeight != _lastHeight;
+
+        if (geometryChanged)
+        {
+            _ = Win32Window.SetWindowPos(
+                handle,
+                Win32Window.HwndTopmost,
+                x,
+                y,
+                physicalWidth,
+                physicalHeight,
+                Win32Window.SwpNoActivate | Win32Window.SwpShowWindow);
+
+            _lastTarget = target;
+            _lastX = x;
+            _lastY = y;
+            _lastWidth = physicalWidth;
+            _lastHeight = physicalHeight;
+        }
+        else
+        {
+            _ = Win32Window.SetWindowPos(
+                handle,
+                Win32Window.HwndTopmost,
+                0,
+                0,
+                0,
+                0,
+                Win32Window.SwpNoMove | Win32Window.SwpNoSize | Win32Window.SwpNoActivate);
+        }
+
+        _window.SyncPointerState(geometryChanged);
     }
 
     private void Hide()
@@ -138,6 +173,8 @@ public sealed class TitleBarOverlayManager : IDisposable
 
         _window.Hide();
         _window.TargetHandle = IntPtr.Zero;
+        _window.ResetPointerState();
+        _lastTarget = IntPtr.Zero;
         _visible = false;
     }
 

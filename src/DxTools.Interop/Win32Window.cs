@@ -32,6 +32,10 @@ public static partial class Win32Window
     public const uint SwpShowWindow = 0x0040;
     public const int SwRestore = 9;
     public const int SwMaximize = 3;
+    public const uint WmMouseMove = 0x0200;
+    public const uint WmMouseLeave = 0x02A3;
+    public const int WmMouseActivate = 0x0021;
+    public const int MaNoActivate = 3;
 
     public static readonly IntPtr HwndTopmost = new(-1);
     public static readonly IntPtr HwndNotTopmost = new(-2);
@@ -89,4 +93,8 @@ public static partial class Win32Window
 
     [LibraryImport("user32.dll")]
     public static partial uint GetDpiForWindow(IntPtr hwnd);
+
+    [LibraryImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static partial bool PostMessage(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam);
 }
