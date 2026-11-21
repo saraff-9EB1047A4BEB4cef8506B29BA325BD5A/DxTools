@@ -4,6 +4,21 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.3] - 2026-11-21
+
+### Added
+
+- shell extension `DxTools.ShellExt.dll`: контекстное меню рабочего стола,
+  папок и изображений;
+- CLI `--wallpaper <path>` и `--monitor <device>`;
+- IPC-передача команд запущенному экземпляру;
+- 8 новых unit-тестов (всего 35).
+
+### Changed
+
+- версия приложения 1.0.0-rc.3; shell extension включён в MSI x64/ARM64;
+- README, USER_MANUAL, spec, architecture и security review обновлены.
+
 ## [1.0.0-rc.2] - 2026-11-21
 
 ### Added

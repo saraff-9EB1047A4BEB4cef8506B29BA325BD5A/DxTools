@@ -10,6 +10,8 @@ public sealed record CommandLineOptions(
     string? ApplyDisplayProfile,
     string? ApplyWindowProfile,
     bool ApplyWallpaper,
+    string? WallpaperPath,
+    string? WallpaperMonitor,
     string? SettingsPath,
     IReadOnlyList<string> Errors)
 {
@@ -24,12 +26,16 @@ public sealed record CommandLineOptions(
         string? applyDisplayProfile = null;
         string? applyWindowProfile = null;
         var applyWallpaper = false;
+        string? wallpaperPath = null;
+        string? wallpaperMonitor = null;
         string? settingsPath = null;
         var errors = new List<string>();
 
         if (args is null)
         {
-            return new CommandLineOptions(false, false, false, false, false, false, null, null, false, null, errors);
+            return new CommandLineOptions(
+                false, false, false, false, false, false,
+                null, null, false, null, null, null, errors);
         }
 
         for (var i = 0; i < args.Count; i++)
@@ -68,6 +74,24 @@ public sealed record CommandLineOptions(
                 case "--apply-wallpaper":
                     applyWallpaper = true;
                     break;
+                case "--wallpaper":
+                    if (i + 1 >= args.Count)
+                    {
+                        errors.Add("Missing value for --wallpaper.");
+                        break;
+                    }
+
+                    wallpaperPath = args[++i];
+                    break;
+                case "--monitor":
+                    if (i + 1 >= args.Count)
+                    {
+                        errors.Add("Missing value for --monitor.");
+                        break;
+                    }
+
+                    wallpaperMonitor = args[++i];
+                    break;
                 case "--apply-display":
                     if (i + 1 >= args.Count)
                     {
@@ -102,6 +126,28 @@ public sealed record CommandLineOptions(
                         if (string.IsNullOrWhiteSpace(settingsPath))
                         {
                             errors.Add("Missing value for --settings.");
+                        }
+
+                        break;
+                    }
+
+                    if (arg.StartsWith("--wallpaper=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        wallpaperPath = arg["--wallpaper=".Length..];
+                        if (string.IsNullOrWhiteSpace(wallpaperPath))
+                        {
+                            errors.Add("Missing value for --wallpaper.");
+                        }
+
+                        break;
+                    }
+
+                    if (arg.StartsWith("--monitor=", StringComparison.OrdinalIgnoreCase))
+                    {
+                        wallpaperMonitor = arg["--monitor=".Length..];
+                        if (string.IsNullOrWhiteSpace(wallpaperMonitor))
+                        {
+                            errors.Add("Missing value for --monitor.");
                         }
 
                         break;
@@ -144,6 +190,8 @@ public sealed record CommandLineOptions(
             applyDisplayProfile,
             applyWindowProfile,
             applyWallpaper,
+            wallpaperPath,
+            wallpaperMonitor,
             settingsPath,
             errors);
     }

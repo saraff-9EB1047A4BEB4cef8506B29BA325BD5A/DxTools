@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
-- Статус: 1.0.0-rc.2 готов, ожидает подтверждения GA
+- Статус: 1.0.0-rc.3 готов, ожидает подтверждения GA
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (1.0.0-rc.2)
+## Возможности текущей версии (1.0.0-rc.3)
 
 - установщик MSI (per-machine, x64 и ARM64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -40,6 +40,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - переключение аудиоустройства по умолчанию;
 - multi-monitor screensaver `DxTools.scr` с изображениями из папки слайдшоу;
 - hotkeys навигации и переноса окон между виртуальными рабочими столами;
+- контекстное меню Explorer: настройки, применение обоев и установка
+  выбранного изображения обоями монитора под курсором;
 - ARM64 cross-build, `DxTools-1.0.0-arm64.msi` и проверка административной
   установкой;
 - SECURITY.md, `docs/signing.md` и скрипт подписи `build/sign.ps1`;
@@ -57,8 +59,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - безопасный режим (`--safe-mode`);
 - нативная библиотека `DxTools.Native.dll` с C ABI v4, DisplayConfig и handshake.
 
-В RC не входят: shell extension, UIAccess/elevated helper, подпись
-сертификатом, независимый security review и runtime-тест ARM64. Подробный план:
+В RC не входят: UIAccess/elevated helper, подпись сертификатом, независимый
+security review и runtime-тест ARM64. Подробный план:
 [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md),
 security review: [docs/security-review.md](docs/security-review.md),
 release checklist: [docs/release-checklist.md](docs/release-checklist.md).
@@ -119,6 +121,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-3b.md](docs/reports/phase-3b.md) — отчёт Phase 3B;
 - [docs/reports/phase-3c.md](docs/reports/phase-3c.md) — отчёт Phase 3C;
 - [docs/reports/phase-3d.md](docs/reports/phase-3d.md) — отчёт Phase 3D;
+- [docs/reports/rc-1.0.0-rc.3.md](docs/reports/rc-1.0.0-rc.3.md) — отчёт RC 1.0.0-rc.3;
 - [docs/reports/rc-1.0.0-rc.2.md](docs/reports/rc-1.0.0-rc.2.md) — отчёт RC 1.0.0-rc.2;
 - [docs/reports/rc-1.0.0.md](docs/reports/rc-1.0.0.md) — отчёт RC 1.0.0-rc.1;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;

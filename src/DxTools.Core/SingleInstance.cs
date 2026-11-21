@@ -7,6 +7,8 @@ public sealed class SingleInstance : IDisposable
 {
     private const string ShowMessage = "show";
     private const string ExitMessage = "exit";
+    private const string CommandPrefix = "cmd:";
+    private const int MaxCommandMessageLength = 64 * 1024;
 
     private readonly Mutex _mutex;
     private readonly bool _ownsMutex;
@@ -30,6 +32,47 @@ public sealed class SingleInstance : IDisposable
     public event Action? ShowRequested;
 
     public event Action? ExitRequested;
+
+    public event Action<IReadOnlyList<string>>? CommandRequested;
+
+    public static string CreateCommandMessage(IEnumerable<string> arguments)
+    {
+        ArgumentNullException.ThrowIfNull(arguments);
+
+        var payload = string.Join('\0', arguments);
+        return CommandPrefix + Convert.ToBase64String(Encoding.UTF8.GetBytes(payload));
+    }
+
+    public static bool TryParseCommandMessage(
+        string? message,
+        out IReadOnlyList<string> arguments)
+    {
+        arguments = Array.Empty<string>();
+        if (string.IsNullOrEmpty(message)
+            || message.Length > MaxCommandMessageLength
+            || !message.StartsWith(CommandPrefix, StringComparison.Ordinal))
+        {
+            return false;
+        }
+
+        try
+        {
+            var payload = Encoding.UTF8.GetString(
+                Convert.FromBase64String(message[CommandPrefix.Length..]));
+            var parsed = payload.Split('\0', StringSplitOptions.RemoveEmptyEntries);
+            if (parsed.Length == 0)
+            {
+                return false;
+            }
+
+            arguments = parsed;
+            return true;
+        }
+        catch (FormatException)
+        {
+            return false;
+        }
+    }
 
     public void StartServer()
     {
@@ -87,6 +130,10 @@ public sealed class SingleInstance : IDisposable
                 {
                     RaiseExitRequested();
                 }
+                else if (TryParseCommandMessage(message, out var arguments))
+                {
+                    RaiseCommandRequested(arguments);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -120,6 +167,18 @@ public sealed class SingleInstance : IDisposable
         catch (Exception ex)
         {
             DxLog.Exception("Single-instance ShowRequested handler failed.", ex);
+        }
+    }
+
+    private void RaiseCommandRequested(IReadOnlyList<string> arguments)
+    {
+        try
+        {
+            CommandRequested?.Invoke(arguments);
+        }
+        catch (Exception ex)
+        {
+            DxLog.Exception("Single-instance CommandRequested handler failed.", ex);
         }
     }
 

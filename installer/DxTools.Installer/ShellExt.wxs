@@ -1,0 +1,32 @@
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Fragment>
+    <ComponentGroup Id="ShellExtComponents">
+      <Component Id="ShellExtRegistration"
+                 Directory="INSTALLFOLDER"
+                 Guid="{3D1CC541-FC90-4A67-8270-154B94236EF5}"
+                 Bitness="always64">
+        <File Id="ShellExtDll"
+              Source="..\..\artifacts\shellext\DxTools.ShellExt.dll"
+              KeyPath="yes" />
+
+        <RegistryValue Root="HKLM"
+                       Key="Software\Classes\CLSID\{C7B775ED-1A48-4F52-9B91-6FE8B9B22097}\InprocServer32"
+                       Type="string"
+                       Value="[INSTALLFOLDER]DxTools.ShellExt.dll" />
+        <RegistryValue Root="HKLM"
+                       Key="Software\Classes\CLSID\{C7B775ED-1A48-4F52-9B91-6FE8B9B22097}\InprocServer32"
+                       Name="ThreadingModel"
+                       Type="string"
+                       Value="Apartment" />
+        <RegistryValue Root="HKLM"
+                       Key="Software\Classes\Directory\Background\shellex\ContextMenuHandlers\DxTools"
+                       Type="string"
+                       Value="{C7B775ED-1A48-4F52-9B91-6FE8B9B22097}" />
+        <RegistryValue Root="HKLM"
+                       Key="Software\Classes\SystemFileAssociations\image\shellex\ContextMenuHandlers\DxTools"
+                       Type="string"
+                       Value="{C7B775ED-1A48-4F52-9B91-6FE8B9B22097}" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

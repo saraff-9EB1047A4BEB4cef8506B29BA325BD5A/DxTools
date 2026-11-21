@@ -19,8 +19,9 @@ powershell -ExecutionPolicy Bypass -File build/build.ps1 `
 - output `artifacts\DxTools-1.0.0-arm64.msi`.
 
 The ARM64 native DLL, apphost, `coreclr.dll` and `.scr` are PE machine
-`0xAA64`. The MSI passes administrative install validation (exit 0, 286 files,
-`.scr` present), but the RC has not been executed on ARM64 hardware.
+`0xAA64`. The MSI passes administrative install validation (exit 0, 287 files,
+`.scr` and `DxTools.ShellExt.dll` present), but the RC has not been executed on
+ARM64 hardware.
 
 For CI, use an ARM64 runner for runtime tests; cross-compilation only proves
 the build and package layout.

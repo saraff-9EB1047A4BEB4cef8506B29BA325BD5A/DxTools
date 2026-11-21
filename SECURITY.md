@@ -26,6 +26,8 @@ The application intentionally uses:
 - window enumeration and WinEvent hooks;
 - UI Automation for the notification area;
 - cross-process memory access to the Explorer desktop icon list;
+- in-process COM shell extension loaded by Explorer; it only starts
+  `DxTools.exe` with command-line arguments and makes no network calls;
 - CoreAudio and display configuration APIs;
 - user-provided C# scripts executed with full user privileges.
 

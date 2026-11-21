@@ -10,7 +10,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ├─ Domain        DxTools.Core
 ├─ Services      DxTools.Engine
 ├─ Interop       DxTools.Interop
-└─ Native        DxTools.Native.dll (C++/Win32)
+├─ Native        DxTools.Native.dll (C++/Win32)
+└─ Shell         DxTools.ShellExt.dll (C++ COM, in-process Explorer)
 ```
 
 Один экземпляр приложения на сессию пользователя. Повторный запуск
@@ -78,7 +79,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   сочетания, синтезированные `SendInput`.
 - `DxTools.Screensaver`: отдельный WPF `.scr`, изображения из папки
   слайдшоу, одно окно на монитор.
-- В 1.0: shell extension, UIAccess, ARM64, подпись, security review.
+- CLI-команды и IPC-сообщения `cmd:` выполняются на UI-потоке; команды
+  от shell extension применяются к уже запущенному экземпляру.
+- В 1.0: UIAccess, подпись, security review.
 
 ### DxTools.Interop
 
@@ -94,6 +97,17 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
 - В следующих фазах: splits, виртуальные десктопы.
+
+### DxTools.ShellExt
+
+- C++20 COM DLL, загружается Explorer в in-process apartment.
+- `IShellExtInit` + `IContextMenu`: меню фона рабочего стола/папок и
+  изображений; команды запускают `DxTools.exe` с `--show`,
+  `--apply-wallpaper` или `--wallpaper <path> --monitor <device>`.
+- Регистрация: `HKLM\Software\Classes\...\ContextMenuHandlers\DxTools`,
+  `InprocServer32` с `ThreadingModel=Apartment`; компонент MSI 64-bit.
+- Ручная регистрация `regsvr32` пишет в `HKCU`; MSI регистрирует per-machine.
+- Не содержит бизнес-логики и сетевых операций.
 
 ## Потоки и отказоустойчивость
 

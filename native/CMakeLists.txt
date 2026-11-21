@@ -18,6 +18,28 @@ set_target_properties(DxTools.Native PROPERTIES
     MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
 )
 
+add_library(DxTools.ShellExt SHARED
+    shellext/DxToolsShellExt.cpp
+)
+
+target_compile_features(DxTools.ShellExt PRIVATE cxx_std_20)
+target_compile_definitions(DxTools.ShellExt PRIVATE UNICODE _UNICODE WIN32_LEAN_AND_MEAN NOMINMAX _WIN32_WINNT=0x0A00 WINVER=0x0A00)
+
+target_link_libraries(DxTools.ShellExt PRIVATE
+    advapi32
+    ole32
+    shell32
+    shlwapi
+    user32
+    uuid
+)
+
+set_target_properties(DxTools.ShellExt PROPERTIES
+    PREFIX ""
+    OUTPUT_NAME "DxTools.ShellExt"
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+)
+
 if(MSVC)
     target_compile_options(DxTools.Native PRIVATE
         /W4
@@ -27,6 +49,19 @@ if(MSVC)
         /sdl
     )
     target_link_options(DxTools.Native PRIVATE
+        /DYNAMICBASE
+        /HIGHENTROPYVA
+        /NXCOMPAT
+        /guard:cf
+    )
+    target_compile_options(DxTools.ShellExt PRIVATE
+        /W4
+        /permissive-
+        /EHsc
+        /guard:cf
+        /sdl
+    )
+    target_link_options(DxTools.ShellExt PRIVATE
         /DYNAMICBASE
         /HIGHENTROPYVA
         /NXCOMPAT
@@ -43,10 +78,20 @@ else()
     target_link_options(DxTools.Native PRIVATE
         -Wl,--no-undefined
     )
+    target_compile_options(DxTools.ShellExt PRIVATE
+        -Wall
+        -Wextra
+        -Werror
+        -fno-exceptions
+        -fno-rtti
+    )
+    target_link_options(DxTools.ShellExt PRIVATE
+        -Wl,--no-undefined
+    )
 endif()
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out")
-set_target_properties(DxTools.Native PROPERTIES
+set_target_properties(DxTools.Native DxTools.ShellExt PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out"
     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out"
     ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/out"

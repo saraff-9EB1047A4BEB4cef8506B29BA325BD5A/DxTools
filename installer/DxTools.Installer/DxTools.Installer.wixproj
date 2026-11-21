@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <Compile Include="Package.wxs" />
+    <Compile Include="ShellExt.wxs" />
     <Compile Include="GeneratedComponents.wxs" />
   </ItemGroup>
 

@@ -66,6 +66,46 @@ public sealed class CommandLineOptionsTests
     }
 
     [Fact]
+    public void Parse_WallpaperFileAndMonitor_AreRecognized()
+    {
+        var options = CommandLineOptions.Parse(
+            ["--wallpaper", @"C:\Images\wall paper.png", "--monitor", @"\\.\DISPLAY2"]);
+
+        Assert.Equal(@"C:\Images\wall paper.png", options.WallpaperPath);
+        Assert.Equal(@"\\.\DISPLAY2", options.WallpaperMonitor);
+        Assert.Empty(options.Errors);
+    }
+
+    [Fact]
+    public void Parse_WallpaperEqualsForm_IsRecognized()
+    {
+        var options = CommandLineOptions.Parse(
+            [@"--wallpaper=C:\Images\wall.png", @"--monitor=\\.\DISPLAY1"]);
+
+        Assert.Equal(@"C:\Images\wall.png", options.WallpaperPath);
+        Assert.Equal(@"\\.\DISPLAY1", options.WallpaperMonitor);
+        Assert.Empty(options.Errors);
+    }
+
+    [Fact]
+    public void Parse_MissingWallpaperValue_ProducesError()
+    {
+        var options = CommandLineOptions.Parse(["--wallpaper"]);
+
+        Assert.Null(options.WallpaperPath);
+        Assert.Single(options.Errors);
+    }
+
+    [Fact]
+    public void Parse_MissingMonitorValue_ProducesError()
+    {
+        var options = CommandLineOptions.Parse(["--monitor"]);
+
+        Assert.Null(options.WallpaperMonitor);
+        Assert.Single(options.Errors);
+    }
+
+    [Fact]
     public void Parse_MissingApplyDisplayValue_ProducesError()
     {
         var options = CommandLineOptions.Parse(["--apply-display"]);

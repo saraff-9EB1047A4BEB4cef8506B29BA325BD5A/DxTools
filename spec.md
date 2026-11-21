@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: 1.0.0-rc.2 готов, ожидает подтверждения GA
+Статус: 1.0.0-rc.3 готов, ожидает подтверждения GA
 Версия документа: 1.0 (2026-11-21)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — cross-build
@@ -67,9 +67,10 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 ├─ DxTools.Core       домен, настройки, профили, команды
 ├─ DxTools.Engine     сервисы: display, hotkeys, windows, wallpaper, taskbar
 ├─ DxTools.Interop    P/Invoke, загрузка native DLL
-└─ DxTools.Native.dll C++: DisplayConfig, AppBar, hooks, tray, VD
+├─ DxTools.Native.dll C++: DisplayConfig, AppBar, hooks, tray, VD
+└─ DxTools.ShellExt.dll C++ COM: контекстное меню Explorer
 
-Опционально: DxTools.Helper.exe (UIAccess), ShellExt.dll, DxTools.scr
+Опционально: DxTools.Helper.exe (UIAccess), DxTools.scr
 ```
 
 ### 3.1 Ключевые решения
@@ -434,9 +435,21 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 
 Перенесено в 1.0:
 
-- shell context menu;
 - UIAccess/elevated helper, ARM64, HDR, accessibility;
 - подпись кода сертификатом, security review, финальный RC → 1.0.
+
+### Shell extension 1.0.0-rc.3 (готово)
+
+Статус: реализовано. Отчёт: `docs/reports/rc-1.0.0-rc.3.md`.
+
+Реализовано:
+
+- `DxTools.ShellExt.dll` — in-process COM (`IShellExtInit`, `IContextMenu`);
+- меню рабочего стола и фона папок: настройки, применение обоев;
+- меню изображений: установка выбранного файла обоями монитора под курсором;
+- CLI `--wallpaper`/`--monitor` и IPC-передача команд запущенному экземпляру;
+- регистрация в MSI для x64 и ARM64, per-machine;
+- 35 unit-тестов.
 
 ## 5. Матрица функций
 
@@ -464,7 +477,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Screensaver | C# WPF .scr | 3C (готово) |
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
-| Shell extension | C++ | 1.0 |
+| Shell extension | C++ COM (IContextMenu/IShellExtInit) | rc.3 (готово) |
 | UIAccess | C++/manifest | 1.0 |
 | ARM64 | publish + native (cross-build) | 1.0.x (cross-build) |
 

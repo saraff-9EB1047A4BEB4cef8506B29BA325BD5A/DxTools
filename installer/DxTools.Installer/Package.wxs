@@ -56,6 +56,7 @@
 
     <Feature Id="MainFeature" Title="DxTools" Level="1">
       <ComponentGroupRef Id="AppFiles" />
+      <ComponentGroupRef Id="ShellExtComponents" />
       <ComponentRef Id="StartMenuShortcut" />
       <ComponentRef Id="LicenseFiles" />
     </Feature>

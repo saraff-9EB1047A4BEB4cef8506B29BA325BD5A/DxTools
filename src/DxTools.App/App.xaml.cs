@@ -92,7 +92,7 @@ public partial class App : System.Windows.Application
         _singleInstance = new SingleInstance();
         if (!_singleInstance.IsFirstInstance)
         {
-            _singleInstance.TrySignalExisting(message: options.RequestExit ? "exit" : "show");
+            _singleInstance.TrySignalExisting(message: BuildSingleInstanceMessage(options, args));
             _singleInstance.Dispose();
             _singleInstance = null;
             Shutdown(0);
@@ -110,6 +110,7 @@ public partial class App : System.Windows.Application
 
         _singleInstance.ShowRequested += OnShowRequested;
         _singleInstance.ExitRequested += OnExitRequested;
+        _singleInstance.CommandRequested += OnCommandRequested;
         _singleInstance.StartServer();
 
         _settingsStore = settingsStore;
@@ -178,9 +179,10 @@ public partial class App : System.Windows.Application
         }
 
         var showWindow = options.ShowSettings
-            || !_settings.FirstRunCompleted
-            || !options.Autostart
-            || !_settings.StartMinimized;
+            || (!HasCommandLineAction(options)
+                && (!_settings.FirstRunCompleted
+                    || !options.Autostart
+                    || !_settings.StartMinimized));
 
         if (showWindow)
         {
@@ -235,13 +237,132 @@ public partial class App : System.Windows.Application
             }
         }
 
-        if (options.ApplyWallpaper && _settings is not null && _engine is not null)
+        if (!string.IsNullOrWhiteSpace(options.WallpaperPath))
+        {
+            ApplyWallpaperFile(options.WallpaperPath, options.WallpaperMonitor);
+        }
+        else if (options.ApplyWallpaper && _settings is not null && _engine is not null)
         {
             var result = _engine.Wallpaper.Apply(_settings.Wallpaper);
             DxLog.Info(result.Success
                 ? "Wallpaper applied from the command line."
                 : $"Wallpaper command failed: {result.Error}");
         }
+    }
+
+    private void ApplyWallpaperFile(string path, string? monitorSelector)
+    {
+        if (_settings is null || _engine is null)
+        {
+            return;
+        }
+
+        string fullPath;
+        try
+        {
+            fullPath = Path.GetFullPath(path);
+        }
+        catch (Exception ex) when (ex is ArgumentException or NotSupportedException or PathTooLongException)
+        {
+            DxLog.Warn($"Wallpaper path '{path}' is invalid: {ex.Message}");
+            return;
+        }
+
+        if (!File.Exists(fullPath))
+        {
+            DxLog.Warn($"Wallpaper file '{fullPath}' does not exist.");
+            return;
+        }
+
+        var monitors = _engine.Display.GetMonitors();
+        if (monitors.Count == 0)
+        {
+            DxLog.Warn("Wallpaper command failed: no monitors were detected.");
+            return;
+        }
+
+        MonitorInfo? monitor = null;
+        if (!string.IsNullOrWhiteSpace(monitorSelector))
+        {
+            monitor = monitors.FirstOrDefault(item =>
+                string.Equals(item.DeviceName, monitorSelector, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(item.MonitorId, monitorSelector, StringComparison.OrdinalIgnoreCase)
+                || string.Equals(item.FriendlyName, monitorSelector, StringComparison.OrdinalIgnoreCase));
+
+            if (monitor is null)
+            {
+                DxLog.Warn($"Monitor '{monitorSelector}' was not found; using the primary monitor.");
+            }
+        }
+
+        monitor ??= monitors.FirstOrDefault(item => item.IsPrimary) ?? monitors[0];
+        var key = string.IsNullOrWhiteSpace(monitor.MonitorId)
+            ? monitor.DeviceName
+            : monitor.MonitorId;
+        if (string.IsNullOrWhiteSpace(key))
+        {
+            DxLog.Warn("Wallpaper command failed: monitor has no identifier.");
+            return;
+        }
+
+        var hasConfiguredImage = _settings.Wallpaper.MonitorImages.Values
+            .Any(value => !string.IsNullOrWhiteSpace(value));
+        if (hasConfiguredImage)
+        {
+            _settings.Wallpaper.MonitorImages[key] = fullPath;
+        }
+        else
+        {
+            foreach (var item in monitors)
+            {
+                var itemKey = string.IsNullOrWhiteSpace(item.MonitorId)
+                    ? item.DeviceName
+                    : item.MonitorId;
+                if (!string.IsNullOrWhiteSpace(itemKey))
+                {
+                    _settings.Wallpaper.MonitorImages[itemKey] = fullPath;
+                }
+            }
+        }
+
+        _settings.Wallpaper.Normalize();
+        SaveSettings();
+        _viewModel?.Wallpaper.RefreshMonitors();
+
+        var result = _engine.Wallpaper.Apply(_settings.Wallpaper);
+        var targetText = hasConfiguredImage ? monitor.DisplayName : "all monitors";
+        DxLog.Info(result.Success
+            ? $"Wallpaper '{fullPath}' applied to {targetText} from the command line."
+            : $"Wallpaper file command failed: {result.Error}");
+    }
+
+    private static bool HasCommandLineAction(CommandLineOptions options) =>
+        !string.IsNullOrWhiteSpace(options.ApplyDisplayProfile)
+        || !string.IsNullOrWhiteSpace(options.ApplyWindowProfile)
+        || options.ApplyWallpaper
+        || !string.IsNullOrWhiteSpace(options.WallpaperPath);
+
+    private static string BuildSingleInstanceMessage(
+        CommandLineOptions options,
+        IReadOnlyList<string> args)
+    {
+        if (options.RequestExit)
+        {
+            return "exit";
+        }
+
+        return HasCommandLineAction(options)
+            ? SingleInstance.CreateCommandMessage(args)
+            : "show";
+    }
+
+    private void OnCommandRequested(IReadOnlyList<string> args)
+    {
+        Dispatcher.BeginInvoke(new Action(() =>
+        {
+            var options = CommandLineOptions.Parse(args);
+            ApplyCommandLineActions(options);
+        }));
     }
 
     private static void ApplyLanguage(AppLanguage language)

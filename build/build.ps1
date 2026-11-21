@@ -43,6 +43,9 @@ if (-not $SkipNative) {
 elseif (-not (Test-Path -LiteralPath (Join-Path $nativeDir "DxTools.Native.dll"))) {
     throw "Native DLL is missing in '$nativeDir' and -SkipNative was specified."
 }
+elseif (-not (Test-Path -LiteralPath (Join-Path $nativeDir "DxTools.ShellExt.dll"))) {
+    throw "Shell extension DLL is missing in '$nativeDir' and -SkipNative was specified."
+}
 
 if (-not $SkipTests) {
     Write-Output "== Tests =="
@@ -69,6 +72,16 @@ if ($LASTEXITCODE -ne 0) {
 
 Copy-Item -LiteralPath (Join-Path $nativeDir "DxTools.Native.dll") `
     -Destination (Join-Path $publishDir "DxTools.Native.dll") `
+    -Force
+
+$shellExtDir = Join-Path $artifacts "shellext"
+if (Test-Path -LiteralPath $shellExtDir) {
+    Remove-Item -LiteralPath $shellExtDir -Recurse -Force
+}
+
+New-Item -ItemType Directory -Force -Path $shellExtDir | Out-Null
+Copy-Item -LiteralPath (Join-Path $nativeDir "DxTools.ShellExt.dll") `
+    -Destination (Join-Path $shellExtDir "DxTools.ShellExt.dll") `
     -Force
 
 Write-Output "== Screensaver =="

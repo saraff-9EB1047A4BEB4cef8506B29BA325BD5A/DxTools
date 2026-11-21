@@ -64,6 +64,15 @@ if ($cmake -and -not [string]::IsNullOrWhiteSpace($msvcPath)) {
     if (-not $built) { throw "Native DLL was not produced by CMake." }
 
     Copy-Item -LiteralPath $built -Destination (Join-Path $OutputDirectory "DxTools.Native.dll") -Force
+
+    $shellCandidates = @(
+        (Join-Path $buildDir "out\$Configuration\DxTools.ShellExt.dll"),
+        (Join-Path $buildDir "out\DxTools.ShellExt.dll")
+    )
+    $shellBuilt = $shellCandidates | Where-Object { Test-Path -LiteralPath $_ } | Select-Object -First 1
+    if (-not $shellBuilt) { throw "Shell extension DLL was not produced by CMake." }
+
+    Copy-Item -LiteralPath $shellBuilt -Destination (Join-Path $OutputDirectory "DxTools.ShellExt.dll") -Force
 }
 else {
     $zig = Resolve-Zig -ExplicitPath $ZigPath
@@ -77,10 +86,20 @@ else {
     $output = Join-Path $OutputDirectory "DxTools.Native.dll"
     $optimization = if ($Configuration -eq "Debug") { "-O0" } else { "-O2" }
 
-    & $zig "c++" "-target" $(if ($Architecture -eq "arm64") { "aarch64-windows-gnu" } else { "x86_64-windows-gnu" }) "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-shared" `
+    $target = if ($Architecture -eq "arm64") { "aarch64-windows-gnu" } else { "x86_64-windows-gnu" }
+    & $zig "c++" "-target" $target "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-shared" `
         "-DUNICODE" "-D_UNICODE" "-DWIN32_LEAN_AND_MEAN" "-DNOMINMAX" "-I$include" $source "-o" $output "-lole32" "-loleaut32" "-lpropsys" "-luuid"
     if ($LASTEXITCODE -ne 0) { throw "Zig build failed with exit code $LASTEXITCODE." }
+
+    $shellSource = Join-Path $repoRoot "native\shellext\DxToolsShellExt.cpp"
+    $shellOutput = Join-Path $OutputDirectory "DxTools.ShellExt.dll"
+    & $zig "c++" "-target" $target "-std=c++20" $optimization "-Wall" "-Wextra" "-Werror" "-Wno-dll-attribute-on-redeclaration" "-shared" `
+        "-DUNICODE" "-D_UNICODE" "-DWIN32_LEAN_AND_MEAN" "-DNOMINMAX" $shellSource "-o" $shellOutput `
+        "-ladvapi32" "-lole32" "-lshell32" "-lshlwapi" "-luser32" "-luuid"
+    if ($LASTEXITCODE -ne 0) { throw "Shell extension build failed with exit code $LASTEXITCODE." }
 }
 
 $result = Get-Item -LiteralPath (Join-Path $OutputDirectory "DxTools.Native.dll")
 Write-Output "Native DLL: $($result.FullName) ($($result.Length) bytes)"
+$shellResult = Get-Item -LiteralPath (Join-Path $OutputDirectory "DxTools.ShellExt.dll")
+Write-Output "Shell extension: $($shellResult.FullName) ($($shellResult.Length) bytes)"

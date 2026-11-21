@@ -9,6 +9,7 @@ $env:DXTOOLS_SIGN_THUMBPRINT = "<certificate thumbprint>"
 powershell -ExecutionPolicy Bypass -File build/sign.ps1 `
   -Path artifacts\publish\DxTools.exe, `
         artifacts\publish\DxTools.Native.dll, `
+        artifacts\shellext\DxTools.ShellExt.dll, `
         artifacts\DxTools-1.0.0-x64.msi
 ```
 
