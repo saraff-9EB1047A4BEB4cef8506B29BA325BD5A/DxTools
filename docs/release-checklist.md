@@ -8,7 +8,7 @@
 - [x] README.md и USER_MANUAL.md
 - [x] spec.md и отчёты фаз
 - [x] SECURITY.md и security review
-- [ ] CI для rc.2 (workflow готов, запуск после коммита)
+- [x] CI для rc.2 (run 44917494274, success)
 - [ ] Подпись сертификатом
 - [ ] Установка/удаление с UAC на чистой VM
 - [x] ARM64 cross-build и MSI

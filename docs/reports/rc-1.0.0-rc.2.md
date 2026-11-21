@@ -3,9 +3,8 @@
 Дата: 2026-11-21
 Статус: **release candidate готов, ожидает подтверждения GA**
 Репозиторий: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools
-База: коммит `103698ab` (`docs: link RC draft release [skip ci]`)
-Рабочая копия: изменения rc.2 не закоммичены
-CI: для rc.2 не запускался
+Коммит: `b201f3f` (`Release 1.0.0-rc.2: ARM64 cross-build and release metadata`)
+CI: GitHub Actions run `44917494274` — success
 
 ## 1. Артефакты
 
@@ -39,10 +38,11 @@ x64 `artifacts\publish`; оба MSI сохранены в `artifacts`.
 | ARM64 PE | `0xAA64` (exe, native DLL, coreclr, scr) |
 | x64 MSI administrative install | exit 0, 287 файлов, `.scr` присутствует |
 | ARM64 MSI administrative install | exit 0, 286 файлов, `.scr` присутствует |
-| CI | не запускался для rc.2 |
+| CI | success: run `44917494274` |
 
-Локальная native-сборка выполнена portable Zig 0.17.1; эталонная CI-сборка
-MSVC для rc.2 не запускалась.
+CI-артефакты: `DxTools-msi` 119 861 833 байт, `DxTools-publish` 150 642 652
+байт. Локальная native-сборка выполнена portable Zig 0.17.1, поэтому локальные
+MSI отличаются по размеру и SHA-256 от CI-сборки MSVC.
 
 ## 4. Известные ограничения
 
@@ -62,9 +62,9 @@ MSVC для rc.2 не запускалась.
 
 ## 5. Release checklist
 
-См. `docs/release-checklist.md`. Не закрыты: CI для rc.2, подпись,
-UAC-инсталляция на чистой VM, runtime-тест ARM64, shell extension, UIAccess,
-независимый security review и публикация GitHub Release.
+См. `docs/release-checklist.md`. Не закрыты: подпись, UAC-инсталляция на
+чистой VM, runtime-тест ARM64, shell extension, UIAccess, независимый security
+review и публикация GitHub Release.
 
 ## 6. Запрос подтверждения
 
@@ -74,4 +74,4 @@ RC 1.0.0-rc.2 готов. Требуется решение:
   ARM64 и независимый security review.
 
 Рекомендуется сначала установить x64 MSI с UAC на чистой VM, проверить основные
-сценарии, подписать бинарники и прогнать CI для rc.2.
+сценарии и подписать бинарники.
