@@ -21,6 +21,16 @@
 #include <utility>
 #include <vector>
 
+#ifdef _MSC_VER
+#define DXTOOLS_SHELL_EXPORT extern "C" HRESULT __stdcall
+#pragma comment(linker, "/export:DllGetClassObject,PRIVATE")
+#pragma comment(linker, "/export:DllCanUnloadNow,PRIVATE")
+#pragma comment(linker, "/export:DllRegisterServer,PRIVATE")
+#pragma comment(linker, "/export:DllUnregisterServer,PRIVATE")
+#else
+#define DXTOOLS_SHELL_EXPORT extern "C" __declspec(dllexport) HRESULT __stdcall
+#endif
+
 namespace
 {
     // {C7B775ED-1A48-4F52-9B91-6FE8B9B22097}
@@ -538,11 +548,11 @@ namespace
             const wchar_t* text = nullptr;
             if (type == GCS_VERBW || type == GCS_VERBA)
             {
-                text = GetCommandVerb(static_cast<UINT>(idCommand));
+                text = GetCommandVerb(idCommand);
             }
             else if (type == GCS_HELPTEXTW || type == GCS_HELPTEXTA)
             {
-                text = GetCommandText(static_cast<UINT>(idCommand));
+                text = GetCommandText(idCommand);
             }
 
             if (text == nullptr)
@@ -577,7 +587,7 @@ namespace
             return m_files.size() == 1 && IsImageFile(m_files[0]);
         }
 
-        bool IsCommandValid(UINT id) const
+        bool IsCommandValid(UINT_PTR id) const
         {
             if (m_files.empty())
             {
@@ -592,7 +602,7 @@ namespace
             return id == 0;
         }
 
-        const wchar_t* GetCommandText(UINT id) const
+        const wchar_t* GetCommandText(UINT_PTR id) const
         {
             if (m_files.empty())
             {
@@ -611,7 +621,7 @@ namespace
             return id == 0 ? OpenSettingsText() : nullptr;
         }
 
-        const wchar_t* GetCommandVerb(UINT id) const
+        const wchar_t* GetCommandVerb(UINT_PTR id) const
         {
             if (m_files.empty())
             {
@@ -730,7 +740,7 @@ namespace
     };
 }
 
-extern "C" __declspec(dllexport) HRESULT __stdcall DllGetClassObject(
+DXTOOLS_SHELL_EXPORT DllGetClassObject(
     REFCLSID clsid,
     REFIID riid,
     void** result)
@@ -757,7 +767,7 @@ extern "C" __declspec(dllexport) HRESULT __stdcall DllGetClassObject(
     return hr;
 }
 
-extern "C" __declspec(dllexport) HRESULT __stdcall DllCanUnloadNow()
+DXTOOLS_SHELL_EXPORT DllCanUnloadNow()
 {
     return (InterlockedCompareExchange(&g_objectCount, 0, 0) == 0
         && InterlockedCompareExchange(&g_serverLocks, 0, 0) == 0)
@@ -765,7 +775,7 @@ extern "C" __declspec(dllexport) HRESULT __stdcall DllCanUnloadNow()
         : S_FALSE;
 }
 
-extern "C" __declspec(dllexport) HRESULT __stdcall DllRegisterServer()
+DXTOOLS_SHELL_EXPORT DllRegisterServer()
 {
     const std::wstring clsid = GetClsidString();
     const std::wstring dllPath = GetModulePath();
@@ -803,7 +813,7 @@ extern "C" __declspec(dllexport) HRESULT __stdcall DllRegisterServer()
     return S_OK;
 }
 
-extern "C" __declspec(dllexport) HRESULT __stdcall DllUnregisterServer()
+DXTOOLS_SHELL_EXPORT DllUnregisterServer()
 {
     const std::wstring clsid = GetClsidString();
     if (clsid.empty())
