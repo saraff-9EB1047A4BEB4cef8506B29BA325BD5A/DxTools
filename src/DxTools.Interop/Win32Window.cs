@@ -32,6 +32,7 @@ public static partial class Win32Window
     public const uint SwpShowWindow = 0x0040;
     public const int SwRestore = 9;
     public const int SwMaximize = 3;
+    public const int SwShowMinNoActive = 7;
     public const uint WmMouseMove = 0x0200;
     public const uint WmMouseLeave = 0x02A3;
     public const int WmMouseActivate = 0x0021;

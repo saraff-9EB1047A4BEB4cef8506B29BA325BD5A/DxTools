@@ -7,6 +7,8 @@ namespace DxTools.Engine;
 
 public sealed class WindowManager
 {
+    private const int WpfRestoreToMaximized = 0x0002;
+
     private readonly DisplayService _display;
     private readonly UIAccessClient _uiAccess;
 
@@ -99,11 +101,39 @@ public sealed class WindowManager
         var source = monitors[sourceIndex];
         var target = monitors[targetIndex];
 
+        var wasMinimized = Win32Taskbar.IsIconic(window);
         var wasMaximized = Win32Window.IsZoomed(window);
-        if (wasMaximized)
+
+        if (wasMinimized)
+        {
+            var placement = new WindowPlacement
+            {
+                Length = Marshal.SizeOf<WindowPlacement>(),
+            };
+
+            if (Win32Taskbar.GetWindowPlacement(window, ref placement)
+                && (placement.Flags & WpfRestoreToMaximized) != 0)
+            {
+                wasMaximized = true;
+            }
+        }
+
+        if (wasMinimized)
         {
             _ = Win32Window.ShowWindow(window, Win32Window.SwRestore);
-            if (!Win32Window.GetWindowRect(window, out rect))
+            wasMaximized |= Win32Window.IsZoomed(window);
+        }
+
+        var stillMinimized = wasMinimized && Win32Taskbar.IsIconic(window);
+        if (!stillMinimized)
+        {
+            if (wasMaximized)
+            {
+                _ = Win32Window.ShowWindow(window, Win32Window.SwRestore);
+            }
+
+            if ((wasMinimized || wasMaximized)
+                && !Win32Window.GetWindowRect(window, out rect))
             {
                 return false;
             }
@@ -128,7 +158,7 @@ public sealed class WindowManager
         x = Math.Clamp(x, target.X, Math.Max(target.X, target.Right - width));
         y = Math.Clamp(y, target.Y, Math.Max(target.Y, target.Bottom - height));
 
-        var moved = Win32Window.SetWindowPos(
+        var moved = !stillMinimized && Win32Window.SetWindowPos(
             window,
             IntPtr.Zero,
             x,
@@ -145,7 +175,7 @@ public sealed class WindowManager
                 y,
                 width,
                 height,
-                restore: wasMaximized,
+                restore: wasMinimized || wasMaximized,
                 maximize: wasMaximized);
         }
         else if (wasMaximized)
@@ -153,11 +183,17 @@ public sealed class WindowManager
             _ = Win32Window.ShowWindow(window, Win32Window.SwMaximize);
         }
 
+        if (!moved && wasMinimized)
+        {
+            _ = Win32Window.ShowWindow(window, Win32Window.SwShowMinNoActive);
+        }
+
         if (moved)
         {
             DxLog.Info(
                 $"Moved window to monitor {target.DisplayName}: " +
-                $"source={source.GeometryText}, target={target.GeometryText}, rect={x},{y} {width}x{height}.");
+                $"source={source.GeometryText}, target={target.GeometryText}, rect={x},{y} {width}x{height}, " +
+                $"minimized={wasMinimized}, maximized={wasMaximized}.");
         }
 
         return moved;

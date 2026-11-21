@@ -125,6 +125,10 @@ internal static partial class Program
         if (request.Restore)
         {
             _ = ShowWindow(hwnd, SwRestore);
+            if (IsZoomed(hwnd))
+            {
+                _ = ShowWindow(hwnd, SwRestore);
+            }
         }
 
         var width = Math.Clamp(request.Width, 50, 100_000);
@@ -299,6 +303,10 @@ internal static partial class Program
     [LibraryImport("user32.dll")]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static partial bool IsIconic(IntPtr hwnd);
+
+    [LibraryImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static partial bool IsZoomed(IntPtr hwnd);
 
     [LibraryImport("user32.dll")]
     private static partial IntPtr GetAncestor(IntPtr hwnd, uint flags);
