@@ -3,15 +3,15 @@
 Дата: 2026-11-21
 Статус: **release candidate готов, ожидает подтверждения GA**
 Репозиторий: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools
-Рабочая копия: изменения rc.3 не закоммичены
-CI: для rc.3 не запускался
+Коммиты: `67ef588` (shell extension), `41e9d76` (исправление MSVC linkage)
+CI: GitHub Actions run `44921787335` — success
 
 ## 1. Артефакты
 
 | Артефакт | Размер | SHA-256 |
 |---|---:|---|
-| `artifacts\DxTools-1.0.0-x64.msi` | 120 740 953 | `060C5643E27F441BB83420C2EBCCB96A0FBF09401CA9F8E070550F95C7464A49` |
-| `artifacts\DxTools-1.0.0-arm64.msi` | 111 193 052 | `3F950FE3A70660A7DEC0E59969381A4887526B05ABC466D7DC1C3688DD5319B0` |
+| `artifacts\DxTools-1.0.0-x64.msi` | 120 794 201 | `8BA64A12748B4BC3DF5DA5AD4D82F590F8B79E108F81B702D42AEDFF419A4D05` |
+| `artifacts\DxTools-1.0.0-arm64.msi` | 111 254 492 | `6830016CEFF31E5E4B16A1DFC7BBA801CDC04E50D81F37CA86BFD1C1B4D37B67` |
 
 ## 2. Shell extension
 
@@ -47,7 +47,11 @@ CLI/IPC:
 | x64 MSI administrative install | exit 0, 288 файлов, shell extension присутствует |
 | ARM64 MSI administrative install | exit 0, 287 файлов, shell extension присутствует |
 | MSI Registry / Component | 4 ключа shell extension; `Attributes=256` (64-bit) |
-| CI | не запускался |
+| CI | success: run `44921787335` |
+
+CI-артефакты: `DxTools-msi` 119 916 219 байт, `DxTools-publish` 150 646 585
+байт. Первый запуск rc.3 (`44921565910`) завершился ошибкой MSVC linkage;
+исправление `41e9d76` проверено повторным запуском.
 
 COM-тест вернул пункты: «DxTools: Открыть настройки» и
 «DxTools: Применить обои». Меню для изображения проверено кодом и сборкой,
@@ -69,9 +73,9 @@ COM-тест вернул пункты: «DxTools: Открыть настрой
 
 ## 5. Release checklist
 
-См. `docs/release-checklist.md`. Не закрыты: CI для rc.3, подпись,
-UAC-инсталляция на чистой VM, runtime-тест ARM64, UIAccess, независимый
-security review и публикация GitHub Release.
+См. `docs/release-checklist.md`. Не закрыты: подпись, UAC-инсталляция на
+чистой VM, runtime-тест ARM64, UIAccess, независимый security review и
+публикация GitHub Release.
 
 ## 6. Запрос подтверждения
 

@@ -9,7 +9,7 @@
 - [x] README.md и USER_MANUAL.md
 - [x] spec.md и отчёты фаз
 - [x] SECURITY.md и security review
-- [ ] CI для rc.3 (запуск после коммита)
+- [x] CI для rc.3 (run 44921787335, success)
 - [ ] Подпись сертификатом
 - [ ] Установка/удаление с UAC на чистой VM
 - [ ] Runtime-тест ARM64 на hardware
