@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: 1.0.0-rc.4 готов, ожидает подтверждения GA
+Статус: 1.0.0-rc.5 готов, ожидает подтверждения GA
 Версия документа: 1.0 (2026-11-21)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — cross-build
@@ -479,7 +479,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Move/topmost | C# Win32 | 1 |
 | Snap/transparency/roll-up/span | C# Win32 | 2 |
 | Профили позиций окон | C# | 2B (готово) |
-| Titlebar-кнопки | C# overlay | 2G (готово) |
+| Titlebar-кнопки | C# overlay, стиль системных caption + lime hover | rc.5 (готово) |
 | Мультимониторная панель задач | WPF + AppBar | 2D (ядро) |
 | Pinned apps | C# + taskbar | 2C (готово) |
 | DWM live-превью | HwndHost/DWM | 2D (готово) |

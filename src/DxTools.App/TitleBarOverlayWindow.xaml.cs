@@ -1,4 +1,5 @@
 using System.Windows;
+using System.Windows.Media;
 using DxTools.Engine;
 using DxTools.Interop;
 
@@ -7,6 +8,7 @@ namespace DxTools.App;
 public partial class TitleBarOverlayWindow : System.Windows.Window
 {
     private readonly WindowManager _windowManager;
+    private bool? _darkMode;
 
     public TitleBarOverlayWindow(WindowManager windowManager)
     {
@@ -15,6 +17,17 @@ public partial class TitleBarOverlayWindow : System.Windows.Window
     }
 
     public IntPtr TargetHandle { get; set; }
+
+    public void SetDarkMode(bool dark)
+    {
+        if (_darkMode == dark)
+        {
+            return;
+        }
+
+        _darkMode = dark;
+        Resources["TitleBarGlyphBrush"] = dark ? System.Windows.Media.Brushes.White : System.Windows.Media.Brushes.Black;
+    }
 
     protected override void OnSourceInitialized(EventArgs e)
     {

@@ -79,12 +79,6 @@ public sealed class TitleBarOverlayManager : IDisposable
             return;
         }
 
-        if (frame.Width < 360 || frame.Height < 80)
-        {
-            Hide();
-            return;
-        }
-
         var dpi = Win32Window.GetDpiForWindow(target);
         if (dpi == 0)
         {
@@ -92,13 +86,19 @@ public sealed class TitleBarOverlayManager : IDisposable
         }
 
         var scale = dpi / 96.0;
-        var physicalWidth = (int)Math.Round(76 * scale);
-        var physicalHeight = (int)Math.Round(30 * scale);
+        if (frame.Width < (int)Math.Round(360 * scale)
+            || frame.Height < (int)Math.Round(80 * scale))
+        {
+            Hide();
+            return;
+        }
+        var physicalWidth = (int)Math.Round(2 * 46 * scale);
+        var physicalHeight = (int)Math.Round(32 * scale);
         var captionButtons = (int)Math.Round(3 * 46 * scale);
-        var x = frame.Right - captionButtons - physicalWidth - (int)Math.Round(8 * scale);
-        var y = frame.Top + (int)Math.Round(4 * scale);
+        var x = frame.Right - captionButtons - physicalWidth;
+        var y = frame.Top;
 
-        if (x < frame.Left + 120)
+        if (x < frame.Left + (int)Math.Round(120 * scale))
         {
             Hide();
             return;
@@ -111,6 +111,7 @@ public sealed class TitleBarOverlayManager : IDisposable
         }
 
         _window.TargetHandle = target;
+        _window.SetDarkMode(IsDarkWindow(target));
 
         if (!_visible)
         {
@@ -152,5 +153,40 @@ public sealed class TitleBarOverlayManager : IDisposable
         _window.Close();
     }
 
+    private bool IsDarkWindow(IntPtr hwnd)
+    {
+        var value = 0;
+        if (TryGetDwmValue(hwnd, DwmUseImmersiveDarkMode, out value)
+            || TryGetDwmValue(hwnd, DwmUseImmersiveDarkModeBefore20H1, out value))
+        {
+            return value != 0;
+        }
+
+        return ThemeManager.Resolve(_settings.Theme) == AppTheme.Dark;
+    }
+
+    private static bool TryGetDwmValue(IntPtr hwnd, int attribute, out int value)
+    {
+        value = 0;
+        try
+        {
+            return Win32Window.DwmGetWindowAttribute(
+                hwnd,
+                attribute,
+                out value,
+                sizeof(int)) == 0;
+        }
+        catch (DllNotFoundException)
+        {
+            return false;
+        }
+        catch (EntryPointNotFoundException)
+        {
+            return false;
+        }
+    }
+
     private const int DwmWindowAttributeExtendedFrameBounds = 9;
+    private const int DwmUseImmersiveDarkMode = 20;
+    private const int DwmUseImmersiveDarkModeBefore20H1 = 19;
 }

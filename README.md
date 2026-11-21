@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
-- Статус: 1.0.0-rc.4 готов, ожидает подтверждения GA
+- Статус: 1.0.0-rc.5 готов, ожидает подтверждения GA
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
@@ -14,7 +14,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
 
-## Возможности текущей версии (1.0.0-rc.4)
+## Возможности текущей версии (1.0.0-rc.5)
 
 - установщик MSI (per-machine, x64 и ARM64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -33,8 +33,8 @@ DisplayFusion: профили мониторов, мультимониторны
 - CLI-применение профилей дисплеев/окон и обоев;
 - триггеры: запуск, смена дисплея, создание окна/процесса → профиль,
   обои, программа или C#-скрипт;
-- кнопки в заголовке активного окна: перенос на следующий монитор и
-  always-on-top;
+- кнопки в заголовке активного окна в стиле системных caption-кнопок:
+  перенос на следующий монитор и always-on-top, зелёный (lime) hover;
 - сплиты монитора: сетка до 3×3 и snap hotkeys `Ctrl+Alt+1..4`;
 - зеркало системного трея в popup на панели задач с live-обновлением;
 - отдельные overlay-панели задач для каждой ячейки сплита;
@@ -125,6 +125,7 @@ build/                 сборочные скрипты
 - [docs/reports/phase-3b.md](docs/reports/phase-3b.md) — отчёт Phase 3B;
 - [docs/reports/phase-3c.md](docs/reports/phase-3c.md) — отчёт Phase 3C;
 - [docs/reports/phase-3d.md](docs/reports/phase-3d.md) — отчёт Phase 3D;
+- [docs/reports/rc-1.0.0-rc.5.md](docs/reports/rc-1.0.0-rc.5.md) — отчёт RC 1.0.0-rc.5;
 - [docs/reports/rc-1.0.0-rc.4.md](docs/reports/rc-1.0.0-rc.4.md) — отчёт RC 1.0.0-rc.4;
 - [docs/reports/rc-1.0.0-rc.3.md](docs/reports/rc-1.0.0-rc.3.md) — отчёт RC 1.0.0-rc.3;
 - [docs/reports/rc-1.0.0-rc.2.md](docs/reports/rc-1.0.0-rc.2.md) — отчёт RC 1.0.0-rc.2;

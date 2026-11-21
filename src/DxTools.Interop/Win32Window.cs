@@ -84,6 +84,9 @@ public static partial class Win32Window
     [DllImport("dwmapi.dll")]
     public static extern int DwmGetWindowAttribute(IntPtr hwnd, int attribute, out WindowRect value, int size);
 
+    [DllImport("dwmapi.dll")]
+    public static extern int DwmGetWindowAttribute(IntPtr hwnd, int attribute, out int value, int size);
+
     [LibraryImport("user32.dll")]
     public static partial uint GetDpiForWindow(IntPtr hwnd);
 }
