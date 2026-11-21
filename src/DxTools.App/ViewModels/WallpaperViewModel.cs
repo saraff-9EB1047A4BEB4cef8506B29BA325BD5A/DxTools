@@ -224,6 +224,22 @@ public sealed class WallpaperViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool ScreensaverIncludeVideos
+    {
+        get => _settings.Wallpaper.ScreensaverIncludeVideos;
+        set
+        {
+            if (_settings.Wallpaper.ScreensaverIncludeVideos == value)
+            {
+                return;
+            }
+
+            _settings.Wallpaper.ScreensaverIncludeVideos = value;
+            OnPropertyChanged();
+            SaveSettings();
+        }
+    }
+
     public string StatusMessage
     {
         get => _statusMessage;

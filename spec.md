@@ -1,6 +1,6 @@
 # DxTools — спецификация и план реализации
 
-Статус: 1.0.0-rc.7 — ядро готово, требуется ручная проверка панели задач
+Статус: 1.0.0-rc.8 — функции hotkeys, трея и заставки готовы, ожидает review и публикации GA
 Версия документа: 1.0 (2026-11-21)
 Лицензия проекта: GNU GPL v2 (`GPL-2.0-only`)
 Целевая ОС: Windows 11 (минимум 22H2, сборка 22621), x64; ARM64 — cross-build
@@ -498,6 +498,21 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
   системным фоном `ToolTip`;
 - подсказки закреплённых приложений без окон показывают имя приложения.
 
+### Горячие клавиши, трей и заставка 1.0.0-rc.8 (готово)
+
+Статус: реализовано. Отчёт: `docs/reports/rc-1.0.0-rc.8.md`.
+
+- native API v6: последовательность до четырёх шагов и область действия по
+  процессу в `DxTools_HotkeyBinding`;
+- горячие клавиши с привязкой к приложению: комбинация не перехватывается,
+  если активен другой процесс;
+- цепочки до четырёх шагов с общими префиксами и таймаутом 1,5 секунды;
+- контекстные меню иконок в зеркале системного трея по правому клику;
+- screensaver `/p <HWND>`: дочернее окно предпросмотра в параметрах экрана;
+- видео из папки слайдшоу в заставке, без звука, с переходом по окончании;
+- настройка `wallpaper.screensaverIncludeVideos`;
+- 59 unit-тестов.
+
 ## 5. Матрица функций
 
 | Модуль | Реализация | Фаза |
@@ -505,7 +520,7 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Профили дисплеев, режимы, primary, вкл/выкл | C++ DisplayConfig | 1 |
 | DPI scaling | C++ (spike) | 2 |
 | Сплиты мониторов | C# snap grid | 2I (готово) |
-| Горячие клавиши | LL-hook + редактор + 2-step chains | 1–2H (готово) |
+| Горячие клавиши | LL-hook + редактор + 4-step chains + app scope | 1–2H, rc.8 (готово) |
 | Move/topmost | C# Win32 | 1 |
 | Snap/transparency/roll-up/span | C# Win32 | 2 |
 | Профили позиций окон | C# | 2B (готово) |
@@ -514,14 +529,14 @@ DxTools.exe (WPF, asInvoker, single instance, tray)
 | Pinned apps | C# + taskbar | 2C (готово) |
 | DWM live-превью | HwndHost/DWM | 2D (готово) |
 | Автоскрытие панели | AppBar + timer | 2D (готово) |
-| Зеркало трея | C# UIA popup + live refresh | 2J–2K (готово) |
+| Зеркало трея | C# UIA popup + live refresh + context menus | 2J–2K, rc.8 (готово) |
 | Taskbar для сплитов | WPF overlay | 2K (готово) |
 | Обои per-monitor/span | C# + System.Drawing, composite + span | 1 |
 | Слайдшоу обоев | C# + таймер | 2 (готово) |
 | Триггеры | C# event engine | 2E (готово) |
 | C#-скрипты | Roslyn Scripting | 2E (готово) |
 | Виртуальные десктопы | OS hotkeys через SendInput | 3D (hotkeys) |
-| Screensaver | C# WPF .scr | 3C (готово) |
+| Screensaver | C# WPF .scr + /p preview + video | 3C, rc.8 (готово) |
 | Иконки рабочего стола | C# Win32 cross-process | 3A (готово) |
 | Аудиоустройства | C++ CoreAudio + IPolicyConfig | 3B (готово) |
 | Shell extension | C++ COM (IContextMenu/IShellExtInit) | rc.3 (готово) |

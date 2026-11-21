@@ -86,17 +86,35 @@ public sealed class TrayMirrorService
             DxLog.Warn($"Tray UIA invoke failed: {ex.Message}");
         }
 
+        ClickAt(item.Bounds, rightButton: false);
+    }
+
+    public void OpenContextMenu(TrayItem item)
+    {
+        ClickAt(item.Bounds, rightButton: true);
+    }
+
+    private static void ClickAt(Rect bounds, bool rightButton)
+    {
         try
         {
-            var x = (int)(item.Bounds.Left + (item.Bounds.Width / 2));
-            var y = (int)(item.Bounds.Top + (item.Bounds.Height / 2));
+            var x = (int)(bounds.Left + (bounds.Width / 2));
+            var y = (int)(bounds.Top + (bounds.Height / 2));
             _ = SetCursorPos(x, y);
-            mouse_event(MouseEventLeftDown, 0, 0, 0, UIntPtr.Zero);
-            mouse_event(MouseEventLeftUp, 0, 0, 0, UIntPtr.Zero);
+            if (rightButton)
+            {
+                mouse_event(MouseEventRightDown, 0, 0, 0, UIntPtr.Zero);
+                mouse_event(MouseEventRightUp, 0, 0, 0, UIntPtr.Zero);
+            }
+            else
+            {
+                mouse_event(MouseEventLeftDown, 0, 0, 0, UIntPtr.Zero);
+                mouse_event(MouseEventLeftUp, 0, 0, 0, UIntPtr.Zero);
+            }
         }
         catch (Exception ex)
         {
-            DxLog.Exception("Tray click failed.", ex);
+            DxLog.Exception(rightButton ? "Tray context menu failed." : "Tray click failed.", ex);
         }
     }
 
@@ -141,6 +159,8 @@ public sealed class TrayMirrorService
 
     private const uint MouseEventLeftDown = 0x0002;
     private const uint MouseEventLeftUp = 0x0004;
+    private const uint MouseEventRightDown = 0x0008;
+    private const uint MouseEventRightUp = 0x0010;
 
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern IntPtr FindWindowW(string className, string? windowName);

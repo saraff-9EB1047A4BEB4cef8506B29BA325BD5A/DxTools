@@ -561,14 +561,14 @@
                               Margin="0,5,0,0">
                         <Grid>
                           <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="150" />
+                            <ColumnDefinition Width="200" />
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="Auto" />
                           </Grid.ColumnDefinitions>
-                          <TextBlock Text="{Binding DisplayGesture}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" />
+                          <TextBlock Text="{Binding DisplayGesture}" FontWeight="SemiBold" TextTrimming="CharacterEllipsis" ToolTip="{Binding DisplayGesture}" />
                           <TextBlock Grid.Column="1"
                                      Text="{Binding Description}"
                                      Margin="12,0"
@@ -594,14 +594,14 @@
                                   Style="{StaticResource SecondaryButtonStyle}"
                                   Margin="8,0,0,0" />
                           <Button Grid.Column="4"
-                                  Content="{x:Static props:Strings.HotkeyPrefix}"
-                                  Command="{Binding DataContext.ChangeHotkeyPrefixCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  Content="{x:Static props:Strings.HotkeyApplication}"
+                                  Command="{Binding DataContext.ChangeHotkeyApplicationCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                   CommandParameter="{Binding}"
                                   Style="{StaticResource SecondaryButtonStyle}"
                                   Margin="6,0,0,0" />
                           <Button Grid.Column="5"
-                                  Content="{x:Static props:Strings.HotkeyClearPrefix}"
-                                  Command="{Binding DataContext.ClearHotkeyPrefixCommand, RelativeSource={RelativeSource AncestorType=Window}}"
+                                  Content="{x:Static props:Strings.HotkeyReset}"
+                                  Command="{Binding DataContext.ResetHotkeyCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                   CommandParameter="{Binding}"
                                   Style="{StaticResource SecondaryButtonStyle}"
                                   Margin="6,0,0,0" />
@@ -734,6 +734,14 @@
                   <TextBox Text="{Binding Wallpaper.SlideshowIntervalSeconds, UpdateSourceTrigger=LostFocus}"
                            Width="80" />
                 </StackPanel>
+
+                <CheckBox Content="{x:Static props:Strings.ScreensaverIncludeVideos}"
+                          IsChecked="{Binding Wallpaper.ScreensaverIncludeVideos, Mode=TwoWay}"
+                          Margin="0,12,0,0" />
+                <TextBlock Text="{x:Static props:Strings.ScreensaverIncludeVideosHint}"
+                           Style="{StaticResource HintStyle}"
+                           TextWrapping="Wrap"
+                           Margin="0,4,0,0" />
 
                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                   <Button Content="{x:Static props:Strings.StartSlideshow}"

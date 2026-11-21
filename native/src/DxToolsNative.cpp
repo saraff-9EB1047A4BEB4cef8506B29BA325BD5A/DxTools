@@ -10,10 +10,12 @@
 
 #include <algorithm>
 #include <atomic>
+#include <iterator>
 #include <mutex>
 #include <thread>
 #include <cstdlib>
 #include <cstring>
+#include <cwchar>
 #include <string>
 #include <utility>
 #include <vector>
@@ -45,6 +47,8 @@
 
 namespace
 {
+static_assert(sizeof(DxTools_HotkeyBinding) == 176, "DxTools_HotkeyBinding layout must match managed interop.");
+
 constexpr uint32_t kStateMagic = 0x44585354u;
 constexpr uint16_t kStateVersion = 1;
 
@@ -310,8 +314,24 @@ HHOOK g_hotkey = nullptr;
 DWORD g_hotkeyThreadId = 0;
 HANDLE g_hotkeyReady = nullptr;
 std::atomic<bool> g_hotkeyRunning{false};
-std::atomic<uint32_t> g_hotkeyPendingId{0};
-std::atomic<ULONGLONG> g_hotkeyPendingTick{0};
+constexpr uint32_t kMaxHotkeyCandidates = 64;
+uint32_t g_hotkeyCandidates[kMaxHotkeyCandidates] = {};
+uint32_t g_hotkeyCandidateCount = 0;
+uint32_t g_hotkeyPendingStep = 0;
+ULONGLONG g_hotkeyPendingTick = 0;
+DWORD g_hotkeyLastVirtualKey = 0;
+ULONGLONG g_hotkeyLastKeyTick = 0;
+HWND g_hotkeyForegroundWindow = nullptr;
+ULONGLONG g_hotkeyForegroundTick = 0;
+wchar_t g_hotkeyForegroundProcess[DXTOOLS_HOTKEY_PROCESS_NAME] = {};
+bool g_hotkeyForegroundResolved = false;
+
+void ClearPendingHotkeyLocked()
+{
+    g_hotkeyCandidateCount = 0;
+    g_hotkeyPendingStep = 0;
+    g_hotkeyPendingTick = 0;
+}
 
 uint32_t CurrentModifiers()
 {
@@ -323,6 +343,124 @@ uint32_t CurrentModifiers()
     return modifiers;
 }
 
+bool IsModifierVirtualKey(DWORD virtualKey)
+{
+    return virtualKey == VK_CONTROL
+        || virtualKey == VK_LCONTROL
+        || virtualKey == VK_RCONTROL
+        || virtualKey == VK_MENU
+        || virtualKey == VK_LMENU
+        || virtualKey == VK_RMENU
+        || virtualKey == VK_SHIFT
+        || virtualKey == VK_LSHIFT
+        || virtualKey == VK_RSHIFT
+        || virtualKey == VK_LWIN
+        || virtualKey == VK_RWIN;
+}
+
+bool StepMatches(const DxTools_HotkeyStep& step, uint32_t modifiers, DWORD virtualKey)
+{
+    return (step.modifiers & 0x000Fu) == modifiers && step.virtualKey == virtualKey;
+}
+
+bool GetForegroundProcessName(wchar_t* buffer, size_t capacity)
+{
+    if (buffer == nullptr || capacity == 0)
+    {
+        return false;
+    }
+
+    buffer[0] = L'\0';
+    const HWND foreground = GetForegroundWindow();
+    if (foreground == nullptr)
+    {
+        return false;
+    }
+
+    const ULONGLONG now = GetTickCount64();
+    if (g_hotkeyForegroundWindow == foreground
+        && now - g_hotkeyForegroundTick < 250)
+    {
+        if (g_hotkeyForegroundResolved)
+        {
+            CopyWide(buffer, capacity, g_hotkeyForegroundProcess);
+        }
+
+        return g_hotkeyForegroundResolved;
+    }
+
+    g_hotkeyForegroundWindow = foreground;
+    g_hotkeyForegroundTick = now;
+    g_hotkeyForegroundResolved = false;
+    g_hotkeyForegroundProcess[0] = L'\0';
+
+    DWORD processId = 0;
+    GetWindowThreadProcessId(foreground, &processId);
+    if (processId == 0)
+    {
+        return false;
+    }
+
+    HANDLE process = OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION, FALSE, processId);
+    if (process == nullptr)
+    {
+        return false;
+    }
+
+    wchar_t path[512] = {};
+    DWORD size = static_cast<DWORD>(std::size(path));
+    if (QueryFullProcessImageNameW(process, 0, path, &size) != FALSE)
+    {
+        const wchar_t* name = wcsrchr(path, L'\\');
+        if (name == nullptr)
+        {
+            name = wcsrchr(path, L'/');
+        }
+
+        if (name != nullptr)
+        {
+            ++name;
+        }
+        else
+        {
+            name = path;
+        }
+
+        CopyWide(g_hotkeyForegroundProcess, std::size(g_hotkeyForegroundProcess), name);
+        g_hotkeyForegroundResolved = g_hotkeyForegroundProcess[0] != L'\0';
+    }
+
+    CloseHandle(process);
+
+    if (g_hotkeyForegroundResolved)
+    {
+        CopyWide(buffer, capacity, g_hotkeyForegroundProcess);
+    }
+
+    return g_hotkeyForegroundResolved;
+}
+
+bool ProcessScopeMatches(const DxTools_HotkeyBinding& binding)
+{
+    if (binding.scope == 0)
+    {
+        return true;
+    }
+
+    if (binding.processName[0] == L'\0')
+    {
+        return false;
+    }
+
+    wchar_t current[DXTOOLS_HOTKEY_PROCESS_NAME] = {};
+    if (!GetForegroundProcessName(current, std::size(current)))
+    {
+        return false;
+    }
+
+    return _wcsicmp(current, binding.processName) == 0;
+}
+
 LRESULT CALLBACK HotkeyHookProc(int code, WPARAM wParam, LPARAM lParam)
 {
     if (code == HC_ACTION && (wParam == WM_KEYDOWN || wParam == WM_SYSKEYDOWN))
@@ -330,66 +468,139 @@ LRESULT CALLBACK HotkeyHookProc(int code, WPARAM wParam, LPARAM lParam)
         const auto* info = reinterpret_cast<KBDLLHOOKSTRUCT*>(lParam);
         const uint32_t modifiers = CurrentModifiers();
 
-        const bool isModifierKey = info->vkCode == VK_CONTROL
-            || info->vkCode == VK_LCONTROL
-            || info->vkCode == VK_RCONTROL
-            || info->vkCode == VK_MENU
-            || info->vkCode == VK_LMENU
-            || info->vkCode == VK_RMENU
-            || info->vkCode == VK_SHIFT
-            || info->vkCode == VK_LSHIFT
-            || info->vkCode == VK_RSHIFT
-            || info->vkCode == VK_LWIN
-            || info->vkCode == VK_RWIN;
-
-        if (g_hotkeyPendingId != 0 && isModifierKey)
+        if (IsModifierVirtualKey(info->vkCode))
         {
             return CallNextHookEx(g_hotkey, code, wParam, lParam);
         }
 
         const ULONGLONG now = GetTickCount64();
-        if (g_hotkeyPendingId != 0 && now - g_hotkeyPendingTick <= 1500)
+        std::lock_guard<std::mutex> lock(g_hotkeyMutex);
+
+        if (g_hotkeyCandidateCount > 0
+            && now - g_hotkeyPendingTick > 1500)
         {
-            std::lock_guard<std::mutex> lock(g_hotkeyMutex);
-            for (const auto& binding : g_hotkeyBindings)
+            ClearPendingHotkeyLocked();
+        }
+
+        if (g_hotkeyCandidateCount > 0)
+        {
+            if (g_hotkeyLastVirtualKey == info->vkCode
+                && now - g_hotkeyLastKeyTick < 50)
             {
-                if (binding.id == g_hotkeyPendingId
-                    && (binding.modifiers & 0x000Fu) == modifiers
-                    && binding.virtualKey == info->vkCode)
+                return 1;
+            }
+
+            const uint32_t nextStep = g_hotkeyPendingStep + 1;
+            uint32_t nextCandidates[kMaxHotkeyCandidates] = {};
+            uint32_t nextCount = 0;
+            uint32_t completedId = 0;
+
+            for (uint32_t index = 0; index < g_hotkeyCandidateCount; ++index)
+            {
+                const uint32_t id = g_hotkeyCandidates[index];
+                const auto binding = std::find_if(
+                    g_hotkeyBindings.begin(),
+                    g_hotkeyBindings.end(),
+                    [id](const DxTools_HotkeyBinding& item) { return item.id == id; });
+
+                if (binding == g_hotkeyBindings.end()
+                    || binding->stepCount <= nextStep
+                    || nextStep >= DXTOOLS_HOTKEY_MAX_STEPS
+                    || !ProcessScopeMatches(*binding)
+                    || !StepMatches(binding->steps[nextStep], modifiers, info->vkCode))
                 {
-                    PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(binding.id), 0);
-                    g_hotkeyPendingId = 0;
-                    return 1;
+                    continue;
                 }
+
+                if (binding->stepCount == nextStep + 1)
+                {
+                    if (completedId == 0)
+                    {
+                        completedId = id;
+                    }
+                }
+                else if (nextCount < kMaxHotkeyCandidates)
+                {
+                    nextCandidates[nextCount++] = id;
+                }
+            }
+
+            if (nextCount > 0)
+            {
+                for (uint32_t index = 0; index < nextCount; ++index)
+                {
+                    g_hotkeyCandidates[index] = nextCandidates[index];
+                }
+
+                g_hotkeyCandidateCount = nextCount;
+                g_hotkeyPendingStep = nextStep;
+                g_hotkeyPendingTick = now;
+                g_hotkeyLastVirtualKey = info->vkCode;
+                g_hotkeyLastKeyTick = now;
+                return 1;
+            }
+
+            if (completedId != 0)
+            {
+                PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(completedId), 0);
+                ClearPendingHotkeyLocked();
+                g_hotkeyLastVirtualKey = info->vkCode;
+                g_hotkeyLastKeyTick = now;
+                return 1;
+            }
+
+            ClearPendingHotkeyLocked();
+        }
+
+        uint32_t startCandidates[kMaxHotkeyCandidates] = {};
+        uint32_t startCount = 0;
+        uint32_t singleId = 0;
+
+        for (const auto& binding : g_hotkeyBindings)
+        {
+            if (binding.stepCount == 0
+                || binding.stepCount > DXTOOLS_HOTKEY_MAX_STEPS
+                || !ProcessScopeMatches(binding)
+                || !StepMatches(binding.steps[0], modifiers, info->vkCode))
+            {
+                continue;
+            }
+
+            if (binding.stepCount > 1)
+            {
+                if (startCount < kMaxHotkeyCandidates)
+                {
+                    startCandidates[startCount++] = binding.id;
+                }
+            }
+            else if (singleId == 0)
+            {
+                singleId = binding.id;
             }
         }
 
-        g_hotkeyPendingId = 0;
-
+        if (startCount > 0)
         {
-            std::lock_guard<std::mutex> lock(g_hotkeyMutex);
-            for (const auto& binding : g_hotkeyBindings)
+            for (uint32_t index = 0; index < startCount; ++index)
             {
-                if (binding.prefixVirtualKey != 0
-                    && (binding.prefixModifiers & 0x000Fu) == modifiers
-                    && binding.prefixVirtualKey == info->vkCode)
-                {
-                    g_hotkeyPendingId = binding.id;
-                    g_hotkeyPendingTick = now;
-                    return 1;
-                }
+                g_hotkeyCandidates[index] = startCandidates[index];
             }
 
-            for (const auto& binding : g_hotkeyBindings)
-            {
-                if (binding.prefixVirtualKey == 0
-                    && (binding.modifiers & 0x000Fu) == modifiers
-                    && binding.virtualKey == info->vkCode)
-                {
-                    PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(binding.id), 0);
-                    return 1;
-                }
-            }
+            g_hotkeyCandidateCount = startCount;
+            g_hotkeyPendingStep = 0;
+            g_hotkeyPendingTick = now;
+            g_hotkeyLastVirtualKey = info->vkCode;
+            g_hotkeyLastKeyTick = now;
+            return 1;
+        }
+
+        if (singleId != 0)
+        {
+            PostMessageW(g_hotkeyTarget, g_hotkeyMessage, static_cast<WPARAM>(singleId), 0);
+            ClearPendingHotkeyLocked();
+            g_hotkeyLastVirtualKey = info->vkCode;
+            g_hotkeyLastKeyTick = now;
+            return 1;
         }
     }
 
@@ -722,7 +933,12 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Start(void* hwnd, uint32_t 
 
     g_hotkeyTarget = static_cast<HWND>(hwnd);
     g_hotkeyMessage = message;
-    g_hotkeyPendingId = 0;
+    {
+        std::lock_guard<std::mutex> lock(g_hotkeyMutex);
+        ClearPendingHotkeyLocked();
+    }
+    g_hotkeyLastVirtualKey = 0;
+    g_hotkeyLastKeyTick = 0;
     g_hotkeyReady = CreateEventW(nullptr, TRUE, FALSE, nullptr);
     g_hotkeyThread = std::thread(HotkeyThreadProc);
 
@@ -778,10 +994,21 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
 
     std::lock_guard<std::mutex> lock(g_hotkeyMutex);
     g_hotkeyBindings.clear();
-    g_hotkeyPendingId = 0;
+    ClearPendingHotkeyLocked();
+    g_hotkeyForegroundWindow = nullptr;
+    g_hotkeyForegroundTick = 0;
+    g_hotkeyForegroundResolved = false;
+    g_hotkeyForegroundProcess[0] = L'\0';
     for (uint32_t index = 0; index < count; ++index)
     {
-        g_hotkeyBindings.push_back(bindings[index]);
+        DxTools_HotkeyBinding binding = bindings[index];
+        if (binding.stepCount > DXTOOLS_HOTKEY_MAX_STEPS)
+        {
+            binding.stepCount = DXTOOLS_HOTKEY_MAX_STEPS;
+        }
+
+        binding.processName[DXTOOLS_HOTKEY_PROCESS_NAME - 1] = L'\0';
+        g_hotkeyBindings.push_back(binding);
     }
 
     return ERROR_SUCCESS;

@@ -134,7 +134,8 @@
                           Margin="2"
                           Style="{StaticResource SecondaryButtonStyle}"
                           Command="{Binding ClickCommand}"
-                          ToolTip="{Binding Name}">
+                          ToolTip="{Binding Name}"
+                          PreviewMouseRightButtonUp="OnTrayButtonPreviewMouseRightButtonUp">
                     <Image Source="{Binding Icon}" Width="22" Height="22" />
                   </Button>
                 </DataTemplate>

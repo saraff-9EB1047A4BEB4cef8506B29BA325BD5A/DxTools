@@ -5,9 +5,10 @@ public sealed record HotkeyInfo(
     string Gesture,
     string PrefixGesture,
     string Description,
-    bool Registered)
+    bool Registered,
+    string? TargetProcess = null)
 {
-    public string DisplayGesture => string.IsNullOrWhiteSpace(PrefixGesture)
+    public string DisplayGesture => string.IsNullOrWhiteSpace(TargetProcess)
         ? Gesture
-        : $"{PrefixGesture} > {Gesture}";
+        : $"{Gesture} ({TargetProcess})";
 }

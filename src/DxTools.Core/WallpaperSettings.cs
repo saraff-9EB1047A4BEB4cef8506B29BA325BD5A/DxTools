@@ -22,6 +22,8 @@ public sealed class WallpaperSettings
 
     public int SlideshowIntervalSeconds { get; set; } = 300;
 
+    public bool ScreensaverIncludeVideos { get; set; } = true;
+
     public void Normalize()
     {
         if (!Enum.IsDefined(FitMode))

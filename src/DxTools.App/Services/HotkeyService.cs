@@ -38,10 +38,11 @@ public sealed class HotkeyService : IDisposable
         _bindings
             .Select(binding => new HotkeyInfo(
                 binding.Setting.Action,
-                binding.Setting.Gesture,
-                binding.Setting.PrefixGesture,
+                HotkeySequence.Format(binding.Setting.Steps),
+                string.Empty,
                 Describe(binding.Setting.Action),
-                _hookActive))
+                _hookActive,
+                binding.Setting.TargetProcess))
             .ToList();
 
     public void Reload()
@@ -55,18 +56,19 @@ public sealed class HotkeyService : IDisposable
             .ToList();
 
         var nativeBindings = next
-            .Select(binding => new NativeHotkeyBinding
-            {
-                Id = binding.Id,
-                Modifiers = binding.Setting.Modifiers,
-                VirtualKey = binding.Setting.VirtualKey,
-                PrefixModifiers = binding.Setting.PrefixModifiers,
-                PrefixVirtualKey = binding.Setting.PrefixVirtualKey,
-            })
+            .Select(binding => CreateNativeBinding(binding.Id, binding.Setting))
             .ToList();
 
         if (!_hookActive)
         {
+            var probe = NativeApi.Probe();
+            if (!probe.IsHealthy)
+            {
+                DxLog.Warn($"Low-level hotkey hook is unavailable: {probe.Error ?? "native API mismatch"}.");
+                _bindings = next;
+                return;
+            }
+
             _hookActive = NativeHotkey.TryStart(_windowHandle, HookMessage, nativeBindings, out var error);
             if (!_hookActive)
             {
@@ -83,7 +85,41 @@ public sealed class HotkeyService : IDisposable
         }
 
         _bindings = next;
-        DxLog.Info("Hotkey bindings: " + string.Join(", ", next.Select(binding => binding.Setting.Gesture + " (prefix: " + binding.Setting.PrefixGesture + ")")));
+        DxLog.Info("Hotkey bindings: " + string.Join(", ", next.Select(binding =>
+            HotkeySequence.Format(binding.Setting.Steps)
+            + (string.IsNullOrWhiteSpace(binding.Setting.TargetProcess)
+                ? string.Empty
+                : $" [{binding.Setting.TargetProcess}]"))));
+    }
+
+    private static NativeHotkeyBinding CreateNativeBinding(uint id, HotkeySetting setting)
+    {
+        var steps = setting.Steps
+            .Where(step => step.VirtualKey != 0 && (step.Modifiers & HotkeySetting.ModifierMask) != 0)
+            .Take(NativeHotkeyBinding.MaxSteps)
+            .ToList();
+
+        var nativeSteps = new NativeHotkeyStep[NativeHotkeyBinding.MaxSteps];
+        for (var index = 0; index < steps.Count; index++)
+        {
+            nativeSteps[index] = new NativeHotkeyStep
+            {
+                Modifiers = steps[index].Modifiers,
+                VirtualKey = steps[index].VirtualKey,
+            };
+        }
+
+        return new NativeHotkeyBinding
+        {
+            Id = id,
+            StepCount = (uint)steps.Count,
+            Steps = nativeSteps,
+            Scope = string.IsNullOrWhiteSpace(setting.TargetProcess)
+                ? NativeHotkey.GlobalScope
+                : NativeHotkey.ProcessScope,
+            ProcessName = setting.TargetProcess ?? string.Empty,
+            Reserved = 0,
+        };
     }
 
     private IntPtr WindowProcedure(IntPtr hwnd, int message, IntPtr wParam, IntPtr lParam, ref bool handled)

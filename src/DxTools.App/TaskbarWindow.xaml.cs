@@ -231,6 +231,15 @@ public partial class TaskbarWindow : System.Windows.Window
         return menu;
     }
 
+    private void OnTrayButtonPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (sender is FrameworkElement { DataContext: TrayItemViewModel item })
+        {
+            e.Handled = true;
+            item.ContextMenuCommand.Execute(null);
+        }
+    }
+
     private void OnWindowButtonMouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
     {
         if (sender is not FrameworkElement { DataContext: TaskbarGroupItemViewModel group }

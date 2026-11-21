@@ -4,18 +4,39 @@ using System.Runtime.InteropServices;
 namespace DxTools.Interop;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct NativeHotkeyBinding
+public struct NativeHotkeyStep
 {
-    public uint Id;
     public uint Modifiers;
     public uint VirtualKey;
-    public uint PrefixModifiers;
-    public uint PrefixVirtualKey;
+}
+
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode)]
+public struct NativeHotkeyBinding
+{
+    public const int MaxSteps = 4;
+
+    public const int ProcessNameLength = 64;
+
+    public uint Id;
+    public uint StepCount;
+
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxSteps)]
+    public NativeHotkeyStep[] Steps;
+
+    public uint Scope;
+
+    [MarshalAs(UnmanagedType.ByValTStr, SizeConst = ProcessNameLength)]
+    public string ProcessName;
+
     public uint Reserved;
 }
 
 public static partial class NativeHotkey
 {
+    public const uint GlobalScope = 0;
+
+    public const uint ProcessScope = 1;
+
     public static bool TryStart(
         IntPtr windowHandle,
         uint message,

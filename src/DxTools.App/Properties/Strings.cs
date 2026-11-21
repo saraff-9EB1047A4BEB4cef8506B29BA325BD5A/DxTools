@@ -139,6 +139,8 @@ public static class Strings
     public static string ChooseFolder => Get(nameof(ChooseFolder));
     public static string SlideshowFolder => Get(nameof(SlideshowFolder));
     public static string SlideshowInterval => Get(nameof(SlideshowInterval));
+    public static string ScreensaverIncludeVideos => Get(nameof(ScreensaverIncludeVideos));
+    public static string ScreensaverIncludeVideosHint => Get(nameof(ScreensaverIncludeVideosHint));
     public static string StartSlideshow => Get(nameof(StartSlideshow));
     public static string Stop => Get(nameof(Stop));
     public static string SlideshowStarted => Get(nameof(SlideshowStarted));
@@ -158,6 +160,18 @@ public static class Strings
     public static string HotkeyCaptureTitle => Get(nameof(HotkeyCaptureTitle));
     public static string HotkeyCaptureHint => Get(nameof(HotkeyCaptureHint));
     public static string HotkeyCaptureInvalid => Get(nameof(HotkeyCaptureInvalid));
+    public static string HotkeyCaptureSequenceHint => Get(nameof(HotkeyCaptureSequenceHint));
+    public static string HotkeyCaptureStepCount => Get(nameof(HotkeyCaptureStepCount));
+    public static string HotkeyCaptureTooManySteps => Get(nameof(HotkeyCaptureTooManySteps));
+    public static string HotkeyCaptureFinish => Get(nameof(HotkeyCaptureFinish));
+    public static string HotkeyApplication => Get(nameof(HotkeyApplication));
+    public static string HotkeyApplicationTitle => Get(nameof(HotkeyApplicationTitle));
+    public static string HotkeyApplicationHint => Get(nameof(HotkeyApplicationHint));
+    public static string HotkeyApplicationCurrent => Get(nameof(HotkeyApplicationCurrent));
+    public static string HotkeyApplicationAny => Get(nameof(HotkeyApplicationAny));
+    public static string HotkeyApplicationInvalid => Get(nameof(HotkeyApplicationInvalid));
+    public static string HotkeyReset => Get(nameof(HotkeyReset));
+    public static string HotkeyConflict => Get(nameof(HotkeyConflict));
     public static string Cancel => Get(nameof(Cancel));
     public static string PinnedAppsTitle => Get(nameof(PinnedAppsTitle));
     public static string PinnedAppsHint => Get(nameof(PinnedAppsHint));

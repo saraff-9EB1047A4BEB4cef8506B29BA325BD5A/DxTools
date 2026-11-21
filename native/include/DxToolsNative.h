@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <wchar.h>
 
-#define DXTOOLS_NATIVE_API_VERSION 5u
-#define DXTOOLS_NATIVE_VERSION 0x00000700u
+#define DXTOOLS_NATIVE_API_VERSION 6u
+#define DXTOOLS_NATIVE_VERSION 0x00000800u
 
 #ifdef __cplusplus
 extern "C" {
@@ -39,13 +39,22 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetMonitors(
     uint32_t* written);
 
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetState(uint8_t** data, uint32_t* size);
+#define DXTOOLS_HOTKEY_MAX_STEPS 4
+#define DXTOOLS_HOTKEY_PROCESS_NAME 64
+
+typedef struct DxTools_HotkeyStep
+{
+    uint32_t modifiers;
+    uint32_t virtualKey;
+} DxTools_HotkeyStep;
+
 typedef struct DxTools_HotkeyBinding
 {
     uint32_t id;
-    uint32_t modifiers;
-    uint32_t virtualKey;
-    uint32_t prefixModifiers;
-    uint32_t prefixVirtualKey;
+    uint32_t stepCount;
+    DxTools_HotkeyStep steps[DXTOOLS_HOTKEY_MAX_STEPS];
+    uint32_t scope;
+    wchar_t processName[DXTOOLS_HOTKEY_PROCESS_NAME];
     uint32_t reserved;
 } DxTools_HotkeyBinding;
 

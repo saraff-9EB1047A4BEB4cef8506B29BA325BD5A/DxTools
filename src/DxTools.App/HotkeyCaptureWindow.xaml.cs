@@ -7,36 +7,36 @@ namespace DxTools.App;
 
 public partial class HotkeyCaptureWindow : System.Windows.Window
 {
-    private readonly HotkeyAction _action;
-    private readonly bool _capturePrefix;
+    private readonly List<HotkeyStep> _steps = [];
 
-    public HotkeyCaptureWindow(HotkeyAction action, string currentGesture, bool capturePrefix = false)
+    public HotkeyCaptureWindow(HotkeyAction action, IEnumerable<HotkeyStep> currentSteps)
     {
         InitializeComponent();
-        _action = action;
-        _capturePrefix = capturePrefix;
-        GestureText.Text = string.IsNullOrWhiteSpace(currentGesture) ? Strings.HotkeyCaptureHint : currentGesture;
+        _ = action;
+        _steps.AddRange(currentSteps
+            .Where(step => step.VirtualKey != 0)
+            .Take(HotkeySetting.MaxSteps)
+            .Select(step => step.Clone()));
 
-        if (capturePrefix)
+        UpdateDisplay();
+        Loaded += (_, _) =>
         {
-            Title = Strings.HotkeyCapturePrefixTitle;
-            HintText.Text = Strings.HotkeyCapturePrefixHint;
-        }
-        Loaded += (_, _) => Focus();
+            Focus();
+            Keyboard.Focus(this);
+        };
     }
 
-    public HotkeySetting? Result { get; private set; }
+    public List<HotkeyStep>? Result { get; private set; }
 
-    public static HotkeySetting? Capture(HotkeyAction action, string currentGesture)
+    public static List<HotkeyStep>? CaptureSequence(
+        System.Windows.Window? owner,
+        HotkeyAction action,
+        IEnumerable<HotkeyStep> currentSteps)
     {
-        var window = new HotkeyCaptureWindow(action, currentGesture);
-        _ = window.ShowDialog();
-        return window.Result;
-    }
-
-    public static HotkeySetting? CapturePrefix(HotkeyAction action, string currentGesture)
-    {
-        var window = new HotkeyCaptureWindow(action, currentGesture, capturePrefix: true);
+        var window = new HotkeyCaptureWindow(action, currentSteps)
+        {
+            Owner = owner,
+        };
         _ = window.ShowDialog();
         return window.Result;
     }
@@ -48,7 +48,26 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
         var key = e.Key == Key.System ? e.SystemKey : e.Key;
         if (key == Key.Escape)
         {
+            Result = null;
             Close();
+            return;
+        }
+
+        if (key == Key.Enter)
+        {
+            Finish();
+            return;
+        }
+
+        if (key == Key.Back && Keyboard.Modifiers == ModifierKeys.None)
+        {
+            if (_steps.Count > 0)
+            {
+                _steps.RemoveAt(_steps.Count - 1);
+                HideError();
+                UpdateDisplay();
+            }
+
             return;
         }
 
@@ -63,14 +82,20 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
         var modifiers = Keyboard.Modifiers;
         if (modifiers == ModifierKeys.None)
         {
-            ShowError();
+            ShowError(Strings.HotkeyCaptureInvalid);
+            return;
+        }
+
+        if (_steps.Count >= HotkeySetting.MaxSteps)
+        {
+            ShowError(string.Format(Strings.HotkeyCaptureTooManySteps, HotkeySetting.MaxSteps));
             return;
         }
 
         var virtualKey = KeyInterop.VirtualKeyFromKey(key);
         if (virtualKey == 0)
         {
-            ShowError();
+            ShowError(Strings.HotkeyCaptureInvalid);
             return;
         }
 
@@ -95,20 +120,41 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
             registerModifiers |= 0x0008;
         }
 
-        var gesture = BuildGesture(modifiers, key);
-        Result = new HotkeySetting
+        _steps.Add(new HotkeyStep
         {
-            Action = _action,
-            Modifiers = _capturePrefix ? 0 : registerModifiers,
-            VirtualKey = _capturePrefix ? 0 : (uint)virtualKey,
-            Gesture = _capturePrefix ? string.Empty : gesture,
-            PrefixModifiers = _capturePrefix ? registerModifiers : 0,
-            PrefixVirtualKey = _capturePrefix ? (uint)virtualKey : 0,
-            PrefixGesture = _capturePrefix ? gesture : string.Empty,
-        };
+            Modifiers = registerModifiers,
+            VirtualKey = (uint)virtualKey,
+            Gesture = BuildGesture(modifiers, key),
+        });
 
+        HideError();
+        UpdateDisplay();
+    }
+
+    private void Finish_Click(object sender, RoutedEventArgs e) => Finish();
+
+    private void Finish()
+    {
+        if (_steps.Count == 0)
+        {
+            ShowError(Strings.HotkeyCaptureInvalid);
+            return;
+        }
+
+        Result = _steps.Select(step => step.Clone()).ToList();
         DialogResult = true;
         Close();
+    }
+
+    private void UpdateDisplay()
+    {
+        GestureText.Text = _steps.Count == 0
+            ? Strings.HotkeyCaptureHint
+            : HotkeySequence.Format(_steps);
+        StepCountText.Text = string.Format(
+            Strings.HotkeyCaptureStepCount,
+            _steps.Count,
+            HotkeySetting.MaxSteps);
     }
 
     private static string BuildGesture(ModifierKeys modifiers, Key key)
@@ -122,15 +168,21 @@ public partial class HotkeyCaptureWindow : System.Windows.Window
         return string.Join("+", parts);
     }
 
-    private void ShowError()
+    private void ShowError(string message)
     {
-        ErrorText.Text = Strings.HotkeyCaptureInvalid;
+        ErrorText.Text = message;
         ErrorText.Visibility = Visibility.Visible;
+    }
+
+    private void HideError()
+    {
+        ErrorText.Visibility = Visibility.Collapsed;
     }
 
     private void Cancel_Click(object sender, RoutedEventArgs e)
     {
         Result = null;
+        DialogResult = false;
         Close();
     }
 }

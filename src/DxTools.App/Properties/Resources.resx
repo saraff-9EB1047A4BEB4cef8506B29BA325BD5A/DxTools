@@ -139,6 +139,8 @@
   <data name="ChooseFolder" xml:space="preserve"><value>Choose folder</value></data>
   <data name="SlideshowFolder" xml:space="preserve"><value>Folder</value></data>
   <data name="SlideshowInterval" xml:space="preserve"><value>Interval, seconds</value></data>
+  <data name="ScreensaverIncludeVideos" xml:space="preserve"><value>Play videos in the screensaver</value></data>
+  <data name="ScreensaverIncludeVideosHint" xml:space="preserve"><value>Video files from the slideshow folder are played muted between images.</value></data>
   <data name="StartSlideshow" xml:space="preserve"><value>Start slideshow</value></data>
   <data name="Stop" xml:space="preserve"><value>Stop</value></data>
   <data name="SlideshowStarted" xml:space="preserve"><value>Slideshow started.</value></data>
@@ -158,6 +160,18 @@
   <data name="HotkeyCaptureTitle" xml:space="preserve"><value>Change hotkey</value></data>
   <data name="HotkeyCaptureHint" xml:space="preserve"><value>Press a key combination with Ctrl, Alt, Shift or Win.</value></data>
   <data name="HotkeyCaptureInvalid" xml:space="preserve"><value>Use at least one modifier and a non-modifier key.</value></data>
+  <data name="HotkeyCaptureSequenceHint" xml:space="preserve"><value>Press each combination in order. Enter finishes the sequence; Backspace removes the last step.</value></data>
+  <data name="HotkeyCaptureStepCount" xml:space="preserve"><value>Step {0} of {1}</value></data>
+  <data name="HotkeyCaptureTooManySteps" xml:space="preserve"><value>A hotkey chain can contain at most {0} steps.</value></data>
+  <data name="HotkeyCaptureFinish" xml:space="preserve"><value>Finish</value></data>
+  <data name="HotkeyApplication" xml:space="preserve"><value>Application…</value></data>
+  <data name="HotkeyApplicationTitle" xml:space="preserve"><value>Application scope</value></data>
+  <data name="HotkeyApplicationHint" xml:space="preserve"><value>Run this hotkey only when the selected application is active. Leave the field empty to run it everywhere.</value></data>
+  <data name="HotkeyApplicationCurrent" xml:space="preserve"><value>Active window</value></data>
+  <data name="HotkeyApplicationAny" xml:space="preserve"><value>Any application</value></data>
+  <data name="HotkeyApplicationInvalid" xml:space="preserve"><value>Could not determine the application. Enter a process name such as notepad.exe.</value></data>
+  <data name="HotkeyReset" xml:space="preserve"><value>Reset</value></data>
+  <data name="HotkeyConflict" xml:space="preserve"><value>The sequence {0} is already assigned to another hotkey.</value></data>
   <data name="Cancel" xml:space="preserve"><value>Cancel</value></data>
   <data name="PinnedAppsTitle" xml:space="preserve"><value>Pinned apps</value></data>
   <data name="PinnedAppsHint" xml:space="preserve"><value>Pinned applications are shown on every DxTools taskbar.</value></data>

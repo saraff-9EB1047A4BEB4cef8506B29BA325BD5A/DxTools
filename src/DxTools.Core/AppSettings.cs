@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 10;
+    public const int CurrentSchemaVersion = 11;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -91,16 +91,9 @@ public sealed class AppSettings
 
         foreach (var hotkey in Hotkeys)
         {
-            if (string.IsNullOrWhiteSpace(hotkey.Gesture))
-            {
-                hotkey.Gesture = defaults.First(item => item.Action == hotkey.Action).Gesture;
-            }
-
-            if (hotkey.PrefixVirtualKey == 0)
-            {
-                hotkey.PrefixModifiers = 0;
-                hotkey.PrefixGesture = string.Empty;
-            }
+            var fallback = defaults.First(item => item.Action == hotkey.Action);
+            hotkey.NormalizeSteps(fallback.Steps);
+            hotkey.TargetProcess = HotkeySetting.NormalizeProcessName(hotkey.TargetProcess);
         }
 
         SplitRows = Math.Clamp(SplitRows, 1, 3);

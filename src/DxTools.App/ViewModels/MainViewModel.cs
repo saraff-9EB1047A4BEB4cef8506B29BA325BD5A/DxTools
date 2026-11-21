@@ -60,18 +60,18 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         SelfCheckCommand = new RelayCommand(RunSelfCheck);
         ExportBackupCommand = new RelayCommand(ExportBackup);
         AddPinnedAppCommand = new RelayCommand(AddPinnedApp);
-        ChangeHotkeyPrefixCommand = new RelayCommand(parameter =>
+        ChangeHotkeyApplicationCommand = new RelayCommand(parameter =>
         {
             if (parameter is HotkeyInfo hotkey)
             {
-                HotkeyPrefixChangeRequested?.Invoke(hotkey.Action);
+                HotkeyApplicationChangeRequested?.Invoke(hotkey.Action);
             }
         });
-        ClearHotkeyPrefixCommand = new RelayCommand(parameter =>
+        ResetHotkeyCommand = new RelayCommand(parameter =>
         {
             if (parameter is HotkeyInfo hotkey)
             {
-                HotkeyPrefixClearRequested?.Invoke(hotkey.Action);
+                HotkeyResetRequested?.Invoke(hotkey.Action);
             }
         });
         ChangeHotkeyCommand = new RelayCommand(parameter =>
@@ -94,9 +94,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public event Action<HotkeyAction>? HotkeyChangeRequested;
 
-    public event Action<HotkeyAction>? HotkeyPrefixChangeRequested;
+    public event Action<HotkeyAction>? HotkeyApplicationChangeRequested;
 
-    public event Action<HotkeyAction>? HotkeyPrefixClearRequested;
+    public event Action<HotkeyAction>? HotkeyResetRequested;
 
     public event Action? PinnedAppsChanged;
 
@@ -130,9 +130,9 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public ICommand ChangeHotkeyCommand { get; }
 
-    public ICommand ChangeHotkeyPrefixCommand { get; }
+    public ICommand ChangeHotkeyApplicationCommand { get; }
 
-    public ICommand ClearHotkeyPrefixCommand { get; }
+    public ICommand ResetHotkeyCommand { get; }
 
     public ICommand AddPinnedAppCommand { get; }
 

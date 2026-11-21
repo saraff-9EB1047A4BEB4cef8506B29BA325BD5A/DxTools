@@ -320,7 +320,7 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         TrayItems.Clear();
         foreach (var item in _trayMirror.Capture())
         {
-            TrayItems.Add(new TrayItemViewModel(item, ClickTrayItem));
+            TrayItems.Add(new TrayItemViewModel(item, ClickTrayItem, OpenTrayContextMenu));
         }
 
         _lastTrayRefresh = DateTimeOffset.Now;
@@ -331,6 +331,30 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         IsTrayOpen = false;
         System.Windows.Application.Current?.Dispatcher.BeginInvoke(
             new Action(() => _trayMirror.Click(item)));
+    }
+
+    private void OpenTrayContextMenu(TrayItem item)
+    {
+        IsTrayOpen = false;
+
+        var dispatcher = System.Windows.Application.Current?.Dispatcher;
+        if (dispatcher is null)
+        {
+            return;
+        }
+
+        var timer = new DispatcherTimer(DispatcherPriority.Input, dispatcher)
+        {
+            Interval = TimeSpan.FromMilliseconds(80),
+        };
+
+        timer.Tick += (_, _) =>
+        {
+            timer.Stop();
+            _trayMirror.OpenContextMenu(item);
+        };
+
+        timer.Start();
     }
 
     private void OnTimerTick(object? sender, EventArgs e)

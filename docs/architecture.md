@@ -26,9 +26,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - Трей через `System.Windows.Forms.NotifyIcon` (временно; позже возможен
   собственный host).
 - Single instance, crash handler, безопасный режим.
-- `HotkeyService` на native `WH_KEYBOARD_LL` + `HwndSource`; сочетания и
-  двухшаговые цепочки хранятся в настройках и меняются через
-  `HotkeyCaptureWindow`.
+- `HotkeyService` на native `WH_KEYBOARD_LL` + `HwndSource`; последовательности
+  до четырёх шагов, общие префиксы и привязка к процессу хранятся в настройках
+  и меняются через `HotkeyCaptureWindow`.
 - `DisplayChangeWatcher` на `WM_DISPLAYCHANGE` с debounce.
 - `DisplayConfirmationWindow` — подтверждение/откат настроек экрана.
 - `TaskbarManager`: панели задач для неосновных мониторов, опционально
@@ -46,8 +46,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
   позиционируется через offscreen popup-host, потому что главное окно может
   быть скрыто в трее.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
-- `TrayMirrorService`: UIA-сканирование области уведомлений, снимки иконок
-  и передача клика исходному элементу; popup обновляется раз в 2 секунды.
+- `TrayMirrorService`: UIA-сканирование области уведомлений, снимки иконок,
+  передача клика исходному элементу и открытие его штатного контекстного меню
+  правым кликом; popup обновляется раз в 2 секунды.
 - Никакой бизнес-логики: только представление и композиция.
 
 ### DxTools.Core
@@ -89,8 +90,8 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `AudioService`: CoreAudio enumeration и `IPolicyConfig` для default endpoint.
 - `VirtualDesktopService`: навигация/перенос окон через системные Win+Ctrl
   сочетания, синтезированные `SendInput`.
-- `DxTools.Screensaver`: отдельный WPF `.scr`, изображения из папки
-  слайдшоу, одно окно на монитор.
+- `DxTools.Screensaver`: отдельный WPF `.scr`, изображения и видео из папки
+  слайдшоу, одно окно на монитор, `/p` — дочернее окно предпросмотра.
 - CLI-команды и IPC-сообщения `cmd:` выполняются на UI-потоке; команды
   от shell extension применяются к уже запущенному экземпляру.
 - В 1.0: UIAccess, подпись, security review.
@@ -104,8 +105,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ### DxTools.Native
 
 - C++20, Win32, без сторонних runtime-зависимостей.
-- C ABI v5: версия/ ping, DisplayConfig API, LL-keyboard-hook,
-  prefix-цепочки, `DxTools_Audio_GetDeviceCount/GetDevices/SetDefault`,
+- C ABI v6: версия/ ping, DisplayConfig API, LL-keyboard-hook,
+  последовательности до четырёх шагов и область действия по процессу,
+  `DxTools_Audio_GetDeviceCount/GetDevices/SetDefault`,
   LL-mouse-hook `DxTools_MouseHook_*` для меню основной панели задач.
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
@@ -141,8 +143,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - Apply DisplayConfig и композиция обоев выполняются в `Task.Run`, чтобы
   не блокировать UI; подтверждение отката показывает модальное окно.
 - Native LL-keyboard-hook работает на выделенном потоке с message loop и
-  передаёт события в UI через `PostMessage`; prefix-цепочка хранит pending-id
-  с таймаутом 1,5 с. LL-mouse-hook для меню основной панели работает на
+  передаёт события в UI через `PostMessage`; состояние последовательности
+  хранит список кандидатов, номер шага и таймаут 1,5 с, а область действия
+  проверяется по foreground-процессу с кэшем 250 мс. LL-mouse-hook для меню основной панели работает на
   отдельном потоке, проверяет прямоугольник панели и Ctrl, подавляет только
   пару RBUTTONDOWN/UP и отправляет координаты в UI; UI Automation и построение
   меню выполняются на UI-потоке.

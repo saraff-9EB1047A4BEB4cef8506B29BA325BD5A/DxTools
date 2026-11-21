@@ -139,6 +139,8 @@
   <data name="ChooseFolder" xml:space="preserve"><value>Выбрать папку</value></data>
   <data name="SlideshowFolder" xml:space="preserve"><value>Папка</value></data>
   <data name="SlideshowInterval" xml:space="preserve"><value>Интервал, сек</value></data>
+  <data name="ScreensaverIncludeVideos" xml:space="preserve"><value>Проигрывать видео в заставке</value></data>
+  <data name="ScreensaverIncludeVideosHint" xml:space="preserve"><value>Видеофайлы из папки слайдшоу воспроизводятся без звука между изображениями.</value></data>
   <data name="StartSlideshow" xml:space="preserve"><value>Запустить слайдшоу</value></data>
   <data name="Stop" xml:space="preserve"><value>Остановить</value></data>
   <data name="SlideshowStarted" xml:space="preserve"><value>Слайдшоу запущено.</value></data>
@@ -158,6 +160,18 @@
   <data name="HotkeyCaptureTitle" xml:space="preserve"><value>Изменение горячей клавиши</value></data>
   <data name="HotkeyCaptureHint" xml:space="preserve"><value>Нажмите сочетание с Ctrl, Alt, Shift или Win.</value></data>
   <data name="HotkeyCaptureInvalid" xml:space="preserve"><value>Нужен хотя бы один модификатор и обычная клавиша.</value></data>
+  <data name="HotkeyCaptureSequenceHint" xml:space="preserve"><value>Нажимайте комбинации по порядку. Enter завершает последовательность, Backspace удаляет последний шаг.</value></data>
+  <data name="HotkeyCaptureStepCount" xml:space="preserve"><value>Шаг {0} из {1}</value></data>
+  <data name="HotkeyCaptureTooManySteps" xml:space="preserve"><value>Цепочка может содержать не более {0} шагов.</value></data>
+  <data name="HotkeyCaptureFinish" xml:space="preserve"><value>Готово</value></data>
+  <data name="HotkeyApplication" xml:space="preserve"><value>Приложение…</value></data>
+  <data name="HotkeyApplicationTitle" xml:space="preserve"><value>Область действия</value></data>
+  <data name="HotkeyApplicationHint" xml:space="preserve"><value>Выполнять hotkey только когда активно выбранное приложение. Пустое поле — работать везде.</value></data>
+  <data name="HotkeyApplicationCurrent" xml:space="preserve"><value>Активное окно</value></data>
+  <data name="HotkeyApplicationAny" xml:space="preserve"><value>Любое приложение</value></data>
+  <data name="HotkeyApplicationInvalid" xml:space="preserve"><value>Не удалось определить приложение. Укажите имя процесса, например notepad.exe.</value></data>
+  <data name="HotkeyReset" xml:space="preserve"><value>Сбросить</value></data>
+  <data name="HotkeyConflict" xml:space="preserve"><value>Последовательность {0} уже назначена другому hotkey.</value></data>
   <data name="Cancel" xml:space="preserve"><value>Отмена</value></data>
   <data name="PinnedAppsTitle" xml:space="preserve"><value>Закреплённые приложения</value></data>
   <data name="PinnedAppsHint" xml:space="preserve"><value>Закреплённые приложения отображаются на каждой панели задач DxTools.</value></data>

@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:props="clr-namespace:DxTools.App.Properties"
         Title="{x:Static props:Strings.HotkeyCaptureTitle}"
-        Width="480"
+        Width="520"
         SizeToContent="Height"
         WindowStartupLocation="CenterScreen"
         ResizeMode="NoResize"
@@ -23,25 +23,36 @@
       <TextBlock Text="{x:Static props:Strings.HotkeyCaptureTitle}"
                  FontSize="18"
                  FontWeight="SemiBold" />
-      <TextBlock x:Name="HintText" Text="{x:Static props:Strings.HotkeyCaptureHint}"
+      <TextBlock x:Name="HintText" Text="{x:Static props:Strings.HotkeyCaptureSequenceHint}"
                  Style="{StaticResource HintStyle}"
+                 TextWrapping="Wrap"
                  Margin="0,8,0,0" />
       <TextBlock x:Name="GestureText"
                  FontSize="22"
                  FontWeight="Bold"
+                 TextWrapping="Wrap"
                  HorizontalAlignment="Center"
                  Margin="0,18,0,0" />
+      <TextBlock x:Name="StepCountText"
+                 Style="{StaticResource HintStyle}"
+                 HorizontalAlignment="Center"
+                 Margin="0,6,0,0" />
       <TextBlock x:Name="ErrorText"
                  Foreground="{DynamicResource WarningBrush}"
                  FontSize="12"
                  TextWrapping="Wrap"
                  Margin="0,8,0,0"
                  Visibility="Collapsed" />
-      <Button Content="{x:Static props:Strings.Cancel}"
-              Style="{StaticResource SecondaryButtonStyle}"
-              HorizontalAlignment="Right"
-              Click="Cancel_Click"
-              Margin="0,18,0,0" />
+      <StackPanel Orientation="Horizontal"
+                  HorizontalAlignment="Right"
+                  Margin="0,18,0,0">
+        <Button Content="{x:Static props:Strings.HotkeyCaptureFinish}"
+                Click="Finish_Click"
+                Margin="0,0,8,0" />
+        <Button Content="{x:Static props:Strings.Cancel}"
+                Style="{StaticResource SecondaryButtonStyle}"
+                Click="Cancel_Click" />
+      </StackPanel>
     </StackPanel>
   </Border>
 </Window>

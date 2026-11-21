@@ -177,8 +177,8 @@ public partial class App : System.Windows.Application
                 _primaryTaskbarMenu?.ApplySettings();
             };
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
-            viewModel.HotkeyPrefixChangeRequested += OnHotkeyPrefixChangeRequested;
-            viewModel.HotkeyPrefixClearRequested += OnHotkeyPrefixClearRequested;
+            viewModel.HotkeyApplicationChangeRequested += OnHotkeyApplicationChangeRequested;
+            viewModel.HotkeyResetRequested += OnHotkeyResetRequested;
             viewModel.PinnedAppsChanged += () => _taskbarManager?.Rebuild();
 
             _titleBarOverlay = new TitleBarOverlayManager(_engine.Windows, _settings);
@@ -418,24 +418,26 @@ public partial class App : System.Windows.Application
             return;
         }
 
-        var result = HotkeyCaptureWindow.Capture(action, setting.Gesture);
-        if (result is null)
+        var steps = HotkeyCaptureWindow.CaptureSequence(_window, action, Array.Empty<HotkeyStep>());
+        if (steps is null)
         {
             return;
         }
 
-        setting.Modifiers = result.Modifiers;
-        setting.VirtualKey = result.VirtualKey;
-        setting.Gesture = result.Gesture;
+        if (HasHotkeyConflict(action, steps, setting.TargetProcess))
+        {
+            return;
+        }
 
+        setting.Steps = steps;
         SaveSettings();
         _hotkeys?.Reload();
         _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
     }
 
-    private void OnHotkeyPrefixChangeRequested(HotkeyAction action)
+    private void OnHotkeyApplicationChangeRequested(HotkeyAction action)
     {
-        if (_settings is null)
+        if (_settings is null || _window is null)
         {
             return;
         }
@@ -446,22 +448,23 @@ public partial class App : System.Windows.Application
             return;
         }
 
-        var result = HotkeyCaptureWindow.CapturePrefix(action, setting.PrefixGesture);
-        if (result is null)
+        if (!HotkeyApplicationWindow.TryChoose(_window, setting.TargetProcess, out var process))
         {
             return;
         }
 
-        setting.PrefixModifiers = result.PrefixModifiers;
-        setting.PrefixVirtualKey = result.PrefixVirtualKey;
-        setting.PrefixGesture = result.PrefixGesture;
+        if (HasHotkeyConflict(action, setting.Steps, process))
+        {
+            return;
+        }
 
+        setting.TargetProcess = process;
         SaveSettings();
         _hotkeys?.Reload();
         _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
     }
 
-    private void OnHotkeyPrefixClearRequested(HotkeyAction action)
+    private void OnHotkeyResetRequested(HotkeyAction action)
     {
         if (_settings is null)
         {
@@ -469,18 +472,55 @@ public partial class App : System.Windows.Application
         }
 
         var setting = _settings.Hotkeys.FirstOrDefault(hotkey => hotkey.Action == action);
-        if (setting is null)
+        var defaultSetting = HotkeySetting.CreateDefaults().FirstOrDefault(hotkey => hotkey.Action == action);
+        if (setting is null || defaultSetting is null)
         {
             return;
         }
 
-        setting.PrefixModifiers = 0;
-        setting.PrefixVirtualKey = 0;
-        setting.PrefixGesture = string.Empty;
+        if (HasHotkeyConflict(action, defaultSetting.Steps, setting.TargetProcess))
+        {
+            return;
+        }
 
+        setting.Steps = defaultSetting.Steps.Select(step => step.Clone()).ToList();
         SaveSettings();
         _hotkeys?.Reload();
         _viewModel?.SetHotkeys(_hotkeys?.Bindings ?? []);
+    }
+
+    private bool HasHotkeyConflict(
+        HotkeyAction action,
+        IReadOnlyList<HotkeyStep> steps,
+        string? targetProcess)
+    {
+        if (_settings is null)
+        {
+            return false;
+        }
+
+        var candidate = new HotkeySetting
+        {
+            Action = action,
+            Steps = steps.ToList(),
+            TargetProcess = targetProcess,
+        };
+
+        var conflict = HotkeySequence.FindConflict(
+            _settings.Hotkeys.Where(hotkey => hotkey.Action != action),
+            candidate);
+        if (conflict is null)
+        {
+            return false;
+        }
+
+        System.Windows.MessageBox.Show(
+            _window!,
+            string.Format(Strings.HotkeyConflict, HotkeySequence.Format(conflict.Steps)),
+            Strings.AppTitle,
+            System.Windows.MessageBoxButton.OK,
+            System.Windows.MessageBoxImage.Warning);
+        return true;
     }
 
     private void OnHotkeyPressed(HotkeyAction action)
