@@ -189,7 +189,8 @@ public partial class TaskbarWindow : System.Windows.Window
 
                 var monitorItem = new MenuItem
                 {
-                    Header = BuildMonitorLabel(monitors[index], index == _viewModel.MonitorIndex),
+                    Header = MenuHeaderFactory.Create(
+                        BuildMonitorLabel(monitors[index], index == _viewModel.MonitorIndex)),
                 };
 
                 if (monitorWindows.Count == 0)
@@ -204,7 +205,10 @@ public partial class TaskbarWindow : System.Windows.Window
                 {
                     foreach (var window in monitorWindows)
                     {
-                        var windowItem = new MenuItem { Header = window.Title };
+                        var windowItem = new MenuItem
+                        {
+                            Header = MenuHeaderFactory.Create(window.Title),
+                        };
                         windowItem.Items.Add(CreateMenuItem(
                             Strings.ActivateWindow,
                             () => _viewModel.ActivateWindow(window.Handle)));
@@ -404,7 +408,10 @@ public partial class TaskbarWindow : System.Windows.Window
         {
             foreach (var window in group.Windows)
             {
-                var windowItem = new MenuItem { Header = window.Title };
+                var windowItem = new MenuItem
+                {
+                    Header = MenuHeaderFactory.Create(window.Title),
+                };
                 AddWindowMenuItems(windowItem.Items, window);
                 menu.Items.Add(windowItem);
             }
@@ -428,7 +435,7 @@ public partial class TaskbarWindow : System.Windows.Window
 
             var item = new MenuItem
             {
-                Header = BuildMonitorLabel(monitor, isCurrent),
+                Header = MenuHeaderFactory.Create(BuildMonitorLabel(monitor, isCurrent)),
                 IsCheckable = true,
                 IsChecked = isCurrent,
                 IsEnabled = !isCurrent,

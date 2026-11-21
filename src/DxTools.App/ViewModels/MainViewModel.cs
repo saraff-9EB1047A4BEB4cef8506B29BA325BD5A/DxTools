@@ -150,7 +150,7 @@ public sealed class MainViewModel : ObservableObject, IDisposable
 
     public string LogDirectory => AppPaths.LogDirectory;
 
-    public string PhaseNote => Strings.Phase0Note;
+    public string AboutFeaturesNote => Strings.AboutFeaturesNote;
 
     public bool StartWithWindows
     {

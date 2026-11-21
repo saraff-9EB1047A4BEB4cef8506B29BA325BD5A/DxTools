@@ -14,7 +14,6 @@ public static class Strings
 
     public static string AppTitle => Get(nameof(AppTitle));
     public static string AppSubtitle => Get(nameof(AppSubtitle));
-    public static string PhaseLabel => Get(nameof(PhaseLabel));
     public static string GeneralTab => Get(nameof(GeneralTab));
     public static string DiagnosticsTab => Get(nameof(DiagnosticsTab));
     public static string AboutTab => Get(nameof(AboutTab));
@@ -76,7 +75,7 @@ public static class Strings
     public static string Unhealthy => Get(nameof(Unhealthy));
     public static string SettingsSaved => Get(nameof(SettingsSaved));
     public static string LogFolderUnavailable => Get(nameof(LogFolderUnavailable));
-    public static string Phase0Note => Get(nameof(Phase0Note));
+    public static string AboutFeaturesNote => Get(nameof(AboutFeaturesNote));
     public static string LicenseName => Get(nameof(LicenseName));
     public static string MonitorsTab => Get(nameof(MonitorsTab));
     public static string HotkeysTab => Get(nameof(HotkeysTab));

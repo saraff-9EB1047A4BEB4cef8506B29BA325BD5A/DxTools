@@ -14,7 +14,6 @@
   </resheader>
   <data name="AppTitle" xml:space="preserve"><value>DxTools</value></data>
   <data name="AppSubtitle" xml:space="preserve"><value>Multi-monitor control for Windows 11</value></data>
-  <data name="PhaseLabel" xml:space="preserve"><value>1.0 · Release candidate</value></data>
   <data name="GeneralTab" xml:space="preserve"><value>General</value></data>
   <data name="DiagnosticsTab" xml:space="preserve"><value>Diagnostics</value></data>
   <data name="AboutTab" xml:space="preserve"><value>About</value></data>
@@ -58,8 +57,8 @@
   <data name="Exit" xml:space="preserve"><value>Exit</value></data>
   <data name="Open" xml:space="preserve"><value>Open DxTools</value></data>
   <data name="TrayStatus" xml:space="preserve"><value>Status</value></data>
-  <data name="StatusReady" xml:space="preserve"><value>Native runtime is ready</value></data>
-  <data name="StatusUnavailable" xml:space="preserve"><value>Native runtime is unavailable</value></data>
+  <data name="StatusReady" xml:space="preserve"><value>Running</value></data>
+  <data name="StatusUnavailable" xml:space="preserve"><value>Limited mode</value></data>
   <data name="StatusSafeMode" xml:space="preserve"><value>Safe mode</value></data>
   <data name="SaveFailed" xml:space="preserve"><value>Could not save settings. See the log for details.</value></data>
   <data name="AutostartFailed" xml:space="preserve"><value>Could not update Windows autostart. See the log for details.</value></data>
@@ -76,7 +75,7 @@
   <data name="Unhealthy" xml:space="preserve"><value>Attention needed</value></data>
   <data name="SettingsSaved" xml:space="preserve"><value>Settings saved.</value></data>
   <data name="LogFolderUnavailable" xml:space="preserve"><value>Log folder is not available.</value></data>
-  <data name="Phase0Note" xml:space="preserve"><value>Foundation build. Monitor, window, wallpaper and taskbar features are planned for Phase 1–2.</value></data>
+  <data name="AboutFeaturesNote" xml:space="preserve"><value>Manage monitors, windows, wallpapers, hotkeys, and taskbars on secondary monitors.</value></data>
   <data name="LicenseName" xml:space="preserve"><value>GNU GPL v2</value></data>
   <data name="MonitorsTab" xml:space="preserve"><value>Monitors</value></data>
   <data name="HotkeysTab" xml:space="preserve"><value>Hotkeys</value></data>
@@ -103,7 +102,7 @@
   <data name="DisplayProfileSaveFailed" xml:space="preserve"><value>Could not save the display profile.</value></data>
   <data name="DisplayNoMonitors" xml:space="preserve"><value>No monitors were detected.</value></data>
   <data name="DisplayBusy" xml:space="preserve"><value>Applying display settings…</value></data>
-  <data name="HotkeyHint" xml:space="preserve"><value>Use Change to assign a new combination. LL-hook and multi-step chords are planned for Phase 2C.</value></data>
+  <data name="HotkeyHint" xml:space="preserve"><value>Select Change to assign a new combination. Combinations used by other applications are marked Unavailable.</value></data>
   <data name="HotkeyMovePrev" xml:space="preserve"><value>Move window to the previous monitor</value></data>
   <data name="HotkeyMoveNext" xml:space="preserve"><value>Move window to the next monitor</value></data>
   <data name="HotkeyTopmost" xml:space="preserve"><value>Toggle always-on-top</value></data>

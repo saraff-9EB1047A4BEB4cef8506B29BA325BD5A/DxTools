@@ -36,6 +36,9 @@ public static partial class Win32Window
     public const uint WmMouseLeave = 0x02A3;
     public const int WmMouseActivate = 0x0021;
     public const int MaNoActivate = 3;
+    public const uint EventSystemForeground = 0x0003;
+    public const uint EventObjectLocationChange = 0x800B;
+    public const uint WineventOutOfContext = 0x0000;
 
     public static readonly IntPtr HwndTopmost = new(-1);
     public static readonly IntPtr HwndNotTopmost = new(-2);
@@ -97,4 +100,28 @@ public static partial class Win32Window
     [LibraryImport("user32.dll", SetLastError = true)]
     [return: MarshalAs(UnmanagedType.Bool)]
     public static partial bool PostMessage(IntPtr hwnd, uint message, IntPtr wParam, IntPtr lParam);
+
+    [UnmanagedFunctionPointer(CallingConvention.Winapi)]
+    public delegate void WinEventDelegate(
+        IntPtr hWinEventHook,
+        uint eventType,
+        IntPtr hwnd,
+        int idObject,
+        int idChild,
+        uint dwEventThread,
+        uint dwmsEventTime);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    public static extern IntPtr SetWinEventHook(
+        uint eventMin,
+        uint eventMax,
+        IntPtr hmodWinEventProc,
+        WinEventDelegate lpfnWinEventProc,
+        uint idProcess,
+        uint idThread,
+        uint dwFlags);
+
+    [DllImport("user32.dll", SetLastError = true)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    public static extern bool UnhookWinEvent(IntPtr hWinEventHook);
 }

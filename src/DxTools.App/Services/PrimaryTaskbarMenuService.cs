@@ -255,7 +255,11 @@ public sealed class PrimaryTaskbarMenuService : IDisposable
         var title = string.IsNullOrWhiteSpace(buttonName)
             ? Strings.TaskbarMenu
             : WindowMatcher.NormalizeButtonName(buttonName);
-        menu.Items.Add(new MenuItem { Header = title, IsEnabled = false });
+        menu.Items.Add(new MenuItem
+        {
+            Header = MenuHeaderFactory.Create(title),
+            IsEnabled = false,
+        });
 
         if (windows.Count == 0)
         {
@@ -269,7 +273,10 @@ public sealed class PrimaryTaskbarMenuService : IDisposable
         {
             foreach (var window in windows)
             {
-                var item = new MenuItem { Header = window.Title };
+                var item = new MenuItem
+                {
+                    Header = MenuHeaderFactory.Create(window.Title),
+                };
                 AddWindowItems(item.Items, window, monitors);
                 menu.Items.Add(item);
             }
@@ -306,7 +313,7 @@ public sealed class PrimaryTaskbarMenuService : IDisposable
 
             var item = new MenuItem
             {
-                Header = label,
+                Header = MenuHeaderFactory.Create(label),
                 IsCheckable = true,
                 IsChecked = isCurrent,
                 IsEnabled = !isCurrent,

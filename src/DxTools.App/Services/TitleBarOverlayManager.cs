@@ -11,8 +11,12 @@ public sealed class TitleBarOverlayManager : IDisposable
     private readonly AppSettings _settings;
     private readonly TitleBarOverlayWindow _window;
     private readonly DispatcherTimer _timer;
+    private readonly Win32Window.WinEventDelegate _winEventCallback;
     private bool _visible;
     private bool _disposed;
+    private bool _refreshQueued;
+    private IntPtr _foregroundHook;
+    private IntPtr _locationHook;
     private IntPtr _lastTarget;
     private int _lastX;
     private int _lastY;
@@ -32,6 +36,75 @@ public sealed class TitleBarOverlayManager : IDisposable
         };
         _timer.Tick += (_, _) => Update();
         _timer.Start();
+
+        _winEventCallback = OnWinEvent;
+        _foregroundHook = Win32Window.SetWinEventHook(
+            Win32Window.EventSystemForeground,
+            Win32Window.EventSystemForeground,
+            IntPtr.Zero,
+            _winEventCallback,
+            0,
+            0,
+            Win32Window.WineventOutOfContext);
+        _locationHook = Win32Window.SetWinEventHook(
+            Win32Window.EventObjectLocationChange,
+            Win32Window.EventObjectLocationChange,
+            IntPtr.Zero,
+            _winEventCallback,
+            0,
+            0,
+            Win32Window.WineventOutOfContext);
+    }
+
+    private void OnWinEvent(
+        IntPtr hook,
+        uint eventType,
+        IntPtr hwnd,
+        int idObject,
+        int idChild,
+        uint eventThread,
+        uint eventTime)
+    {
+        if (_disposed || idObject != 0 || idChild != 0)
+        {
+            return;
+        }
+
+        if (eventType == Win32Window.EventObjectLocationChange
+            && hwnd != Win32Window.GetForegroundWindow())
+        {
+            return;
+        }
+
+        QueueRefresh();
+    }
+
+    private void QueueRefresh()
+    {
+        if (_refreshQueued || _disposed)
+        {
+            return;
+        }
+
+        _refreshQueued = true;
+        var dispatcher = System.Windows.Application.Current?.Dispatcher;
+        if (dispatcher is null)
+        {
+            _refreshQueued = false;
+            Update();
+            return;
+        }
+
+        _ = dispatcher.BeginInvoke(
+            new Action(() =>
+            {
+                _refreshQueued = false;
+                if (!_disposed)
+                {
+                    Update();
+                }
+            }),
+            DispatcherPriority.Background);
     }
 
     public void Refresh() => Update();
@@ -125,40 +198,37 @@ public sealed class TitleBarOverlayManager : IDisposable
             _visible = true;
         }
 
-        var geometryChanged = !wasVisible
-            || target != _lastTarget
+        var targetChanged = target != _lastTarget;
+        var geometryChanged = targetChanged
+            || !wasVisible
             || x != _lastX
             || y != _lastY
             || physicalWidth != _lastWidth
             || physicalHeight != _lastHeight;
 
+        _ = Win32Window.SetWindowPos(
+            handle,
+            Win32Window.HwndTopmost,
+            x,
+            y,
+            physicalWidth,
+            physicalHeight,
+            Win32Window.SwpNoActivate | Win32Window.SwpShowWindow);
+
         if (geometryChanged)
         {
-            _ = Win32Window.SetWindowPos(
-                handle,
-                Win32Window.HwndTopmost,
-                x,
-                y,
-                physicalWidth,
-                physicalHeight,
-                Win32Window.SwpNoActivate | Win32Window.SwpShowWindow);
+            if (targetChanged)
+            {
+                DxLog.Info(
+                    $"Titlebar overlay target changed: hwnd=0x{target.ToInt64():X}, pid={processId}.");
+            }
 
             _lastTarget = target;
             _lastX = x;
             _lastY = y;
             _lastWidth = physicalWidth;
             _lastHeight = physicalHeight;
-        }
-        else
-        {
-            _ = Win32Window.SetWindowPos(
-                handle,
-                Win32Window.HwndTopmost,
-                0,
-                0,
-                0,
-                0,
-                Win32Window.SwpNoMove | Win32Window.SwpNoSize | Win32Window.SwpNoActivate);
+            _window.InvalidateVisual();
         }
 
         _window.SyncPointerState(geometryChanged);
@@ -175,6 +245,10 @@ public sealed class TitleBarOverlayManager : IDisposable
         _window.TargetHandle = IntPtr.Zero;
         _window.ResetPointerState();
         _lastTarget = IntPtr.Zero;
+        _lastX = 0;
+        _lastY = 0;
+        _lastWidth = 0;
+        _lastHeight = 0;
         _visible = false;
     }
 
@@ -187,6 +261,19 @@ public sealed class TitleBarOverlayManager : IDisposable
 
         _disposed = true;
         _timer.Stop();
+
+        if (_foregroundHook != IntPtr.Zero)
+        {
+            _ = Win32Window.UnhookWinEvent(_foregroundHook);
+            _foregroundHook = IntPtr.Zero;
+        }
+
+        if (_locationHook != IntPtr.Zero)
+        {
+            _ = Win32Window.UnhookWinEvent(_locationHook);
+            _locationHook = IntPtr.Zero;
+        }
+
         _window.Close();
     }
 
