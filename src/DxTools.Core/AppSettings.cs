@@ -20,7 +20,7 @@ public enum AppTheme
 
 public sealed class AppSettings
 {
-    public const int CurrentSchemaVersion = 9;
+    public const int CurrentSchemaVersion = 10;
 
     public int SchemaVersion { get; set; } = CurrentSchemaVersion;
 
@@ -37,6 +37,10 @@ public sealed class AppSettings
     public bool EnableSecondaryTaskbar { get; set; } = true;
 
     public bool TaskbarAutoHide { get; set; }
+
+    public bool EnableTaskbarContextMenu { get; set; } = true;
+
+    public bool EnablePrimaryTaskbarMenu { get; set; }
 
     public bool EnableTitleBarButtons { get; set; }
 

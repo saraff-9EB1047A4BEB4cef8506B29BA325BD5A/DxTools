@@ -20,6 +20,7 @@ public partial class App : System.Windows.Application
     private HotkeyService? _hotkeys;
     private DisplayChangeWatcher? _displayWatcher;
     private TaskbarManager? _taskbarManager;
+    private PrimaryTaskbarMenuService? _primaryTaskbarMenu;
     private TitleBarOverlayManager? _titleBarOverlay;
     private MainViewModel? _viewModel;
     private bool _isExiting;
@@ -142,7 +143,11 @@ public partial class App : System.Windows.Application
         _window = new MainWindow(viewModel);
         _window.Closing += OnMainWindowClosing;
 
-        _tray = new TrayIconHost(_window, _engine, ExitApplication);
+        _tray = new TrayIconHost(
+            _window,
+            _engine,
+            ExitApplication,
+            () => _taskbarManager?.RefreshAll());
 
         var windowHandle = new System.Windows.Interop.WindowInteropHelper(_window).EnsureHandle();
         if (!options.SafeMode)
@@ -155,10 +160,22 @@ public partial class App : System.Windows.Application
                 _engine.Display,
                 _settings,
                 new TaskbarIconCache(),
+                _engine.Windows,
                 ShowMainWindow,
                 safeMode: false,
                 uiAccess: _engine.UIAccess);
-            viewModel.TaskbarSettingsChanged += () => _taskbarManager?.Rebuild();
+            _primaryTaskbarMenu = new PrimaryTaskbarMenuService(
+                windowHandle,
+                _window,
+                _engine,
+                _settings,
+                ShowMainWindow,
+                () => _taskbarManager?.RefreshAll());
+            viewModel.TaskbarSettingsChanged += () =>
+            {
+                _taskbarManager?.Rebuild();
+                _primaryTaskbarMenu?.ApplySettings();
+            };
             viewModel.HotkeyChangeRequested += OnHotkeyChangeRequested;
             viewModel.HotkeyPrefixChangeRequested += OnHotkeyPrefixChangeRequested;
             viewModel.HotkeyPrefixClearRequested += OnHotkeyPrefixClearRequested;
@@ -173,10 +190,12 @@ public partial class App : System.Windows.Application
                 {
                     viewModel.Display.NotifyTopologyChanged();
                     _taskbarManager?.Rebuild();
+                    _primaryTaskbarMenu?.RefreshTaskbarRect();
                     _engine?.Triggers.Raise(TriggerEventType.DisplayChanged);
                 });
 
             _taskbarManager.Rebuild();
+            _primaryTaskbarMenu.ApplySettings();
         }
 
         var showWindow = options.ShowSettings
@@ -584,6 +603,7 @@ public partial class App : System.Windows.Application
         _displayWatcher?.Dispose();
         _engine?.Triggers.Dispose();
         _titleBarOverlay?.Dispose();
+        _primaryTaskbarMenu?.Dispose();
         _taskbarManager?.Dispose();
         _viewModel?.Dispose();
         _engine?.Stop();

@@ -11,6 +11,7 @@ public sealed class TaskbarManager : IDisposable
     private readonly DisplayService _display;
     private readonly AppSettings _settings;
     private readonly TaskbarIconCache _icons;
+    private readonly WindowManager _windowManager;
     private readonly Action _showSettings;
     private readonly bool _safeMode;
     private readonly WindowCatalog _catalog;
@@ -23,6 +24,7 @@ public sealed class TaskbarManager : IDisposable
         DisplayService display,
         AppSettings settings,
         TaskbarIconCache icons,
+        WindowManager windowManager,
         Action showSettings,
         bool safeMode,
         UIAccessClient uiAccess)
@@ -30,6 +32,7 @@ public sealed class TaskbarManager : IDisposable
         _display = display ?? throw new ArgumentNullException(nameof(display));
         _settings = settings ?? throw new ArgumentNullException(nameof(settings));
         _icons = icons ?? throw new ArgumentNullException(nameof(icons));
+        _windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
         _safeMode = safeMode;
         _catalog = new WindowCatalog(display, uiAccess);
@@ -114,8 +117,11 @@ public sealed class TaskbarManager : IDisposable
                                 _icons,
                                 _showSettings,
                                 _settings.PinnedApps,
+                                _windowManager,
+                                contextMenusEnabled: _settings.EnableTaskbarContextMenu,
                                 autoHide: false,
                                 trayMirror: _trayMirror,
+                                windowsChanged: RefreshAll,
                                 filterBounds: new Rect(left, top, width, cellHeightActual));
 
                             var splitWindow = new TaskbarWindow(splitViewModel);
@@ -128,7 +134,18 @@ public sealed class TaskbarManager : IDisposable
                     continue;
                 }
 
-                var viewModel = new TaskbarViewModel(_catalog, monitors, index, _icons, _showSettings, _settings.PinnedApps, _settings.TaskbarAutoHide, _trayMirror);
+                var viewModel = new TaskbarViewModel(
+                    _catalog,
+                    monitors,
+                    index,
+                    _icons,
+                    _showSettings,
+                    _settings.PinnedApps,
+                    _windowManager,
+                    contextMenusEnabled: _settings.EnableTaskbarContextMenu,
+                    autoHide: _settings.TaskbarAutoHide,
+                    trayMirror: _trayMirror,
+                    windowsChanged: RefreshAll);
                 var window = new TaskbarWindow(viewModel);
                 window.Show();
                 window.Place(monitor, useAppBar);
@@ -137,6 +154,21 @@ public sealed class TaskbarManager : IDisposable
             catch (Exception ex)
             {
                 DxLog.Exception($"Failed to create taskbar for monitor {monitor.DisplayName}.", ex);
+            }
+        }
+    }
+
+    public void RefreshAll()
+    {
+        foreach (var window in _windows)
+        {
+            try
+            {
+                window.Refresh();
+            }
+            catch (Exception ex)
+            {
+                DxLog.Exception("Failed to refresh a taskbar window.", ex);
             }
         }
     }

@@ -1,3 +1,5 @@
+using System.Runtime.InteropServices;
+using System.Text;
 using DxTools.Core;
 using DxTools.Interop;
 
@@ -18,26 +20,13 @@ public sealed class WindowManager
 
     public bool MoveWindow(IntPtr window, int direction)
     {
-        if (window == IntPtr.Zero
-            || window == Win32Window.GetShellWindow()
-            || !Win32Window.IsWindow(window))
-        {
-            return false;
-        }
-
-        _ = Win32Window.GetWindowThreadProcessId(window, out var processId);
-        if (processId == Environment.ProcessId)
+        if (!IsMovableWindow(window))
         {
             return false;
         }
 
         var monitors = _display.GetMonitors();
-        if (monitors.Count < 2)
-        {
-            return false;
-        }
-
-        if (!Win32Window.GetWindowRect(window, out var rect))
+        if (monitors.Count < 2 || !TryGetWindowBounds(window, out var rect))
         {
             return false;
         }
@@ -54,6 +43,59 @@ public sealed class WindowManager
             return false;
         }
 
+        return MoveWindowToMonitor(window, sourceIndex, targetIndex, rect, monitors);
+    }
+
+    public bool MoveWindowToMonitor(IntPtr window, int targetMonitorIndex)
+    {
+        if (!IsMovableWindow(window))
+        {
+            return false;
+        }
+
+        var monitors = _display.GetMonitors();
+        if (monitors.Count == 0
+            || targetMonitorIndex < 0
+            || targetMonitorIndex >= monitors.Count
+            || !TryGetWindowBounds(window, out var rect))
+        {
+            return false;
+        }
+
+        var sourceIndex = FindMonitorIndex(monitors, rect.CenterX, rect.CenterY);
+        if (sourceIndex < 0 || sourceIndex == targetMonitorIndex)
+        {
+            return false;
+        }
+
+        return MoveWindowToMonitor(window, sourceIndex, targetMonitorIndex, rect, monitors);
+    }
+
+    public bool TryGetMonitorIndex(IntPtr window, out int monitorIndex)
+    {
+        monitorIndex = -1;
+        if (!IsMovableWindow(window) || !TryGetWindowBounds(window, out var rect))
+        {
+            return false;
+        }
+
+        var monitors = _display.GetMonitors();
+        if (monitors.Count == 0)
+        {
+            return false;
+        }
+
+        monitorIndex = FindMonitorIndex(monitors, rect.CenterX, rect.CenterY);
+        return monitorIndex >= 0;
+    }
+
+    private bool MoveWindowToMonitor(
+        IntPtr window,
+        int sourceIndex,
+        int targetIndex,
+        WindowRect rect,
+        IReadOnlyList<MonitorInfo> monitors)
+    {
         var source = monitors[sourceIndex];
         var target = monitors[targetIndex];
 
@@ -119,6 +161,56 @@ public sealed class WindowManager
         }
 
         return moved;
+    }
+
+    private static bool IsMovableWindow(IntPtr window)
+    {
+        if (window == IntPtr.Zero
+            || window == Win32Window.GetShellWindow()
+            || !Win32Window.IsWindow(window))
+        {
+            return false;
+        }
+
+        _ = Win32Window.GetWindowThreadProcessId(window, out var processId);
+        if (processId == Environment.ProcessId)
+        {
+            return false;
+        }
+
+        var className = new StringBuilder(128);
+        if (Win32Taskbar.GetClassNameW(window, className, className.Capacity) > 0)
+        {
+            var name = className.ToString();
+            if (string.Equals(name, "Shell_TrayWnd", StringComparison.Ordinal)
+                || string.Equals(name, "Shell_SecondaryTrayWnd", StringComparison.Ordinal)
+                || string.Equals(name, "Progman", StringComparison.Ordinal)
+                || string.Equals(name, "WorkerW", StringComparison.Ordinal))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private static bool TryGetWindowBounds(IntPtr window, out WindowRect rect)
+    {
+        if (Win32Taskbar.IsIconic(window))
+        {
+            var placement = new WindowPlacement
+            {
+                Length = Marshal.SizeOf<WindowPlacement>(),
+            };
+
+            if (Win32Taskbar.GetWindowPlacement(window, ref placement))
+            {
+                rect = placement.NormalPosition;
+                return true;
+            }
+        }
+
+        return Win32Window.GetWindowRect(window, out rect);
     }
 
     public bool SnapForegroundWindowToSplit(int slot, int rows, int columns)

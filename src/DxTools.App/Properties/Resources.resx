@@ -230,4 +230,19 @@
   <data name="HotkeyDesktopNext" xml:space="preserve"><value>Switch to next virtual desktop</value></data>
   <data name="HotkeyMoveWindowPreviousDesktop" xml:space="preserve"><value>Move window to previous virtual desktop</value></data>
   <data name="HotkeyMoveWindowNextDesktop" xml:space="preserve"><value>Move window to next virtual desktop</value></data>
+  <data name="TaskbarContextMenu" xml:space="preserve"><value>Taskbar context menu</value></data>
+  <data name="TaskbarContextMenuHint" xml:space="preserve"><value>Adds a right-click menu to DxTools taskbar buttons with commands to move windows between monitors.</value></data>
+  <data name="PrimaryTaskbarMenu" xml:space="preserve"><value>Commands on the Windows taskbar</value></data>
+  <data name="PrimaryTaskbarMenuHint" xml:space="preserve"><value>Ctrl+right-click a taskbar button to open a DxTools menu and move its window to another monitor. The native Windows menu is not modified.</value></data>
+  <data name="MoveWindowToMonitor" xml:space="preserve"><value>Move to monitor</value></data>
+  <data name="MoveToThisMonitor" xml:space="preserve"><value>Return to this monitor</value></data>
+  <data name="MoveActiveWindowToMonitor" xml:space="preserve"><value>Move active window to monitor</value></data>
+  <data name="CurrentMonitor" xml:space="preserve"><value>current</value></data>
+  <data name="PrimaryMonitor" xml:space="preserve"><value>primary</value></data>
+  <data name="NoWindowDetected" xml:space="preserve"><value>Could not identify the window</value></data>
+  <data name="NoMonitorsAvailable" xml:space="preserve"><value>No monitors detected</value></data>
+  <data name="RunPinnedApp" xml:space="preserve"><value>Run</value></data>
+  <data name="TaskbarMenu" xml:space="preserve"><value>Taskbar actions</value></data>
+  <data name="TaskbarMenuSettings" xml:space="preserve"><value>DxTools settings</value></data>
+  <data name="ActivateWindow" xml:space="preserve"><value>Activate</value></data>
 </root>

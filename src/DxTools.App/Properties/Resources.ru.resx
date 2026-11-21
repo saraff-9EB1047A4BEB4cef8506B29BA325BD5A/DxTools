@@ -230,4 +230,19 @@
   <data name="HotkeyDesktopNext" xml:space="preserve"><value>Переключиться на следующий виртуальный рабочий стол</value></data>
   <data name="HotkeyMoveWindowPreviousDesktop" xml:space="preserve"><value>Переместить окно на предыдущий рабочий стол</value></data>
   <data name="HotkeyMoveWindowNextDesktop" xml:space="preserve"><value>Переместить окно на следующий рабочий стол</value></data>
+  <data name="TaskbarContextMenu" xml:space="preserve"><value>Контекстное меню панели задач</value></data>
+  <data name="TaskbarContextMenuHint" xml:space="preserve"><value>Добавляет меню по правому клику на кнопки панели задач DxTools с командами переноса окон между мониторами.</value></data>
+  <data name="PrimaryTaskbarMenu" xml:space="preserve"><value>Команды на панели задач Windows</value></data>
+  <data name="PrimaryTaskbarMenuHint" xml:space="preserve"><value>Ctrl+правый клик по кнопке панели задач открывает меню DxTools для переноса окна на другой монитор. Штатное меню Windows не изменяется.</value></data>
+  <data name="MoveWindowToMonitor" xml:space="preserve"><value>Переместить на монитор</value></data>
+  <data name="MoveToThisMonitor" xml:space="preserve"><value>Вернуть на этот монитор</value></data>
+  <data name="MoveActiveWindowToMonitor" xml:space="preserve"><value>Перенести активное окно на монитор</value></data>
+  <data name="CurrentMonitor" xml:space="preserve"><value>текущий</value></data>
+  <data name="PrimaryMonitor" xml:space="preserve"><value>основной</value></data>
+  <data name="NoWindowDetected" xml:space="preserve"><value>Не удалось определить окно</value></data>
+  <data name="NoMonitorsAvailable" xml:space="preserve"><value>Мониторы не обнаружены</value></data>
+  <data name="RunPinnedApp" xml:space="preserve"><value>Запустить</value></data>
+  <data name="TaskbarMenu" xml:space="preserve"><value>Действия с панелью задач</value></data>
+  <data name="TaskbarMenuSettings" xml:space="preserve"><value>Настройки DxTools</value></data>
+  <data name="ActivateWindow" xml:space="preserve"><value>Активировать</value></data>
 </root>

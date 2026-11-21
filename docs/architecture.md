@@ -37,7 +37,14 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `TaskbarWindow`: WPF-панель 48 DIP, группировка окон по exe, кнопки с
   иконками и счётчиком, pinned apps, часы, fullscreen-скрытие,
   DWM live-превью в topmost-окне, автоскрытие с управлением AppBar,
-  `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`.
+  `WS_EX_TOOLWINDOW | WS_EX_NOACTIVATE`; контекстное меню кнопки с переносом
+  окна на выбранный монитор и возвратом на текущий.
+- `PrimaryTaskbarMenuService`: опциональное меню DxTools на основной панели
+  Windows по Ctrl+правому клику. Нативный LL-mouse-hook перехватывает жест
+  только над панелью, UI Automation определяет кнопку, `WindowMatcher`
+  сопоставляет её с окном. Штатное меню Windows не изменяется. Меню
+  позиционируется через offscreen popup-host, потому что главное окно может
+  быть скрыто в трее.
 - `TaskbarIconCache`: извлечение и кэширование иконок процессов.
 - `TrayMirrorService`: UIA-сканирование области уведомлений, снимки иконок
   и передача клика исходному элементу; popup обновляется раз в 2 секунды.
@@ -62,7 +69,11 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - `DisplayProfileService`: save/apply/rollback, auto-apply, store профилей.
 - `WindowManager`: перенос активного окна с учётом DPI, topmost;
   операции по целевому HWND для titlebar-overlay; snap в ячейку сетки
-  сплитов (`SplitRows`/`SplitColumns`).
+  сплитов (`SplitRows`/`SplitColumns`); перенос на заданный монитор
+  (`MoveWindowToMonitor`) и определение текущего монитора окна.
+- `WindowMatcher`: сопоставление имени кнопки панели задач (UIA) с окнами
+  `WindowCatalog` по точному заголовку, AUMID/имени exe, FileDescription
+  и частичному совпадению.
 - `TitleBarOverlayManager`: topmost overlay активного окна с кнопками
   «следующий монитор»/always-on-top.
 - `WallpaperService`: композитное полотно и установка обоев.
@@ -93,8 +104,9 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 ### DxTools.Native
 
 - C++20, Win32, без сторонних runtime-зависимостей.
-- C ABI v4: версия/ ping, DisplayConfig API, LL-hook, prefix-цепочки,
-  `DxTools_Audio_GetDeviceCount/GetDevices/SetDefault`.
+- C ABI v5: версия/ ping, DisplayConfig API, LL-keyboard-hook,
+  prefix-цепочки, `DxTools_Audio_GetDeviceCount/GetDevices/SetDefault`,
+  LL-mouse-hook `DxTools_MouseHook_*` для меню основной панели задач.
 - DisplayConfig: `QueryDisplayConfig`, `SetDisplayConfig`, DPI, EDID-friendly
   имена, Win32-коды ошибок.
 - В следующих фазах: splits, виртуальные десктопы.
@@ -128,9 +140,12 @@ DxTools.exe (WPF, asInvoker, PerMonitorV2)
 - UI-поток WPF: представление, команды, горячие клавиши и watcher.
 - Apply DisplayConfig и композиция обоев выполняются в `Task.Run`, чтобы
   не блокировать UI; подтверждение отката показывает модальное окно.
-- Native LL-hook работает на выделенном потоке с message loop и передаёт
-  события в UI через `PostMessage`; prefix-цепочка хранит pending-id с
-  таймаутом 1,5 с.
+- Native LL-keyboard-hook работает на выделенном потоке с message loop и
+  передаёт события в UI через `PostMessage`; prefix-цепочка хранит pending-id
+  с таймаутом 1,5 с. LL-mouse-hook для меню основной панели работает на
+  отдельном потоке, проверяет прямоугольник панели и Ctrl, подавляет только
+  пару RBUTTONDOWN/UP и отправляет координаты в UI; UI Automation и построение
+  меню выполняются на UI-потоке.
 - Titlebar-overlay опрашивает foreground-окно каждые 250 мс, позиционируется
   по DWM extended frame bounds и не активируется.
 - Панель задач обновляет окна раз в секунду; auto-hide опрашивает курсор

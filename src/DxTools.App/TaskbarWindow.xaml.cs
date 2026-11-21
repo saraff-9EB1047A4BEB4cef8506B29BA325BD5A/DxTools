@@ -1,12 +1,18 @@
-using System.Windows;
-using System.Windows.Input;
 using System.ComponentModel;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Threading;
+using DxTools.App.Properties;
 using DxTools.App.Services;
 using DxTools.App.ViewModels;
 using DxTools.Core;
+using DxTools.Engine;
 using DxTools.Interop;
+using ContextMenu = System.Windows.Controls.ContextMenu;
+using MenuItem = System.Windows.Controls.MenuItem;
 
 namespace DxTools.App;
 
@@ -31,6 +37,8 @@ public partial class TaskbarWindow : System.Windows.Window
         _autoHideTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(250) };
         _autoHideTimer.Tick += (_, _) => UpdateAutoHide();
     }
+
+    public void Refresh() => _viewModel.Refresh();
 
     public void Place(MonitorInfo monitor, bool useAppBar, WindowRect? bounds = null)
     {
@@ -237,5 +245,123 @@ public partial class TaskbarWindow : System.Windows.Window
     {
         WindowScroller.ScrollToHorizontalOffset(WindowScroller.HorizontalOffset - e.Delta);
         e.Handled = true;
+    }
+
+    private void OnWindowButtonPreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (!_viewModel.ContextMenusEnabled
+            || sender is not FrameworkElement { DataContext: TaskbarGroupItemViewModel group } element)
+        {
+            return;
+        }
+
+        var menu = BuildContextMenu(group);
+        if (menu is null)
+        {
+            return;
+        }
+
+        ClosePreview();
+        menu.PlacementTarget = element;
+        menu.Placement = PlacementMode.MousePoint;
+        menu.IsOpen = true;
+        e.Handled = true;
+    }
+
+    private ContextMenu? BuildContextMenu(TaskbarGroupItemViewModel group)
+    {
+        var menu = new ContextMenu();
+
+        if (group.IsPinnedOnly)
+        {
+            menu.Items.Add(CreateMenuItem(
+                Strings.RunPinnedApp,
+                () => _viewModel.ActivateCommand.Execute(group)));
+            menu.Items.Add(new Separator());
+            menu.Items.Add(CreateMenuItem(
+                Strings.TaskbarMenuSettings,
+                () => _viewModel.OpenSettingsCommand.Execute(null)));
+            return menu;
+        }
+
+        if (group.Windows.Count == 0)
+        {
+            return null;
+        }
+
+        if (group.Windows.Count == 1)
+        {
+            AddWindowMenuItems(menu.Items, group.Windows[0]);
+        }
+        else
+        {
+            foreach (var window in group.Windows)
+            {
+                var windowItem = new MenuItem { Header = window.Title };
+                AddWindowMenuItems(windowItem.Items, window);
+                menu.Items.Add(windowItem);
+            }
+        }
+
+        menu.Items.Add(new Separator());
+        menu.Items.Add(CreateMenuItem(
+            Strings.TaskbarMenuSettings,
+            () => _viewModel.OpenSettingsCommand.Execute(null)));
+        return menu;
+    }
+
+    private void AddWindowMenuItems(ItemCollection items, AppWindow window)
+    {
+        var moveItem = new MenuItem { Header = Strings.MoveWindowToMonitor };
+
+        for (var index = 0; index < _viewModel.Monitors.Count; index++)
+        {
+            var monitor = _viewModel.Monitors[index];
+            var isCurrent = index == window.MonitorIndex;
+            var markers = new List<string>();
+
+            if (monitor.IsPrimary)
+            {
+                markers.Add(Strings.PrimaryMonitor);
+            }
+
+            if (isCurrent)
+            {
+                markers.Add(Strings.CurrentMonitor);
+            }
+
+            var label = markers.Count == 0
+                ? monitor.DisplayName
+                : $"{monitor.DisplayName} ({string.Join(", ", markers)})";
+
+            var item = new MenuItem
+            {
+                Header = label,
+                IsCheckable = true,
+                IsChecked = isCurrent,
+                IsEnabled = !isCurrent,
+            };
+
+            var targetIndex = index;
+            item.Click += (_, _) => _viewModel.MoveWindow(window.Handle, targetIndex);
+            moveItem.Items.Add(item);
+        }
+
+        items.Add(moveItem);
+
+        var returnItem = new MenuItem
+        {
+            Header = Strings.MoveToThisMonitor,
+            IsEnabled = window.MonitorIndex != _viewModel.MonitorIndex,
+        };
+        returnItem.Click += (_, _) => _viewModel.MoveWindow(window.Handle, _viewModel.MonitorIndex);
+        items.Add(returnItem);
+    }
+
+    private static MenuItem CreateMenuItem(string header, Action action)
+    {
+        var item = new MenuItem { Header = header };
+        item.Click += (_, _) => action();
+        return item;
     }
 }

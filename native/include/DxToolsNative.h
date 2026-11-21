@@ -3,8 +3,8 @@
 #include <stdint.h>
 #include <wchar.h>
 
-#define DXTOOLS_NATIVE_API_VERSION 4u
-#define DXTOOLS_NATIVE_VERSION 0x00000600u
+#define DXTOOLS_NATIVE_API_VERSION 5u
+#define DXTOOLS_NATIVE_VERSION 0x00000700u
 
 #ifdef __cplusplus
 extern "C" {
@@ -69,6 +69,15 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_Stop(void);
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
     const DxTools_HotkeyBinding* bindings,
     uint32_t count);
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_Start(void* hwnd, uint32_t message);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_Stop(void);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_SetTaskbarRect(
+    int32_t left,
+    int32_t top,
+    int32_t right,
+    int32_t bottom);
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_SetEnabled(int32_t enabled);
 
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_ApplyState(
     const uint8_t* data,

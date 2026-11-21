@@ -424,6 +424,89 @@ void HotkeyThreadProc()
 }
 namespace
 {
+std::thread g_mouseHookThread;
+HWND g_mouseHookTarget = nullptr;
+UINT g_mouseHookMessage = 0;
+HHOOK g_mouseHook = nullptr;
+DWORD g_mouseHookThreadId = 0;
+HANDLE g_mouseHookReady = nullptr;
+std::atomic<bool> g_mouseHookRunning{false};
+std::atomic<bool> g_mouseHookEnabled{false};
+std::atomic<bool> g_mouseRightSuppressed{false};
+std::atomic<int32_t> g_taskbarLeft{0};
+std::atomic<int32_t> g_taskbarTop{0};
+std::atomic<int32_t> g_taskbarRight{0};
+std::atomic<int32_t> g_taskbarBottom{0};
+
+bool IsPointOnTaskbar(const POINT& point)
+{
+    return point.x >= g_taskbarLeft && point.x < g_taskbarRight
+        && point.y >= g_taskbarTop && point.y < g_taskbarBottom;
+}
+
+LRESULT CALLBACK MouseHookProc(int code, WPARAM wParam, LPARAM lParam)
+{
+    if (code == HC_ACTION && g_mouseHookEnabled.load())
+    {
+        if (wParam == WM_RBUTTONUP && g_mouseRightSuppressed.exchange(false))
+        {
+            const auto* info = reinterpret_cast<MSLLHOOKSTRUCT*>(lParam);
+            if (info != nullptr && g_mouseHookTarget != nullptr)
+            {
+                PostMessageW(
+                    g_mouseHookTarget,
+                    g_mouseHookMessage,
+                    static_cast<WPARAM>(info->pt.x),
+                    static_cast<LPARAM>(info->pt.y));
+            }
+
+            return 1;
+        }
+
+        if (wParam == WM_RBUTTONDOWN)
+        {
+            const auto* info = reinterpret_cast<MSLLHOOKSTRUCT*>(lParam);
+            if (info != nullptr && IsPointOnTaskbar(info->pt)
+                && (GetAsyncKeyState(VK_CONTROL) & 0x8000) != 0)
+            {
+                g_mouseRightSuppressed = true;
+                return 1;
+            }
+        }
+    }
+
+    return CallNextHookEx(g_mouseHook, code, wParam, lParam);
+}
+
+void MouseHookThreadProc()
+{
+    g_mouseHookThreadId = GetCurrentThreadId();
+    g_mouseHook = SetWindowsHookExW(WH_MOUSE_LL, MouseHookProc, GetModuleHandleW(nullptr), 0);
+    if (g_mouseHookReady != nullptr)
+    {
+        SetEvent(g_mouseHookReady);
+    }
+
+    if (g_mouseHook == nullptr)
+    {
+        g_mouseHookRunning = false;
+        return;
+    }
+
+    MSG message{};
+    while (GetMessageW(&message, nullptr, 0, 0) > 0)
+    {
+        TranslateMessage(&message);
+        DispatchMessageW(&message);
+    }
+
+    UnhookWindowsHookEx(g_mouseHook);
+    g_mouseHook = nullptr;
+}
+}
+namespace
+{
+
 const CLSID kMmDeviceEnumeratorClsid = {0xBCDE0395, 0xE52F, 0x467C, {0x8E, 0x3D, 0xC4, 0x57, 0x92, 0x91, 0x69, 0x2E}};
 const IID kMmDeviceEnumeratorIid = {0xA95664D2, 0x9614, 0x4F35, {0xA7, 0x46, 0xDE, 0x8D, 0xB6, 0x36, 0x17, 0xE6}};
 const CLSID kPolicyConfigClientClsid = {0x870AF99C, 0x171D, 0x4F9E, {0xAF, 0x0D, 0xE6, 0x3D, 0xF4, 0x0C, 0x2B, 0xC9}};
@@ -703,6 +786,96 @@ DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Hotkey_SetBindings(
 
     return ERROR_SUCCESS;
 }
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_Start(void* hwnd, uint32_t message)
+{
+    if (hwnd == nullptr || message == 0)
+    {
+        return ERROR_INVALID_PARAMETER;
+    }
+
+    if (g_mouseHookRunning.exchange(true))
+    {
+        g_mouseHookTarget = static_cast<HWND>(hwnd);
+        g_mouseHookMessage = message;
+        return ERROR_SUCCESS;
+    }
+
+    g_mouseHookTarget = static_cast<HWND>(hwnd);
+    g_mouseHookMessage = message;
+    g_mouseRightSuppressed = false;
+    g_mouseHookReady = CreateEventW(nullptr, TRUE, FALSE, nullptr);
+    g_mouseHookThread = std::thread(MouseHookThreadProc);
+
+    if (g_mouseHookReady != nullptr)
+    {
+        WaitForSingleObject(g_mouseHookReady, 3000);
+        CloseHandle(g_mouseHookReady);
+        g_mouseHookReady = nullptr;
+    }
+
+    if (g_mouseHook == nullptr)
+    {
+        g_mouseHookRunning = false;
+        if (g_mouseHookThread.joinable())
+        {
+            g_mouseHookThread.join();
+        }
+
+        return ERROR_INVALID_HOOK_HANDLE;
+    }
+
+    return ERROR_SUCCESS;
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_Stop(void)
+{
+    g_mouseHookEnabled = false;
+
+    if (g_mouseHookRunning.exchange(false))
+    {
+        if (g_mouseHookThreadId != 0)
+        {
+            PostThreadMessageW(g_mouseHookThreadId, WM_QUIT, 0, 0);
+        }
+    }
+
+    if (g_mouseHookThread.joinable())
+    {
+        g_mouseHookThread.join();
+    }
+
+    g_mouseHookThreadId = 0;
+    g_mouseHookTarget = nullptr;
+    g_mouseHookMessage = 0;
+    g_mouseRightSuppressed = false;
+    return ERROR_SUCCESS;
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_SetTaskbarRect(
+    int32_t left,
+    int32_t top,
+    int32_t right,
+    int32_t bottom)
+{
+    g_taskbarLeft = left;
+    g_taskbarTop = top;
+    g_taskbarRight = right;
+    g_taskbarBottom = bottom;
+    return ERROR_SUCCESS;
+}
+
+DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_MouseHook_SetEnabled(int32_t enabled)
+{
+    g_mouseHookEnabled = enabled != 0;
+    if (!enabled)
+    {
+        g_mouseRightSuppressed = false;
+    }
+
+    return ERROR_SUCCESS;
+}
+
 DXTOOLS_NATIVE_EXPORT int32_t __cdecl DxTools_Display_GetMonitorCount(uint32_t* count)
 {
     if (count == nullptr)

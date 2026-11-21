@@ -4,6 +4,25 @@
 
 ## [Unreleased]
 
+## [1.0.0-rc.6] - 2026-11-21
+
+### Added
+
+- контекстное меню кнопок панелей задач DxTools (вторичные мониторы и сплиты):
+  перенос окна на любой монитор, возврат на текущий монитор, выбор окна в группе;
+- команда трея «Перенести активное окно на монитор»;
+- опциональная интеграция с основной панелью задач Windows: Ctrl+правый клик
+  по кнопке открывает меню DxTools (UI Automation + LL-mouse-hook, без инъекций);
+- настройки `EnableTaskbarContextMenu` и `EnablePrimaryTaskbarMenu`;
+- C ABI v5: `DxTools_MouseHook_*`;
+- 6 unit-тестов для сопоставления окон и настроек (всего 41).
+
+### Changed
+
+- `WindowManager` получил перенос окна на заданный монитор
+  (`MoveWindowToMonitor`) с сохранением DPI/topmost/maximized;
+- обновлены spec, architecture, USER_MANUAL и отчёт rc.6.
+
 ## [1.0.0-rc.5] - 2026-11-21
 
 ### Changed

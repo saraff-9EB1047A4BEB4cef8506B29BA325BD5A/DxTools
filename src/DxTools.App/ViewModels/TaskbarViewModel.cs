@@ -11,6 +11,8 @@ using DxTools.Interop;
 
 namespace DxTools.App.ViewModels;
 
+public sealed record WindowMoveRequest(IntPtr Handle, int TargetMonitorIndex);
+
 public sealed class TaskbarViewModel : ObservableObject, IDisposable
 {
     private readonly WindowCatalog _catalog;
@@ -19,7 +21,9 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     private readonly TaskbarIconCache _icons;
     private readonly Action _showSettings;
     private readonly IReadOnlyList<PinnedApp> _pinnedApps;
+    private readonly WindowManager _windowManager;
     private readonly TrayMirrorService _trayMirror;
+    private readonly Action? _windowsChanged;
     private readonly Rect? _filterBounds;
     private bool _isTrayOpen;
     private DateTimeOffset _lastTrayRefresh;
@@ -36,8 +40,11 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         TaskbarIconCache icons,
         Action showSettings,
         IReadOnlyList<PinnedApp> pinnedApps,
+        WindowManager windowManager,
+        bool contextMenusEnabled,
         bool autoHide,
         TrayMirrorService trayMirror,
+        Action? windowsChanged = null,
         Rect? filterBounds = null)
     {
         _catalog = catalog ?? throw new ArgumentNullException(nameof(catalog));
@@ -46,8 +53,11 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         _icons = icons ?? throw new ArgumentNullException(nameof(icons));
         _showSettings = showSettings ?? throw new ArgumentNullException(nameof(showSettings));
         _pinnedApps = pinnedApps ?? throw new ArgumentNullException(nameof(pinnedApps));
+        _windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
+        ContextMenusEnabled = contextMenusEnabled;
         AutoHide = autoHide;
         _trayMirror = trayMirror ?? throw new ArgumentNullException(nameof(trayMirror));
+        _windowsChanged = windowsChanged;
         _filterBounds = filterBounds;
 
         ActivateCommand = new RelayCommand(parameter =>
@@ -87,6 +97,13 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
         });
         OpenSettingsCommand = new RelayCommand(_showSettings);
         ToggleTrayCommand = new RelayCommand(ToggleTray);
+        MoveWindowCommand = new RelayCommand(parameter =>
+        {
+            if (parameter is WindowMoveRequest request)
+            {
+                MoveWindow(request.Handle, request.TargetMonitorIndex);
+            }
+        });
 
         _timer = new DispatcherTimer
         {
@@ -106,6 +123,14 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     public ICommand OpenSettingsCommand { get; }
 
     public ICommand ToggleTrayCommand { get; }
+
+    public ICommand MoveWindowCommand { get; }
+
+    public IReadOnlyList<MonitorInfo> Monitors => _monitors;
+
+    public int MonitorIndex => _monitorIndex;
+
+    public bool ContextMenusEnabled { get; }
 
     public ObservableCollection<TrayItemViewModel> TrayItems { get; } = [];
 
@@ -134,6 +159,26 @@ public sealed class TaskbarViewModel : ObservableObject, IDisposable
     }
 
     public void Start() => _timer.Start();
+
+    public bool MoveWindow(IntPtr handle, int targetMonitorIndex)
+    {
+        if (handle == IntPtr.Zero
+            || targetMonitorIndex < 0
+            || targetMonitorIndex >= _monitors.Count)
+        {
+            return false;
+        }
+
+        var moved = _windowManager.MoveWindowToMonitor(handle, targetMonitorIndex);
+        if (!moved)
+        {
+            return false;
+        }
+
+        Refresh();
+        _windowsChanged?.Invoke();
+        return true;
+    }
 
     public void Refresh()
     {

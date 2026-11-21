@@ -284,6 +284,40 @@ public sealed class MainViewModel : ObservableObject, IDisposable
         }
     }
 
+    public bool EnableTaskbarContextMenu
+    {
+        get => _settings.EnableTaskbarContextMenu;
+        set
+        {
+            if (_settings.EnableTaskbarContextMenu == value)
+            {
+                return;
+            }
+
+            _settings.EnableTaskbarContextMenu = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TaskbarSettingsChanged?.Invoke();
+        }
+    }
+
+    public bool EnablePrimaryTaskbarMenu
+    {
+        get => _settings.EnablePrimaryTaskbarMenu;
+        set
+        {
+            if (_settings.EnablePrimaryTaskbarMenu == value)
+            {
+                return;
+            }
+
+            _settings.EnablePrimaryTaskbarMenu = value;
+            OnPropertyChanged();
+            SaveSettings();
+            TaskbarSettingsChanged?.Invoke();
+        }
+    }
+
     public bool EnableSecondaryTaskbar
     {
         get => _settings.EnableSecondaryTaskbar;

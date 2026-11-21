@@ -230,6 +230,21 @@ public static class Strings
     public static string HotkeyDesktopNext => Get(nameof(HotkeyDesktopNext));
     public static string HotkeyMoveWindowPreviousDesktop => Get(nameof(HotkeyMoveWindowPreviousDesktop));
     public static string HotkeyMoveWindowNextDesktop => Get(nameof(HotkeyMoveWindowNextDesktop));
+    public static string TaskbarContextMenu => Get(nameof(TaskbarContextMenu));
+    public static string TaskbarContextMenuHint => Get(nameof(TaskbarContextMenuHint));
+    public static string PrimaryTaskbarMenu => Get(nameof(PrimaryTaskbarMenu));
+    public static string PrimaryTaskbarMenuHint => Get(nameof(PrimaryTaskbarMenuHint));
+    public static string MoveWindowToMonitor => Get(nameof(MoveWindowToMonitor));
+    public static string MoveToThisMonitor => Get(nameof(MoveToThisMonitor));
+    public static string MoveActiveWindowToMonitor => Get(nameof(MoveActiveWindowToMonitor));
+    public static string CurrentMonitor => Get(nameof(CurrentMonitor));
+    public static string PrimaryMonitor => Get(nameof(PrimaryMonitor));
+    public static string NoWindowDetected => Get(nameof(NoWindowDetected));
+    public static string NoMonitorsAvailable => Get(nameof(NoMonitorsAvailable));
+    public static string RunPinnedApp => Get(nameof(RunPinnedApp));
+    public static string TaskbarMenu => Get(nameof(TaskbarMenu));
+    public static string TaskbarMenuSettings => Get(nameof(TaskbarMenuSettings));
+    public static string ActivateWindow => Get(nameof(ActivateWindow));
 }
 
 

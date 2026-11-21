@@ -1,13 +1,13 @@
-# Security review — DxTools 1.0.0-rc.1/rc.2/rc.3/rc.4
+# Security review — DxTools 1.0.0-rc.1/rc.2/rc.3/rc.4/rc.6
 
-Дата: 2026-11-21 (rc.4: добавлен UIAccess helper)
+Дата: 2026-11-21 (rc.6: добавлено меню панели задач)
 
 ## Область проверки
 
 - загрузка native DLL и C ABI;
-- глобальные хуки клавиатуры и WinEvent;
+- глобальные хуки клавиатуры, мыши и WinEvent;
 - cross-process доступ к Explorer (иконки рабочего стола);
-- UIA-доступ к области уведомлений;
+- UIA-доступ к области уведомлений и кнопкам панели задач;
 - shell extension Explorer (`DxTools.ShellExt.dll`, COM in-process);
 - UIAccess helper (`DxTools.Helper.exe`, отдельный процесс);
 - пользовательские C#-скрипты;
@@ -23,8 +23,9 @@
 | Сетевые подключения | нет исходящих соединений, кроме открытия URL пользователем |
 | Телеметрия | отсутствует |
 | Native DLL | загружается только из каталога приложения |
-| Хуки | только `WH_KEYBOARD_LL` и WinEvent, без инъекций |
-| Cross-process | Explorer desktop icon list, только текущий пользователь |
+| Хуки | `WH_KEYBOARD_LL` и WinEvent всегда; `WH_MOUSE_LL` только при включённой настройке меню основной панели; без инъекций |
+| Меню основной панели | LL-mouse-hook подавляет только Ctrl+ПКМ в прямоугольнике `Shell_TrayWnd`; UIA и AUMID читаются только для определения кнопки/окна |
+| Cross-process | Explorer desktop icon list, только текущий пользователь; `OpenProcess(PROCESS_QUERY_LIMITED_INFORMATION)` для AUMID |
 | Shell extension | COM in-process, без сети; только запуск `DxTools.exe` с аргументами; MSI-регистрация 64-bit в HKLM |
 | UIAccess helper | отдельный процесс, named pipe только local, проверка PID и пути родителя, команды move/topmost/activate без запуска процессов и сети |
 | Скрипты | выполняются с правами пользователя; предупреждение в UI/документации |
@@ -46,7 +47,11 @@
 5. ARM64 MSI проверен административной установкой, но не запускался на
    ARM64 hardware.
 6. Нет независимого пентеста; рекомендуется перед GA.
-7. `IPolicyConfig` и UIA-зеркало трея зависят от внутренних API Windows.
+7. `IPolicyConfig`, UIA-зеркало трея и UI Automation панели задач зависят от
+   внутренних API Windows.
+8. `WH_MOUSE_LL` может восприниматься антивирусами как подозрительная
+   активность; поэтому меню основной панели по умолчанию выключено и
+   включается пользователем явно.
 
 ## Рекомендации перед GA
 

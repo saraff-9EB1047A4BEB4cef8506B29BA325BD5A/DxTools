@@ -1,17 +1,16 @@
-# Release checklist — 1.0.0-rc.5
+# Release checklist — 1.0.0-rc.6
 
-- [x] Версия 1.0.0-rc.5, native API v4/0.6.0
+- [x] Версия 1.0.0-rc.6, native API v5/0.7.0
 - [x] `dotnet build` без предупреждений
-- [x] 35 unit-тестов
-- [x] Полная сборка MSI (x64 и ARM64)
-- [x] Административная установка MSI (x64 и ARM64)
-- [x] Shell extension: сборка x64/ARM64, COM-меню и регистрация в MSI
-- [x] UIAccess helper: сборка x64/ARM64, манифест `uiAccess=true`, IPC-тест
-- [x] Titlebar-overlay: стиль системных caption-кнопок и lime hover
-- [x] README.md и USER_MANUAL.md
-- [x] spec.md и отчёты фаз
-- [x] SECURITY.md и security review
-- [x] CI для rc.5 (run 44928485991, success)
+- [x] 41 unit-тест
+- [x] Native DLL x64/ARM64 (portable Zig cross-build), C ABI v5
+- [x] Контекстное меню панелей задач DxTools и команды трея
+- [x] Меню основной панели Windows по Ctrl+ПКМ (smoke-тест, UIA/AUMID)
+- [x] README.md, USER_MANUAL.md, spec.md, architecture, security review, отчёт rc.6
+- [ ] Полная сборка MSI (x64 и ARM64)
+- [ ] Административная установка MSI (x64 и ARM64)
+- [ ] Shell extension: регистрация в MSI
+- [ ] CI для rc.6
 - [ ] Подпись сертификатом, включая `DxTools.Helper.exe`
 - [ ] UIAccess prompt и elevated-окна на чистой VM
 - [ ] Установка/удаление с UAC на чистой VM

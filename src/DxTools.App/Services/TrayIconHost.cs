@@ -3,6 +3,7 @@ using System.IO;
 using DxTools.App.Properties;
 using DxTools.Core;
 using DxTools.Engine;
+using DxTools.Interop;
 using Forms = System.Windows.Forms;
 
 namespace DxTools.App.Services;
@@ -11,15 +12,20 @@ public sealed class TrayIconHost : IDisposable
 {
     private readonly Forms.NotifyIcon _notifyIcon;
     private readonly Forms.ToolStripMenuItem _statusItem;
+    private readonly Forms.ToolStripMenuItem _moveActiveItem;
     private readonly Forms.ContextMenuStrip _menu;
+    private readonly EngineHost _engine;
+    private readonly Action? _windowsChanged;
     private readonly Icon? _icon;
 
-    public TrayIconHost(MainWindow window, EngineHost engine, Action exit)
+    public TrayIconHost(MainWindow window, EngineHost engine, Action exit, Action? windowsChanged = null)
     {
         ArgumentNullException.ThrowIfNull(window);
         ArgumentNullException.ThrowIfNull(engine);
         ArgumentNullException.ThrowIfNull(exit);
 
+        _engine = engine;
+        _windowsChanged = windowsChanged;
         _icon = LoadIcon();
         _notifyIcon = new Forms.NotifyIcon
         {
@@ -36,6 +42,12 @@ public sealed class TrayIconHost : IDisposable
 
         _statusItem = new Forms.ToolStripMenuItem { Enabled = false };
         _menu.Items.Add(_statusItem);
+
+        _menu.Items.Add(new Forms.ToolStripSeparator());
+
+        _moveActiveItem = new Forms.ToolStripMenuItem(Strings.MoveActiveWindowToMonitor);
+        _moveActiveItem.DropDownOpening += (_, _) => RebuildMoveMenu(_moveActiveItem);
+        _menu.Items.Add(_moveActiveItem);
 
         _menu.Items.Add(new Forms.ToolStripSeparator());
 
@@ -58,6 +70,58 @@ public sealed class TrayIconHost : IDisposable
 
     public void ShowFirstRunBalloon() =>
         _notifyIcon.ShowBalloonTip(5000, Strings.FirstRunTitle, Strings.FirstRunText, Forms.ToolTipIcon.Info);
+
+    private void RebuildMoveMenu(Forms.ToolStripMenuItem item)
+    {
+        item.DropDownItems.Clear();
+
+        var monitors = _engine.Display.GetMonitors();
+        if (monitors.Count == 0)
+        {
+            item.DropDownItems.Add(new Forms.ToolStripMenuItem(Strings.NoMonitorsAvailable) { Enabled = false });
+            return;
+        }
+
+        var foreground = Win32Window.GetForegroundWindow();
+        var hasSource = _engine.Windows.TryGetMonitorIndex(foreground, out var sourceIndex);
+
+        for (var index = 0; index < monitors.Count; index++)
+        {
+            var monitor = monitors[index];
+            var markers = new List<string>();
+
+            if (monitor.IsPrimary)
+            {
+                markers.Add(Strings.PrimaryMonitor);
+            }
+
+            if (hasSource && index == sourceIndex)
+            {
+                markers.Add(Strings.CurrentMonitor);
+            }
+
+            var label = markers.Count == 0
+                ? monitor.DisplayName
+                : $"{monitor.DisplayName} ({string.Join(", ", markers)})";
+
+            var entry = new Forms.ToolStripMenuItem(label)
+            {
+                Enabled = hasSource && index != sourceIndex,
+                Checked = hasSource && index == sourceIndex,
+            };
+
+            var targetIndex = index;
+            entry.Click += (_, _) =>
+            {
+                if (_engine.Windows.MoveWindowToMonitor(foreground, targetIndex))
+                {
+                    _windowsChanged?.Invoke();
+                }
+            };
+
+            item.DropDownItems.Add(entry);
+        }
+    }
 
     private void OnStatusChanged(object? sender, EngineStatus status)
     {

@@ -50,9 +50,10 @@
                       CommandParameter="{Binding}"
                       ToolTip="{Binding ToolTipText}"
                       AutomationProperties.Name="{Binding DisplayTitle}"
-                      Focusable="False"
-                      MouseEnter="OnWindowButtonMouseEnter"
-                      MouseLeave="OnWindowButtonMouseLeave">
+                       Focusable="False"
+                       MouseEnter="OnWindowButtonMouseEnter"
+                       MouseLeave="OnWindowButtonMouseLeave"
+                       PreviewMouseRightButtonUp="OnWindowButtonPreviewMouseRightButtonUp">
                 <Button.Style>
                   <Style TargetType="Button" BasedOn="{StaticResource TaskbarButtonStyle}">
                     <Style.Triggers>

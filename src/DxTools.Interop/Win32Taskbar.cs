@@ -112,6 +112,9 @@ public static class Win32Taskbar
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     public static extern int GetClassNameW(IntPtr hwnd, StringBuilder name, int maxCount);
 
+    [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+    public static extern IntPtr FindWindowW(string? className, string? windowName);
+
     [DllImport("shell32.dll", SetLastError = true)]
     public static extern UIntPtr SHAppBarMessage(uint message, ref AppBarData data);
 
@@ -191,6 +194,19 @@ public sealed record ShellTaskbarInfo(IntPtr Handle, WindowRect Rect);
 
 public static class ShellTaskbars
 {
+    public static ShellTaskbarInfo? FindPrimary()
+    {
+        var handle = Win32Taskbar.FindWindowW("Shell_TrayWnd", null);
+        if (handle == IntPtr.Zero || !Win32Window.GetWindowRect(handle, out var rect))
+        {
+            return null;
+        }
+
+        return rect.Width > 0 && rect.Height > 0
+            ? new ShellTaskbarInfo(handle, rect)
+            : null;
+    }
+
     public static IReadOnlyList<ShellTaskbarInfo> FindSecondary()
     {
         var result = new List<ShellTaskbarInfo>();
