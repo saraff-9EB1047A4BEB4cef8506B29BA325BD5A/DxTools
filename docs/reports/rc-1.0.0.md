@@ -8,6 +8,8 @@ CI: GitHub Actions run `44840736869` — **success**
 MSI: `artifacts\DxTools-1.0.0-x64.msi`, 120 597 045 байт
 SHA-256: `0826B6B44B3D383FFC9EE06CC310C276128D8ADE67A9C6DB5B885A8EEAF5BE9B`
 
+Draft GitHub Release: `v1.0.0-rc.1` с MSI asset (не опубликован).
+
 ## 1. Состав RC
 
 - профили дисплеев и мониторов, topology hash, auto-apply, откат;
