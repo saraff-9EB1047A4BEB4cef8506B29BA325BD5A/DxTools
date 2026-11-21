@@ -10,7 +10,7 @@
 - [x] README.md и USER_MANUAL.md
 - [x] spec.md и отчёты фаз
 - [x] SECURITY.md и security review
-- [ ] CI для rc.4 (запуск после коммита)
+- [x] CI для rc.4 (run 44926367171, success)
 - [ ] Подпись сертификатом, включая `DxTools.Helper.exe`
 - [ ] UIAccess prompt и elevated-окна на чистой VM
 - [ ] Установка/удаление с UAC на чистой VM

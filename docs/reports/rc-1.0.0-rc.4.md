@@ -3,8 +3,8 @@
 Дата: 2026-11-21
 Статус: **release candidate готов, ожидает подтверждения GA**
 Репозиторий: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools
-Рабочая копия: изменения rc.4 не закоммичены
-CI: для rc.4 не запускался
+Коммит: `6b4be0d` (`Release 1.0.0-rc.4: UIAccess helper for elevated windows`)
+CI: GitHub Actions run `44926367171` — success
 
 ## 1. Артефакты
 
@@ -48,9 +48,10 @@ CI: для rc.4 не запускался
 | IPC-тест `activate` без UIAccess | `ok:false`, foreground не получен |
 | x64 MSI administrative install | exit 0, 289 файлов, helper и shell extension присутствуют |
 | ARM64 MSI administrative install | exit 0, 288 файлов, helper и shell extension присутствуют |
-| CI | не запускался |
+| CI | success: run `44926367171` |
 
-Тест helper выполнялся с тестовым манифестом `uiAccess="false"`: move и topmost
+CI-артефакты: `DxTools-msi` 151 254 222 байт, `DxTools-publish` 190 484 930
+байт. Тест helper выполнялся с тестовым манифестом `uiAccess="false"`: move и topmost
 работают, activate без UIAccess ожидаемо не получает foreground. Штатный helper
 с `uiAccess="true"` без подписи Windows запускать отказывается — это ожидаемо;
 приложение в таком случае использует fallback.
@@ -70,7 +71,7 @@ CI: для rc.4 не запускался
 
 ## 5. Release checklist
 
-См. `docs/release-checklist.md`. Не закрыты: CI для rc.4, подпись,
+См. `docs/release-checklist.md`. Не закрыты: подпись,
 UIAccess/elevated-тест на чистой VM, UAC-инсталляция, runtime-тест ARM64,
 независимый security review и публикация GitHub Release.
 
