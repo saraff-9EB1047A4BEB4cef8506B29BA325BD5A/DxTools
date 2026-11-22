@@ -1,3 +1,5 @@
+**Русский** | [English](README.en.md)
+
 # DxTools
 
 [![Скачать DxTools 1.0.0-rc.8](https://img.shields.io/badge/Download-DxTools--1.0.0--x64.msi-2ea44f?logo=windows&style=flat-square)](https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/download/v1.0.0-rc.8/DxTools-1.0.0-x64.msi)
