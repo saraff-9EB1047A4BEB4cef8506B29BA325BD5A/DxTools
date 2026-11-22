@@ -26,10 +26,10 @@
 > application scoping, triggers, a multi-monitor screensaver, and an Explorer
 > context-menu extension.
 >
-> The project is publicly released on GitHub; the current public release is
-> v1.0.0-rc.8 with an x64 MSI installer. It is actively maintained by its
-> author, and all source code, build scripts, and CI configuration are in the
-> repository.
+> The project is publicly released on GitHub; the current stable release is
+> v1.0.0 with an x64 MSI installer (binary built from commit `9107d1a`). It is
+> actively maintained by its author, and all source code, build scripts, and CI
+> configuration are in the repository.
 >
 > We request code signing for the x64 MSI installer
 > `DxTools-<version>-x64.msi` and the PE files it contains: `DxTools.exe`,
@@ -53,10 +53,10 @@
 
 ### Статус релиза
 
-The latest public release is `v1.0.0-rc.8`; its MSI is downloadable from
-GitHub Releases. The stable `1.0.0` release will be produced by the same build
-and signing workflow. If a stable release is required before approval, we will
-publish it first.
+The latest public release is stable `v1.0.0`; its MSI is downloadable from
+GitHub Releases. The binary was built from commit `9107d1a` (the same build as
+the previous release candidate); only documentation changed after that commit.
+The next signed release will use the same build and signing workflow.
 
 ### Коммерческая деятельность
 
@@ -96,16 +96,17 @@ request.
 
 ## 4. Перед отправкой
 
-- [ ] Изменения M0 (`CODE_SIGNING.md`, README) находятся в ветке `main` на
+- [x] Изменения M0 (`CODE_SIGNING.md`, README) находятся в ветке `main` на
       GitHub, а не только локально.
-- [ ] `CODE_SIGNING.md` открывается по публичному URL и содержит точную фразу
+- [x] `CODE_SIGNING.md` открывается по публичному URL и содержит точную фразу
       `Free code signing provided by SignPath.io, certificate by SignPath Foundation`.
-- [ ] В README есть раздел `Code signing policy` со ссылкой на политику.
+- [x] В README есть раздел `Code signing policy` со ссылкой на политику.
 - [ ] Включена 2FA на GitHub.
-- [ ] Настроен ruleset для `main` (запрет удаления и force-push, изменения
+- [x] Настроен ruleset для `main` (запрет удаления и force-push, изменения
       через PR).
-- [ ] Проверены ссылки из таблицы выше (открываются без 404).
-- [ ] Issues/Discussions включены и доступны публично.
+- [x] Проверены ссылки из таблицы выше (открываются без 404).
+- [x] Issues/Discussions включены и доступны публично.
+- [x] Опубликован стабильный релиз `v1.0.0` с MSI.
 
 ## 5. Порядок подачи
 
@@ -122,7 +123,8 @@ request.
 
 Зафиксировать точную причину из письма. Типовые варианты:
 
-- нужен стабильный релиз — опубликовать `1.0.0` и подать повторно;
+- нужен более свежий стабильный билд — выпустить новый патч-релиз из `main`
+  и подать повторно;
 - вопросы к коммерческой деятельности — приложить формулировку из раздела 3
   и `docs/commercial.md`;
 - недостаточно публичной информации о проекте — дополнить README и Release
