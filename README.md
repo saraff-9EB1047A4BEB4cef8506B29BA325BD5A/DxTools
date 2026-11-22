@@ -81,6 +81,20 @@ UIAccess требует подписанного сертификатом `DxToo
 security review: [docs/security-review.md](docs/security-review.md),
 release checklist: [docs/release-checklist.md](docs/release-checklist.md).
 
+## Издания и поддержка
+
+- **Community** — бесплатная сборка под GNU GPL v2. Лицензия разрешает
+  использование в любых целях, включая коммерческие; поддержка — через
+  GitHub Issues и Discussions без гарантированного времени ответа.
+- **Pro Support** — годовая подписка на поддержку для организаций: SLA,
+  приоритетные исправления, security-фиксы, артефакты для развёртывания и
+  закрывающие документы. Это договор на услуги; само ПО остаётся под GPLv2,
+  а исправления попадают в публичные релизы.
+
+Условия, SLA и тарифы: [docs/commercial.md](docs/commercial.md)
+(EN: [docs/commercial.en.md](docs/commercial.en.md)).
+Порядок обращения: [SUPPORT.md](SUPPORT.md). Донаты приветствуются.
+
 ## Требования для сборки
 
 - Windows 11 x64;
@@ -147,8 +161,14 @@ build/                 сборочные скрипты
 - [docs/reports/rc-1.0.0.md](docs/reports/rc-1.0.0.md) — отчёт RC 1.0.0-rc.1;
 - [USER_MANUAL.md](USER_MANUAL.md) — руководство пользователя;
 - [SECURITY.md](SECURITY.md) — политика безопасности;
+- [SUPPORT.md](SUPPORT.md) — порядок получения поддержки;
+- [CONTRIBUTING.md](CONTRIBUTING.md) — правила участия;
+- [TRADEMARK.md](TRADEMARK.md) — политика использования бренда;
 - [docs/security-review.md](docs/security-review.md) — security review;
 - [docs/release-checklist.md](docs/release-checklist.md) — release checklist;
+- [docs/commercial.md](docs/commercial.md) — издания и коммерческая поддержка;
+- [docs/commercial.en.md](docs/commercial.en.md) — editions and commercial
+  support (EN);
 - [docs/arm64.md](docs/arm64.md) — ARM64 build;
 - [docs/signing.md](docs/signing.md) — подпись и UIAccess;
 - [CHANGELOG.md](CHANGELOG.md) — история версий;
@@ -158,11 +178,18 @@ build/                 сборочные скрипты
 
 Проект распространяется по GPLv2. Отправляя изменения, вы соглашаетесь
 лицензировать их на тех же условиях. Не добавляйте код и ресурсы,
-несовместимые с GPLv2.
+несовместимые с GPLv2, и не добавляйте в код проверки лицензий или DRM:
+коммерческая модель построена на поддержке, а не на ограничениях.
+Подробности — в [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Лицензия
 
 Copyright (C) 2026 DxTools contributors.
+
+Код распространяется по GNU GPL v2 (`GPL-2.0-only`): программу можно
+использовать, изменять и распространять в любых целях, включая коммерческие.
+Коммерческая поддержка (Pro Support) — отдельный договор на услуги и не
+ограничивает права, предоставленные GPL.
 
 Программа распространяется в надежде, что она будет полезной, но БЕЗ
 КАКИХ-ЛИБО ГАРАНТИЙ. Полный текст — в [LICENSE](LICENSE).
