@@ -1,53 +1,62 @@
 # SignPath Foundation — заявка
 
 Рабочий документ для подачи заявки на `signpath.org/apply`.
-После одобрения и настройки проекта файл можно удалить или оставить как
-историю.
+Форма — HubSpot-iframe; поля и подсказки проверены 22.11.2026.
 
-## 1. Значения полей
+## 1. Значения полей формы
 
-| Поле формы | Значение |
+| Поле | Значение |
 |---|---|
-| Project name | DxTools |
-| Repository URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools` |
-| License | `GPL-2.0-only` |
-| License URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/blob/main/LICENSE` |
-| Download / releases URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases` |
-| Code signing policy URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/blob/main/CODE_SIGNING.md` |
-| Project website | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools` |
-| Maintainer | SARAFF |
-| Contact e-mail | `support.dxtools@saraff.ru` |
+| Project Name* | DxTools |
+| Repository URL* | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools` |
+| Homepage URL* | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools` |
+| Download URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/tag/v1.0.0` |
+| Privacy Policy URL | `https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/blob/main/CODE_SIGNING.md#privacy-and-system-changes` |
+| Wikipedia URL | оставить пустым |
+| Tagline* | `Open-source Windows 11 utility for multi-monitor taskbars, window profiles, wallpapers, and global hotkeys.` |
+| Category* | `Productivity` |
+| Description* | текст из раздела 2.1 |
+| Reputation* | текст из раздела 2.2 |
+| Maintainer Type | `Individual maintainer(s)` |
+| Build System* | `GitHub Actions` |
+| First Name* | ваше имя для аккаунта SignPath |
+| Last Name* | ваша фамилия для аккаунта SignPath |
+| Email* | `support.dxtools@saraff.ru` (замените, если нужен другой адрес) |
+| Company Name | оставить пустым |
+| Primary Discovery Channel* | `AI / LLM tools` (или фактический канал) |
+| Please specify the exact source | `Kilo Code` или оставить пустым |
+| Code of Conduct / certificate consent* | включить |
+| Receive other communications | по желанию, не обязательно |
+| Personal data processing consent* | включить |
 
-## 2. Описание проекта для формы
+Download URL должен упоминать SignPath Foundation. Страница релиза
+`v1.0.0` содержит ссылку на `CODE_SIGNING.md` и строку о SignPath
+Foundation, поэтому подходит.
 
-> DxTools is an open-source Windows 11 utility distributed under
-> GPL-2.0-only. It provides multi-monitor window management, per-monitor
-> taskbars, monitor and window profiles, wallpapers, global hotkeys with
-> application scoping, triggers, a multi-monitor screensaver, and an Explorer
-> context-menu extension.
+## 2. Тексты для полей
+
+### 2.1 Description
+
+> DxTools is an open-source Windows desktop utility for multi-monitor
+> workflows. It provides per-monitor taskbars, monitor and window profiles,
+> wallpaper management, global hotkeys with application scoping, triggers, a
+> multi-monitor screensaver, and Explorer integration. It is distributed as a
+> free GPL-2.0-only build for Windows 11 and maintained by its author.
+
+### 2.2 Reputation
+
+> DxTools is a new project: its first public release was published in November
+> 2026. Trust evidence: the complete source code, build scripts, and CI
+> configuration are public; GitHub Actions builds and tests every change,
+> including 59 automated tests; SECURITY.md and a published security review
+> document the threat model; releases include SHA-256 checksums and a public
+> code signing policy.
 >
-> The project is publicly released on GitHub; the current stable release is
-> v1.0.0 with an x64 MSI installer (binary built from commit `9107d1a`). It is
-> actively maintained by its author, and all source code, build scripts, and CI
-> configuration are in the repository.
+> Repository: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools
+> Releases: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases
+> CI: https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/actions
 >
-> We request code signing for the x64 MSI installer
-> `DxTools-<version>-x64.msi` and the PE files it contains: `DxTools.exe`,
-> `DxTools.Native.dll`, `DxTools.Helper.exe`, `DxTools.scr`, and
-> `DxTools.ShellExt.dll`. The MSI is built by GitHub Actions on GitHub-hosted
-> `windows-latest` runners using `build/build.ps1` (CMake + MSVC for native
-> code, WiX 6 from NuGet for the installer). No self-hosted runners or manual
-> build overrides are used.
->
-> The project contains no proprietary components. There is no commercial
-> dual licensing and no closed-source edition. An optional paid Pro Support
-> subscription is a services agreement (response times, prioritized fixes,
-> invoices) for the same free GPL build; it does not grant different software
-> rights.
->
-> Signing is needed to remove Unknown Publisher warnings for the MSI channel
-> and to enable UIAccess for `DxTools.Helper.exe`. A Microsoft Store/MSIX
-> channel is out of scope for this request.
+> No media coverage yet.
 
 ## 3. Ответы на вероятные вопросы ревьюеров
 
@@ -83,10 +92,12 @@ direction; this is outside DxTools itself.
 
 ### Что именно подписывается
 
-The MSI is deep-signed: the five PE files listed above are signed inside the
-package, then the MSI itself is signed. Third-party .NET assemblies inside the
-MSI are not signed individually; their integrity is covered by the MSI
-signature. Local builds, forks, and pull-request artifacts are never signed.
+The MSI is deep-signed: `DxTools.exe`, `DxTools.Native.dll`,
+`DxTools.Helper.exe`, `DxTools.scr`, and `DxTools.ShellExt.dll` are signed
+inside the package, then the MSI itself is signed. Third-party .NET assemblies
+inside the MSI are not signed individually; their integrity is covered by the
+MSI signature. Local builds, forks, and pull-request artifacts are never
+signed.
 
 ### Почему publisher будет SignPath Foundation
 
@@ -96,39 +107,38 @@ request.
 
 ## 4. Перед отправкой
 
-- [x] Изменения M0 (`CODE_SIGNING.md`, README) находятся в ветке `main` на
-      GitHub, а не только локально.
+- [x] Изменения M0 (`CODE_SIGNING.md`, README) находятся в `main`.
 - [x] `CODE_SIGNING.md` открывается по публичному URL и содержит точную фразу
       `Free code signing provided by SignPath.io, certificate by SignPath Foundation`.
 - [x] В README есть раздел `Code signing policy` со ссылкой на политику.
-- [ ] Включена 2FA на GitHub.
-- [x] Настроен ruleset для `main` (запрет удаления и force-push, изменения
-      через PR).
+- [x] Включена 2FA на GitHub.
+- [x] Ruleset для `main`: запрет удаления, force-push, изменения через PR.
 - [x] Проверены ссылки из таблицы выше (открываются без 404).
 - [x] Issues/Discussions включены и доступны публично.
-- [x] Опубликован стабильный релиз `v1.0.0` с MSI.
+- [x] Опубликован стабильный релиз `v1.0.0` с MSI и упоминанием SignPath.
 
 ## 5. Порядок подачи
 
 1. Открыть `https://signpath.org/apply`.
-2. Заполнить поля из раздела 1, вставить описание из раздела 2.
-3. Отправить заявку и сохранить подтверждение.
-4. Отвечать на уточнения ревьюеров по e-mail; типовые ответы — в разделе 3.
-5. После одобрения принять приглашение в организацию SignPath.io и включить
+2. Заполнить поля из раздела 1, вставить тексты из раздела 2.
+3. Включить обязательные чекбоксы Code of Conduct и обработки данных.
+4. Пройти reCAPTCHA и нажать Submit.
+5. Сохранить письмо-подтверждение и номер заявки.
+6. Отвечать на уточнения ревьюеров по e-mail; типовые ответы — в разделе 3.
+7. После одобрения принять приглашение в организацию SignPath.io и включить
    MFA в SignPath.
-6. Перейти к M2: проект, trusted build system, signing policy и artifact
+8. Перейти к M2: проект, trusted build system, signing policy и artifact
    configuration.
 
 ## 6. Если заявку отклонили
 
 Зафиксировать точную причину из письма. Типовые варианты:
 
-- нужен более свежий стабильный билд — выпустить новый патч-релиз из `main`
-  и подать повторно;
+- недостаточно репутации/популярности — добавить публичные ссылки на CI,
+  security review и релизы, подать повторно после роста проекта;
+- нужен более свежий стабильный билд — выпустить патч-релиз из `main`;
 - вопросы к коммерческой деятельности — приложить формулировку из раздела 3
   и `docs/commercial.md`;
-- недостаточно публичной информации о проекте — дополнить README и Release
-  notes;
 - не устроила модель ролей — описать CI-пользователя и ручное одобрение.
 
 Если отказ принципиальный, резервный путь — Certum Open Source Code Signing
