@@ -6,7 +6,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
-- Статус: 1.0.0-rc.8 готов, ожидает review и публикации GA
+- Статус: 1.0.0-rc.8 — review решения выполнен, GitHub Release опубликован
 
 ![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
 
