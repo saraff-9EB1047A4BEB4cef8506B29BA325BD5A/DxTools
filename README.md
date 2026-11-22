@@ -2,7 +2,7 @@
 
 # DxTools
 
-[![Скачать DxTools 1.0.0-rc.8](https://img.shields.io/badge/Download-DxTools--1.0.0--x64.msi-2ea44f?logo=windows&style=flat-square)](https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/download/v1.0.0-rc.8/DxTools-1.0.0-x64.msi)
+[![Скачать DxTools 1.0.0](https://img.shields.io/badge/Download-DxTools--1.0.0--x64.msi-2ea44f?logo=windows&style=flat-square)](https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/download/v1.0.0/DxTools-1.0.0-x64.msi)
 
 DxTools — открытая утилита для Windows 11, повторяющая ключевые возможности
 DisplayFusion: профили мониторов, мультимониторные панели задач, управление
@@ -10,7 +10,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 - Лицензия: GNU GPL v2 (`GPL-2.0-only`)
 - Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
-- Статус: 1.0.0-rc.8 — review решения выполнен, GitHub Release опубликован
+- Статус: 1.0.0 — GitHub Release опубликован
 
 ![DxTools, кнопки в заголовке активного окна](docs/images/titlebar-overlay-ru.png)
 
@@ -22,7 +22,7 @@ DisplayFusion: профили мониторов, мультимониторны
 
 ![DxTools, профили мониторов, русский интерфейс](docs/images/settings-monitors-ru.png)
 
-## Возможности текущей версии (1.0.0-rc.8)
+## Возможности текущей версии (1.0.0)
 
 - установщик MSI (per-machine, x64 и ARM64) с лицензионным диалогом GPLv2;
 - приложение в системном трее, окно настроек;
@@ -76,8 +76,10 @@ DisplayFusion: профили мониторов, мультимониторны
 
 UIAccess требует подписанного сертификатом `DxTools.Helper.exe`, установленного
 в Program Files, и согласия пользователя при первом запуске. Без подписи
-приложение работает в обычном режиме. Подпись сертификатом и runtime-тест ARM64
-отложены по бюджету; security review, soak-тест и UAC-проверки считаются
+приложение работает в обычном режиме. Подпись релизов выполняется через
+SignPath Foundation по [CODE_SIGNING.md](CODE_SIGNING.md); до первого
+подписанного релиза сборки публикуются без подписи. Runtime-тест ARM64
+отложен по бюджету; security review, soak-тест и UAC-проверки считаются
 принятыми. Подробный план:
 [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md),
 security review: [docs/security-review.md](docs/security-review.md),
@@ -96,6 +98,19 @@ release checklist: [docs/release-checklist.md](docs/release-checklist.md).
 Условия, SLA и тарифы: [docs/commercial.md](docs/commercial.md)
 (EN: [docs/commercial.en.md](docs/commercial.en.md)).
 Порядок обращения: [SUPPORT.md](SUPPORT.md). Донаты приветствуются.
+
+## Code signing policy
+
+Релизные MSI и входящие в них PE-файлы подписываются через SignPath.io.
+Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+Сертификат выпущен на SignPath Foundation, ключ хранится в HSM и не
+экспортируется. Подписываются только сборки из этого репозитория, собранные
+в GitHub Actions на GitHub-hosted runner; каждый запрос на подпись вручную
+одобряет мейнтейнер.
+
+Политика, роли, MFA и порядок проверки подписи:
+[CODE_SIGNING.md](CODE_SIGNING.md). Технические детали:
+[docs/signing.md](docs/signing.md).
 
 ## Требования для сборки
 
@@ -165,6 +180,7 @@ build/                 сборочные скрипты
 - [SECURITY.md](SECURITY.md) — политика безопасности;
 - [SUPPORT.md](SUPPORT.md) — порядок получения поддержки;
 - [CONTRIBUTING.md](CONTRIBUTING.md) — правила участия;
+- [CODE_SIGNING.md](CODE_SIGNING.md) — политика подписи кода;
 - [TRADEMARK.md](TRADEMARK.md) — политика использования бренда;
 - [docs/security-review.md](docs/security-review.md) — security review;
 - [docs/release-checklist.md](docs/release-checklist.md) — release checklist;

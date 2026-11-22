@@ -2,7 +2,7 @@
 
 # DxTools
 
-[![Download DxTools 1.0.0-rc.8](https://img.shields.io/badge/Download-DxTools--1.0.0--x64.msi-2ea44f?logo=windows&style=flat-square)](https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/download/v1.0.0-rc.8/DxTools-1.0.0-x64.msi)
+[![Download DxTools 1.0.0](https://img.shields.io/badge/Download-DxTools--1.0.0--x64.msi-2ea44f?logo=windows&style=flat-square)](https://github.com/saraff-9EB1047A4BEB4cef8506B29BA325BD5A/DxTools/releases/download/v1.0.0/DxTools-1.0.0-x64.msi)
 
 DxTools is an open-source Windows 11 utility that reproduces the key features
 of DisplayFusion: monitor profiles, multi-monitor taskbars, window management,
@@ -10,7 +10,7 @@ wallpapers, hotkeys, triggers and scripts.
 
 - License: GNU GPL v2 (`GPL-2.0-only`)
 - Platform: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
-- Status: 1.0.0-rc.8 — solution review complete, GitHub Release published
+- Status: 1.0.0 — GitHub Release published
 
 ![DxTools main window, English UI](docs/images/main-en-light.png)
 
@@ -24,7 +24,7 @@ wallpapers, hotkeys, triggers and scripts.
 
 ![DxTools, monitor profiles](docs/images/settings-monitors-ru.png)
 
-## Features in the current version (1.0.0-rc.8)
+## Features in the current version (1.0.0)
 
 - MSI installer (per-machine, x64 and ARM64) with a GPLv2 license dialog;
 - system tray application and settings window;
@@ -80,8 +80,10 @@ wallpapers, hotkeys, triggers and scripts.
 
 UIAccess requires a certificate-signed `DxTools.Helper.exe` installed in
 Program Files and user consent on first launch. Without a signature the app
-runs in normal mode. Certificate signing and the ARM64 runtime test are
-deferred for budget reasons; the security review, soak test and UAC checks are
+runs in normal mode. Release signing is performed through SignPath Foundation
+as described in [CODE_SIGNING.md](CODE_SIGNING.md); until the first signed
+release, builds are published unsigned. The ARM64 runtime test is deferred for
+budget reasons; the security review, soak test and UAC checks are
 considered accepted. Full plan:
 [spec.md](spec.md), security policy: [SECURITY.md](SECURITY.md),
 security review: [docs/security-review.md](docs/security-review.md),
@@ -100,6 +102,20 @@ release checklist: [docs/release-checklist.md](docs/release-checklist.md).
 Terms, SLA and pricing: [docs/commercial.en.md](docs/commercial.en.md)
 (RU: [docs/commercial.md](docs/commercial.md)).
 How to get help: [SUPPORT.md](SUPPORT.md). Donations are welcome.
+
+## Code signing policy
+
+Release MSI packages and the PE files inside them are signed through
+SignPath.io.
+Free code signing provided by SignPath.io, certificate by SignPath Foundation.
+The certificate is issued to SignPath Foundation, and the
+private key is stored in an HSM and is never exported. Only builds produced
+from this repository by GitHub Actions on GitHub-hosted runners are signed;
+every signing request is manually approved by a maintainer.
+
+Policy, roles, MFA and signature verification:
+[CODE_SIGNING.md](CODE_SIGNING.md). Technical details:
+[docs/signing.md](docs/signing.md).
 
 ## Build requirements
 
@@ -169,6 +185,7 @@ build/                 build scripts
 - [SECURITY.md](SECURITY.md) — security policy;
 - [SUPPORT.md](SUPPORT.md) — how to get support;
 - [CONTRIBUTING.md](CONTRIBUTING.md) — contribution guidelines;
+- [CODE_SIGNING.md](CODE_SIGNING.md) — code signing policy;
 - [TRADEMARK.md](TRADEMARK.md) — brand usage policy;
 - [docs/security-review.md](docs/security-review.md) — security review;
 - [docs/release-checklist.md](docs/release-checklist.md) — release checklist;
