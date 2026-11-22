@@ -8,11 +8,15 @@ DisplayFusion: профили мониторов, мультимониторны
 - Платформа: Windows 11 22H2+ (x64; ARM64 — cross-build), .NET 10
 - Статус: 1.0.0-rc.8 — review решения выполнен, GitHub Release опубликован
 
-![DxTools, редактор триггеров](docs/images/phase2g-titlebar.png)
+![DxTools, кнопки в заголовке активного окна](docs/images/titlebar-overlay-ru.png)
 
-![DxTools, профили окон](docs/images/phase2b-windows.png)
+![DxTools, профили окон](docs/images/settings-windows-ru.png)
 
-![DxTools, профили мониторов, русский интерфейс](docs/images/phase1-monitors.png)
+![DxTools, горячие клавиши с цепочками и привязкой к приложению](docs/images/settings-hotkeys-ru.png)
+
+![DxTools, обои и видео в заставке](docs/images/settings-wallpaper-ru.png)
+
+![DxTools, профили мониторов, русский интерфейс](docs/images/settings-monitors-ru.png)
 
 ## Возможности текущей версии (1.0.0-rc.8)
 
