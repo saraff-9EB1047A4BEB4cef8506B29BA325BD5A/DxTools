@@ -7,12 +7,13 @@ DxTools is an open-source project licensed under GNU GPL v2
 
 DxTools does not currently have an active code signing certificate. The
 SignPath Foundation application was reviewed on 2026-11-23 and deferred until
-the project shows more public adoption. Release artifacts are currently
-published unsigned.
+the project shows more public adoption. Major commercial certificate
+authorities do not currently issue code signing certificates to applicants in
+Belarus, so a paid OV certificate is not available at this time. Release
+artifacts are published unsigned.
 
-A standard OV code signing certificate is being evaluated for the MSI channel.
-This policy will be updated when a certificate is issued and signing is
-enabled.
+The project will reapply to the SignPath Foundation after it has gained
+broader public adoption. This policy will be updated when signing is enabled.
 
 ## Publisher and key ownership
 
