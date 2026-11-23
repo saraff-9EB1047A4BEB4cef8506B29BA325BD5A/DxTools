@@ -12,8 +12,10 @@ authorities do not currently issue code signing certificates to applicants in
 Belarus, so a paid OV certificate is not available at this time. Release
 artifacts are published unsigned.
 
-The project will reapply to the SignPath Foundation after it has gained
-broader public adoption. This policy will be updated when signing is enabled.
+The project may reapply to the SignPath Foundation if it gains broader public
+adoption. Code signing is paused as of 2026-11-23: no application is active
+and no certificate is being purchased. Releases are published unsigned. This
+policy will be updated if signing is enabled.
 
 ## Publisher and key ownership
 

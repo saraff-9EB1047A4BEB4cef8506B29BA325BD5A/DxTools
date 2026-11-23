@@ -80,11 +80,12 @@ wallpapers, hotkeys, triggers and scripts.
 
 UIAccess requires a certificate-signed `DxTools.Helper.exe` installed in
 Program Files and user consent on first launch. Without a signature the app
-runs in normal mode. Release signing is not enabled yet: the SignPath
+runs in normal mode. Signing is paused as of 2026-11-23: the SignPath
 Foundation application was reviewed on 2026-11-23 and deferred because the
 project does not yet have enough public visibility; commercial OV
-certificates are not available to applicants in Belarus. The project will
-reapply after broader adoption. Until then, builds are published unsigned; see
+certificates are not available to applicants in Belarus. No application is
+active and no certificate is being purchased. Until then, builds are published
+unsigned; see
 [CODE_SIGNING.md](CODE_SIGNING.md). The ARM64 runtime test is deferred for
 budget reasons; the security review, soak test and UAC checks are
 considered accepted. Full plan:
@@ -108,9 +109,10 @@ How to get help: [SUPPORT.md](SUPPORT.md). Donations are welcome.
 
 ## Code signing policy
 
-Code signing is not active yet. [CODE_SIGNING.md](CODE_SIGNING.md) describes the
-requirements for future signing: builds only from GitHub Actions, manual
-approval, MSI deep signing and `signtool` verification. The main path is a new
+Code signing is paused as of 2026-11-23.
+[CODE_SIGNING.md](CODE_SIGNING.md) describes the requirements for future
+signing: builds only from GitHub Actions, manual approval, MSI deep signing and
+`signtool` verification. If the project revisits it, the main path is a new
 SignPath Foundation application after broader public adoption; commercial CAs
 are not available in the region. The section will be updated once signing is
 enabled. Technical details: [docs/signing.md](docs/signing.md).
