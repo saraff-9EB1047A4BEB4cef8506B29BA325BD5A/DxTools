@@ -80,9 +80,11 @@ wallpapers, hotkeys, triggers and scripts.
 
 UIAccess requires a certificate-signed `DxTools.Helper.exe` installed in
 Program Files and user consent on first launch. Without a signature the app
-runs in normal mode. Release signing is performed through SignPath Foundation
-as described in [CODE_SIGNING.md](CODE_SIGNING.md); until the first signed
-release, builds are published unsigned. The ARM64 runtime test is deferred for
+runs in normal mode. Release signing is not enabled yet: the SignPath
+Foundation application was reviewed on 2026-11-23 and deferred because the
+project does not yet have enough public visibility; a standard OV certificate
+is being evaluated. Until then, builds are published unsigned; see
+[CODE_SIGNING.md](CODE_SIGNING.md). The ARM64 runtime test is deferred for
 budget reasons; the security review, soak test and UAC checks are
 considered accepted. Full plan:
 [spec.md](spec.md), security policy: [SECURITY.md](SECURITY.md),
@@ -105,16 +107,10 @@ How to get help: [SUPPORT.md](SUPPORT.md). Donations are welcome.
 
 ## Code signing policy
 
-Release MSI packages and the PE files inside them are signed through
-SignPath.io.
-Free code signing provided by SignPath.io, certificate by SignPath Foundation.
-The certificate is issued to SignPath Foundation, and the
-private key is stored in an HSM and is never exported. Only builds produced
-from this repository by GitHub Actions on GitHub-hosted runners are signed;
-every signing request is manually approved by a maintainer.
-
-Policy, roles, MFA and signature verification:
-[CODE_SIGNING.md](CODE_SIGNING.md). Technical details:
+Code signing is not active yet. [CODE_SIGNING.md](CODE_SIGNING.md) describes the
+requirements for future signing: builds only from GitHub Actions, manual
+approval, MSI deep signing and `signtool` verification. The section will be
+updated once a certificate is selected. Technical details:
 [docs/signing.md](docs/signing.md).
 
 ## Build requirements

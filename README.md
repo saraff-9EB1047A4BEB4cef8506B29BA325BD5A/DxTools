@@ -76,9 +76,11 @@ DisplayFusion: профили мониторов, мультимониторны
 
 UIAccess требует подписанного сертификатом `DxTools.Helper.exe`, установленного
 в Program Files, и согласия пользователя при первом запуске. Без подписи
-приложение работает в обычном режиме. Подпись релизов выполняется через
-SignPath Foundation по [CODE_SIGNING.md](CODE_SIGNING.md); до первого
-подписанного релиза сборки публикуются без подписи. Runtime-тест ARM64
+приложение работает в обычном режиме. Подпись релизов пока не включена:
+заявка в SignPath Foundation рассмотрена 23.11.2026 и отложена из-за
+недостаточной публичной известности, сейчас рассматривается стандартный
+OV-сертификат. До этого сборки публикуются без подписи; политика:
+[CODE_SIGNING.md](CODE_SIGNING.md). Runtime-тест ARM64
 отложен по бюджету; security review, soak-тест и UAC-проверки считаются
 принятыми. Подробный план:
 [spec.md](spec.md), политика безопасности: [SECURITY.md](SECURITY.md),
@@ -101,15 +103,10 @@ release checklist: [docs/release-checklist.md](docs/release-checklist.md).
 
 ## Code signing policy
 
-Релизные MSI и входящие в них PE-файлы подписываются через SignPath.io.
-Free code signing provided by SignPath.io, certificate by SignPath Foundation.
-Сертификат выпущен на SignPath Foundation, ключ хранится в HSM и не
-экспортируется. Подписываются только сборки из этого репозитория, собранные
-в GitHub Actions на GitHub-hosted runner; каждый запрос на подпись вручную
-одобряет мейнтейнер.
-
-Политика, роли, MFA и порядок проверки подписи:
-[CODE_SIGNING.md](CODE_SIGNING.md). Технические детали:
+Подпись релизов пока не активна. [CODE_SIGNING.md](CODE_SIGNING.md) описывает
+требования к будущей подписи: сборка только в GitHub Actions, ручное
+одобрение, deep signing MSI и проверка `signtool`. После выбора сертификата
+раздел будет обновлён. Технические детали:
 [docs/signing.md](docs/signing.md).
 
 ## Требования для сборки
