@@ -1,22 +1,31 @@
 # Code signing policy
 
 DxTools is an open-source project licensed under GNU GPL v2
-(`GPL-2.0-only`). Release artifacts are signed through
-[SignPath.io](https://signpath.io/).
+(`GPL-2.0-only`).
 
-**Free code signing provided by SignPath.io, certificate by SignPath Foundation.**
+## Current status
+
+DxTools does not currently have an active code signing certificate. The
+SignPath Foundation application was reviewed on 2026-11-23 and deferred until
+the project shows more public adoption. Release artifacts are currently
+published unsigned.
+
+A standard OV code signing certificate is being evaluated for the MSI channel.
+This policy will be updated when a certificate is issued and signing is
+enabled.
 
 ## Publisher and key ownership
 
-The code signing certificate is issued to **SignPath Foundation**. The private
-key is generated and stored in SignPath Foundation's hardware security module
-(HSM) and is never exported. DxTools maintainers do not hold the signing key.
-The publisher shown by Windows is `SignPath Foundation`, not `DxTools`.
+The certificate will be issued either to the maintainer or to a registered
+organization, depending on the selected certificate. The private key will be
+stored in the certificate authority's cloud HSM or on a hardware token and
+will not be exported. The publisher shown by Windows will be the certificate
+subject, not necessarily `DxTools`.
 
-## Signed artifacts
+## Artifacts to be signed
 
-The following artifacts are built from this repository by GitHub Actions on
-GitHub-hosted runners and submitted to SignPath for signing:
+When signing is enabled, the following artifacts will be built from this
+repository by GitHub Actions on GitHub-hosted runners and signed:
 
 - `DxTools-<version>-x64.msi` — Microsoft Installer package;
 - `DxTools.exe` — main application;
@@ -37,12 +46,12 @@ before the signing step are **not** signed.
 1. A release build is produced by a GitHub Actions workflow in this repository
    using `build/build.ps1` on a GitHub-hosted Windows runner.
 2. The unsigned MSI is uploaded as a GitHub Actions artifact.
-3. The workflow submits a signing request to SignPath with a CI API token.
-4. SignPath verifies the build origin (repository, branch, commit and build
-   job) before accepting the request.
-5. An approver reviews and manually approves every signing request.
-6. The signed artifact is downloaded, verified with `signtool verify /pa /all`
-   and published in a GitHub Release.
+3. The workflow submits a signing request through the selected signing
+   provider, or signing is performed with a hardware-backed certificate.
+4. The provider verifies the build origin where supported.
+5. The maintainer reviews and manually approves every signing request.
+6. The signed artifact is verified with `signtool verify /pa /all` and
+   published in a GitHub Release.
 
 Signing requests are accepted only for the `main` branch. Builds from local
 machines, self-hosted runners or forks cannot be signed.
@@ -54,11 +63,11 @@ machines, self-hosted runners or forks cannot be signed.
 | Author | SARAFF (`saraff-9EB1047A4BEB4cef8506B29BA325BD5A`) | Commits and changes to the repository |
 | Reviewer | SARAFF | Reviews every pull request from a non-committer before merge |
 | Approver | SARAFF | Approves or denies every signing request |
-| CI submitter | Dedicated SignPath CI user | Submits artifacts from GitHub Actions; cannot approve requests |
+| Signing submitter | Dedicated CI identity or the maintainer | Submits artifacts for signing; cannot approve requests |
 
 All maintainers and signing users must use multi-factor authentication for
-GitHub and SignPath access. Changes to build scripts, CI configuration and
-this policy are reviewed like any other change.
+GitHub and the signing provider. Changes to build scripts, CI configuration
+and this policy are reviewed like any other change.
 
 ## Privacy and system changes
 
@@ -80,14 +89,16 @@ signtool verify /pa /all DxTools-1.0.0-x64.msi
 Get-AuthenticodeSignature .\DxTools-1.0.0-x64.msi | Format-List
 ```
 
-A valid release signature has:
+A valid signed release has:
 
-- signer subject containing `SignPath Foundation`;
+- a signer subject containing the certificate holder's name (individual or
+  organization);
 - a valid timestamp;
 - a certificate chain ending in a Windows-trusted root.
 
 The same signature is present on the nested PE files listed above after the
-MSI is installed or extracted.
+MSI is installed or extracted. If a release is unsigned,
+`Get-AuthenticodeSignature` reports `NotSigned`.
 
 ## Reporting a problem
 

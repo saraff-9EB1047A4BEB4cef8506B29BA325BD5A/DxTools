@@ -1,5 +1,13 @@
 # План подписи через SignPath Foundation
 
+> **Статус (2026-11-23): G1 не пройден.** SignPath Foundation отклонил
+> заявку: недостаточно внешних сигналов публичного доверия (stars, forks,
+> contributors, статьи, независимые упоминания). План приостановлен;
+> повторная заявка возможна после роста проекта. Ближайшие альтернативы:
+> стандартный OV-сертификат (Certum от €139–209/год), Certum Open Source
+> (€49/год, только некоммерческое ПО), платный SignPath Starter (от $500/год,
+> EV GlobalSign для юрлица).
+
 ## 0. Краткий вывод
 
 1. SignPath Foundation даёт DxTools **бесплатную подпись Authenticode** для MSI и
@@ -303,7 +311,7 @@ jobs:
 | Этап | Работа | Дни | Ворота |
 |---|---|---|---|
 | M0 | `CODE_SIGNING.md`, README, MFA, роли, branch protection | 0.5–1 | G0: политика и роли готовы |
-| M1 | Заявка и ответы ревью | 0.5 + ожидание | G1: приглашение в SignPath |
+| M1 | Заявка и ответы ревью | 0.5 + ожидание | G1: отказ 23.11.2026 |
 | M2 | Организация, проект, политика, artifact configuration | 1 | G2: конфигурация проходит пробный запрос |
 | M3 | Релизный workflow, секреты, проверка подписи | 1 | G3: CI выдаёт подписанный MSI |
 | M4 | Чистая VM, UIAccess, документация, релиз | 0.5–1 | G4: подпись и UIAccess приняты |
@@ -324,14 +332,16 @@ jobs:
 | Утечка API token | низкая | компрометация подписи | Отдельный CI-пользователь, минимальные права, секрет GitHub, ротация |
 | Подпись не даёт UIAccess | низкая | helper работает без UIAccess | Проверка на чистой VM; подпись — только одно из условий, второе — `Program Files` |
 | Зависимость от SignPath Foundation | средняя | отзыв при нарушении правил | Соблюдать политику, резервный путь — Certum Open Source |
+| Отказ по публичной известности | **реализовался 23.11.2026** | нет бесплатной подписи | Растить stars/forks/contributors, публикации и упоминания; подать повторно; либо купить OV-сертификат |
 
 ## 11. Чек-лист
 
 - [x] `CODE_SIGNING.md` создан, содержит обязательные формулировки.
 - [x] В README есть раздел «Code signing policy» со ссылкой.
-- [ ] 2FA включена на GitHub; branch protection для `main` настроен.
-- [ ] Роли Author/Reviewer/Approver и CI-submitter зафиксированы.
-- [ ] Заявка на `signpath.org/apply` отправлена.
+- [x] 2FA включена на GitHub; ruleset для `main` настроен.
+- [x] Роли Author/Reviewer/Approver и signing submitter зафиксированы.
+- [x] Заявка на `signpath.org/apply` отправлена 22.11.2026; 23.11.2026
+      получен отказ по недостаточной публичной известности.
 - [ ] Организация, проект, trusted build system и GitHub App настроены.
 - [ ] Политика `release-signing`: approval, origin verification, ветка `main`.
 - [ ] Artifact configuration проверена на sample MSI.
@@ -351,3 +361,30 @@ jobs:
   `docs.signpath.io/artifact-configuration/examples`.
 - Требования к MSI/PE и форматы — `docs.signpath.io/artifact-configuration/reference`.
 - Варианты подписи для Windows — `learn.microsoft.com/windows/apps/package-and-deploy/code-signing-options`.
+
+## 13. После отказа 23.11.2026
+
+Причина отказа — не качество кода, а недостаточная публичная известность.
+SignPath не публикует порог, поэтому ориентир — устойчивые внешние сигналы:
+
+- рост GitHub stars, forks и числа внешних contributors;
+- статьи и обзоры вне репозитория: Habr, Reddit, YouTube, Stack Overflow;
+- попадание в пакетные менеджеры (winget, Chocolatey, Scoop) и статистика
+  загрузок;
+- публичные issues/discussions и участие сообщества;
+- повторная заявка через несколько месяцев после измеримого роста.
+
+Альтернативы для подписи сейчас:
+
+| Вариант | Цена | Publisher | Ограничения |
+|---|---|---|---|
+| Certum Standard OV, cloud | от €209/год (код от €139, set от €169) | физлицо или юрлицо | нет OSS-ограничения; UIAccess работает |
+| Certum Open Source, cloud | €49/год | `Open Source Developer <Имя>` | только некоммерческое OSS; отзыв при коммерческом распространении |
+| SignPath Starter + EV GlobalSign | от $500/год | юрлицо | EV-сертификат GlobalSign; нужна регистрация организации, уточнить у sales возможность своего OV |
+| Ждать и переподать в Foundation | 0 | SignPath Foundation | бесплатно, но нужна публичная известность |
+
+Для DxTools с платным Pro Support безопаснее Standard OV: он не содержит
+запрета на коммерческое распространение и не привязывает publisher к префиксу
+`Open Source Developer`. Certum Open Source дешевле, но перед покупкой нужно
+письменное подтверждение Certum, что платная поддержка не считается
+коммерческим распространением подписанного ПО.
